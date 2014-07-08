@@ -41,6 +41,7 @@ NS_CC_BEGIN
  */
 class SubMesh : public Ref
 {
+    friend class Mesh;
 public:
     /** Defines supported index formats. */
     enum class IndexFormat
@@ -70,9 +71,7 @@ public:
     IndexFormat getIndexFormat() const { return _indexFormat; }
     /**get index buffer*/
     GLuint getIndexBuffer() const {return _indexBuffer; }
-    
-    /**build vertex buffer from indices data*/
-    void restore();
+
 
 CC_CONSTRUCTOR_ACCESS:
     
@@ -80,7 +79,7 @@ CC_CONSTRUCTOR_ACCESS:
     virtual ~SubMesh();
 
     /**build buffer*/
-    void buildBuffer();
+    void buildBuffer(const std::vector<unsigned short>& indices);
     /**free buffer*/
     void cleanAndFreeBuffers();
 

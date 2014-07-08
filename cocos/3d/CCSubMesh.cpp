@@ -60,7 +60,14 @@ SubMesh::~SubMesh()
 
 SubMesh* SubMesh::create(PrimitiveType primitivetype, IndexFormat indexformat, const std::vector<unsigned short>& indices)
 {
-    return nullptr;
+    auto submesh = new SubMesh();
+    submesh->_primitiveType = primitivetype;
+    submesh->_indexFormat = indexformat;
+    
+    submesh->buildBuffer(indices);
+    submesh->autorelease();
+    
+    return submesh;
 }
 
 void SubMesh::cleanAndFreeBuffers()
@@ -70,15 +77,12 @@ void SubMesh::cleanAndFreeBuffers()
         glDeleteBuffers(1, &_indexBuffer);
         _indexBuffer = 0;
     }
-    _primitiveType = PrimitiveType::TRIANGLES;
-    _indexFormat = IndexFormat::INDEX16;
+    
     _indexCount = 0;
 }
 
-void SubMesh::buildBuffer()
+void SubMesh::buildBuffer(const std::vector<unsigned short>& indices)
 {
-    cleanAndFreeBuffers();
-    
     glGenBuffers(1, &_indexBuffer);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
@@ -92,12 +96,6 @@ void SubMesh::buildBuffer()
     _primitiveType = PrimitiveType::TRIANGLES;
     _indexFormat = IndexFormat::INDEX16;
     _indexCount = _indices.size();
-}
-
-void SubMesh::restore()
-{
-    _indexBuffer = 0;
-    buildBuffer();
 }
 
 NS_CC_END
