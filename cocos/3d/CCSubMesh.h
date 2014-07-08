@@ -89,8 +89,6 @@ protected:
 
     GLuint _indexBuffer;
     ssize_t _indexCount;
-
-    std::vector<unsigned short> _indices;
 };
 
 NS_CC_END

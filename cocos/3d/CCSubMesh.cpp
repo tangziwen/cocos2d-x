@@ -63,8 +63,6 @@ SubMesh* SubMesh::create(PrimitiveType primitivetype, IndexFormat indexformat, c
     auto submesh = new SubMesh();
     submesh->_primitiveType = primitivetype;
     submesh->_indexFormat = indexformat;
-    
-    submesh->buildBuffer(indices);
     submesh->autorelease();
     
     return submesh;
@@ -89,13 +87,11 @@ void SubMesh::buildBuffer(const std::vector<unsigned short>& indices)
     
     unsigned int indexSize = 2;
     
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * _indices.size(), &_indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * indices.size(), &indices[0], GL_STATIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     
-    _primitiveType = PrimitiveType::TRIANGLES;
-    _indexFormat = IndexFormat::INDEX16;
-    _indexCount = _indices.size();
+    _indexCount = indices.size();
 }
 
 NS_CC_END

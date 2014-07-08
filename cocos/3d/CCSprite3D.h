@@ -90,6 +90,7 @@ protected:
     MeshSkin*          _skin;//skin
     
     MeshCommand       _meshCommand; //render command
+    std::vector<bool> _visible;
     Texture2D*        _texture;
     BlendFunc         _blend;
 };

@@ -28,6 +28,7 @@
 #include "3d/CCMeshSkin.h"
 #include "3d/CCBundle3D.h"
 #include "3d/CCSprite3DMaterial.h"
+#include "3d/CCSubMesh.h"
 
 #include "base/CCDirector.h"
 #include "base/CCPlatformMacros.h"
@@ -325,6 +326,11 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
     GLProgramState* programstate = getGLProgramState();
     Color4F color(getDisplayedColor());
     color.a = getDisplayedOpacity() / 255.0f;
+    
+    for (ssize_t i = 0; i < _mesh->getSubMeshCount(); i++) {
+        auto submesh = _mesh->getSubMesh(i);
+        //submesh->get
+    }
     
     GLuint textureID = _texture ? _texture->getName() : 0;
     _meshCommand.init(_globalZOrder,

@@ -212,8 +212,6 @@ void Mesh::buildSubMeshes()
     _subMeshes.clear();
     for (auto& it : _renderdata._subMeshIndices) {
         auto subMesh = SubMesh::create(SubMesh::PrimitiveType::TRIANGLES, SubMesh::IndexFormat::INDEX16, it);
-        subMesh->buildBuffer(it);
-        CCASSERT(subMesh, "failed to create sub mesh");
         _subMeshes.pushBack(subMesh);
     }
 }
@@ -244,20 +242,19 @@ void Mesh::buildBuffer()
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
+    for (size_t i = 0; i < _subMeshes.size(); i++) {
+        _subMeshes.at(i)->buildBuffer(_renderdata._subMeshIndices[i]);
+    }
 }
 
 void Mesh::restore()
 {
     _vertexBuffer = 0;
-    buildBuffer();
-    
-    for (ssize_t i = 0; i < _renderdata._subMeshIndices.size(); i++) {
-        auto& indices = _renderdata._subMeshIndices[i];
-        auto subMesh = SubMesh::create(SubMesh::PrimitiveType::TRIANGLES, SubMesh::IndexFormat::INDEX16, indices);
-        subMesh->buildBuffer(indices);
-        CCASSERT(subMesh, "failed to create sub mesh");
-        _subMeshes.pushBack(subMesh);
+    for (auto& it : _subMeshes) {
+        it->_indexBuffer = 0;
     }
+    
+    buildBuffer();
 }
 
 /**
