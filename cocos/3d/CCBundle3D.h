@@ -92,6 +92,8 @@ protected:
     bool loadJson(const std::string& path);
     
     bool loadMeshDataJson(MeshData* meshdata);
+    bool loadMeshDataJson_0_2(MeshData* meshdata);
+    bool loadMeshDataJson_0_1(MeshData* meshdata);
     
     bool loadSkinDataJson(SkinData* skindata);
     
@@ -165,6 +167,8 @@ protected:
     
     std::string _modelRelativePath;
     std::string         _path;
+    
+    std::string _version;// the c3b or c3t version
     
     // for json reading
     char* _jsonBuffer;

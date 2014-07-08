@@ -46,6 +46,7 @@
 #define BUNDLE_TYPE_MESHPART            35
 #define BUNDLE_TYPE_MESHSKIN            36
 
+static const char* VERSION = "version";
 static const char* ID = "id";
 
 static const char* MESHDATA_MESH = "mesh";
@@ -260,27 +261,47 @@ bool Bundle3D::loadJson(const std::string& path)
          clear();
          return false;
     }
+    
+    const rapidjson::Value& mash_data_array = _jsonReader[VERSION];
+    _version = mash_data_array.GetString();
     return true;
 }
 
 bool Bundle3D::loadMeshDataJson(MeshData* meshdata)
 {
+    if (_version == "1.2")
+    {
+        return loadMeshDataJson_0_1(meshdata);
+    }
+    else if(_version == "0.2")
+    {
+        return loadMeshDataJson_0_2(meshdata);
+    }
+    else
+    {
+        CCLOGINFO(false, "Unsupported version: %s", _version);
+        return false;
+    }
+}
+
+bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
+{
+    return true;
+}
+
+bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
+{
     meshdata->resetData();
     
-    assert(_jsonReader.HasMember(MESHDATA_MESH));
     const rapidjson::Value& mash_data_array = _jsonReader[MESHDATA_MESH];
     
-    assert(mash_data_array.IsArray());
     const rapidjson::Value& mash_data_val = mash_data_array[(rapidjson::SizeType)0];
 
-    assert(mash_data_val.HasMember(MESHDATA_DEFAULTPART));
     const rapidjson::Value& mesh_data_body_array = mash_data_val[MESHDATA_DEFAULTPART];
     
-    assert(mesh_data_body_array.IsArray());
     const rapidjson::Value& mesh_data_body_array_0 = mesh_data_body_array[(rapidjson::SizeType)0];
     
     // vertex_size
-    assert(mesh_data_body_array_0.HasMember(MESHDATA_VERTEXSIZE));
     meshdata->vertexSizeInFloat = mesh_data_body_array_0[MESHDATA_VERTEXSIZE].GetInt();
 
     // vertices
@@ -885,6 +906,7 @@ Bundle3D::Bundle3D()
 :_isBinary(false),
 _modelRelativePath(""),
 _path(""),
+_version(""),
 _jsonBuffer(nullptr),
 _binaryBuffer(nullptr),
 _referenceCount(0),
