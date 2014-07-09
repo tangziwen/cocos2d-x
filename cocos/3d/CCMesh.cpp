@@ -156,6 +156,7 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
+    _subMeshes.clear();
     cleanAndFreeBuffers();
 }
 

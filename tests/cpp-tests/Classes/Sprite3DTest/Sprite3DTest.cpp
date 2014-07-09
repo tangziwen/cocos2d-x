@@ -26,6 +26,8 @@
 #include "Sprite3DTest.h"
 #include "3d/CCAnimation3D.h"
 #include "3d/CCAnimate3D.h"
+#include "3d/CCMesh.h"
+#include "3d/CCSubMesh.h"
 
 #include <algorithm>
 #include "../testResource.h"
@@ -406,14 +408,17 @@ void Effect3DOutline::draw(const Mat4 &transform)
         auto mesh = _sprite->getMesh();
         glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer());
         _glProgramState->apply(transform);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer());
-        glDrawElements((GLenum)mesh->getPrimitiveType(), (GLsizei)mesh->getIndexCount(), (GLenum)mesh->getIndexFormat(), 0);
+        for (ssize_t i = 0; i < mesh->getSubMeshCount(); i++) {
+            auto submesh = mesh->getSubMesh((int)i);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, submesh->getIndexBuffer());
+            glDrawElements((GLenum)submesh->getPrimitiveType(), (GLsizei)submesh->getIndexCount(), (GLenum)submesh->getIndexFormat(), 0);
+            CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, submesh->getIndexCount());
+        }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDisable(GL_DEPTH_TEST);
         glCullFace(GL_BACK);
         glDisable(GL_CULL_FACE);
-        CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, mesh->getIndexCount());
     }
 }
 

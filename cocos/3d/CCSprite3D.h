@@ -50,9 +50,10 @@ public:
     // creates a Sprite3D. It only supports one texture, and overrides the internal texture with 'texturePath'
     static Sprite3D* create(const std::string &modelPath, const std::string &texturePath);
     
-    /**set texture*/
+    /**set texture, set the first if multiple textures exist*/
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
+    /**set texture for sub mesh by index*/
     void setTexture(int index, Texture2D* texture);
     
 
@@ -94,6 +95,8 @@ protected:
     std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
     std::vector<bool>            _visible; // is submesh visible?
     std::vector<Texture2D*>      _textures;
+    Texture2D*                   _texture;
+
     BlendFunc                    _blend;
 };
 

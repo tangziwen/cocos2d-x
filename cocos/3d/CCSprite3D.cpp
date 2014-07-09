@@ -71,22 +71,6 @@ Sprite3D* Sprite3D::create(const std::string &modelPath, const std::string &text
     return sprite;
 }
 
-// Sprite3D* Sprite3D::create(Mesh* mesh, const std::string& texturePath)
-// {
-//     CCASSERT(nullptr != mesh, "Could not create a Sprite3D from a null Mesh");
-//     auto sprite = new Sprite3D();
-//     if(sprite)
-//     {
-//         sprite->_mesh = mesh;
-//         sprite->_mesh->retain();
-//         sprite->setTexture(texturePath);
-//         sprite->autorelease();
-//         return sprite;
-//     }
-//     CC_SAFE_DELETE(sprite);
-//     return nullptr;
-// }
-
 //.mtl file should at the same directory with the same name if exist
 bool Sprite3D::loadFromObj(const std::string& path)
 {
@@ -270,8 +254,15 @@ void Sprite3D::genGLProgramState()
     }
     
     setGLProgramState(programstate);
-    GLuint texID = _texture ? _texture->getName() : 0;
-    _meshCommand.genMaterialID(texID, programstate, _mesh, _blend);
+    auto count = _mesh->getSubMeshCount();
+    _meshCommands.resize(count);
+    for (int i = 0; i < count; i++) {
+        auto submesh = _mesh->getSubMesh(i);
+
+        GLuint texID = _texture ? _texture->getName() : 0;
+        _meshCommands[i].genMaterialID(texID, programstate, submesh, _blend);
+    }
+    
 }
 
 GLProgram* Sprite3D::getDefaultGLProgram(bool textured)
@@ -312,7 +303,7 @@ void Sprite3D::setTexture(Texture2D* texture)
         if (getGLProgramState() && _mesh)
         {
             GLuint texID = _texture ? _texture->getName() : 0;
-            _meshCommand.genMaterialID(texID, getGLProgramState(), _mesh, _blend);
+            _meshCommands[0].genMaterialID(texID, getGLProgramState(), _mesh, _blend);
         }
     }
 }

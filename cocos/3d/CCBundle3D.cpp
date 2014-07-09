@@ -292,11 +292,13 @@ bool Bundle3D::loadMeshDataJson(MeshData* meshdata)
     // index_number
     meshdata->numIndex = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
 
+    std::vector<unsigned short> indices;
+    indices.resize(meshdata->numIndex);
     // indices
-    meshdata->indices.resize(meshdata->numIndex);
     const rapidjson::Value& mesh_data_body_indices_val = mesh_data_body_array_0[MESHDATA_INDICES];
     for (rapidjson::SizeType i = 0; i < mesh_data_body_indices_val.Size(); i++)
-        meshdata->indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+        indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+    meshdata->subMeshIndices.push_back(indices);
 
     // mesh_vertex_attribute
     const rapidjson::Value& mesh_vertex_attribute = mash_data_val[MESHDATA_ATTRIBUTES];
@@ -565,12 +567,14 @@ bool Bundle3D::loadMeshDataBinary(MeshData* meshdata)
         }
 
         meshdata->numIndex = nIndexCount;
-        meshdata->indices.resize(meshdata->numIndex);
-        if (_binaryReader.read(&meshdata->indices[0], 2, meshdata->numIndex) != nIndexCount)
+        std::vector<unsigned short> indices;
+        indices.resize(meshdata->numIndex);
+        if (_binaryReader.read(&indices[0], 2, meshdata->numIndex) != nIndexCount)
         {
             CCLOGINFO("Failed to read meshdata: indices '%s'.", _path.c_str());
             return false;
         }
+        meshdata->subMeshIndices.push_back(indices);
     }
 
     return true;
