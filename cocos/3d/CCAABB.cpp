@@ -26,22 +26,30 @@
 
 NS_CC_BEGIN
 
-AABB::AABB()
+static AABB* AABB::create()
 {
+    auto aabb = new AABB();
+    if(aabb)
+    {
+        aabb->reset();
+        aabb->autorelease();
+        return aabb;
+    }
+    CC_SAFE_DELETE(aabb);
+    return nullptr;
 }
 
-AABB::AABB(const Vec3& min, const Vec3& max)
+static AABB* AABB::create(const Vec3& min, const Vec3& max)
 {
-    set(min, max);
-}
-
-AABB::AABB(const AABB& box)
-{
-	set(box._min,box._max);
-}
-
-AABB::~AABB()
-{
+    auto aabb = new AABB();
+    if(aabb)
+    {
+        aabb->set(min, max);
+        aabb->autorelease();
+        return aabb;
+    }
+    CC_SAFE_DELETE(aabb);
+    return nullptr;
 }
 
 Vec3 AABB::getCenter()
@@ -54,25 +62,7 @@ Vec3 AABB::getCenter()
     return center;
 }
 
-Vec3 AABB::getSize()
-{
-	Vec3 size = _max - _min;
-
-	return size;
-}
-
-float AABB::getLength()
-{
-	Vec3 offset;
-
-	offset.x = _max.x - _min.x;
-	offset.y = _max.y - _min.y;
-	offset.z = _max.z - _min.z;
-
-	return offset.length();
-}
-
-void AABB::getCorners(Vec3* dst) const
+void AABB::getCorners(Vec3 (* dst)[8]) const
 {
     assert(dst);
 
@@ -113,64 +103,6 @@ bool AABB::containPoint( const Vec3& point) const
 	if (point.y > _max.y) return false;
 	if (point.z > _max.z) return false;
 	return true;
-}
-
-bool AABB::containSphere( const Vec3 &center,float radius ) const
-{
-	if (center.x+radius < _min.x) return false;
-	if (center.y+radius < _min.y) return false;
-	if (center.z+radius < _min.z) return false;
-	if (center.x-radius > _max.x) return false;
-	if (center.y-radius > _max.y) return false;
-	if (center.z-radius > _max.z) return false;
-	return true;
-}
-
-float AABB::distance( const Vec3& vPoint)
-{
-	float fDist = 0;
-	float m = 0;
-	for(int i=0; i<3; ++i)
-	{
-		if(vPoint[i] < _min[i])
-		{
-			m = vPoint[i]-_min[i];
-			fDist += m*m;
-		}
-		else if(vPoint[i] > _max[i])
-		{
-			m = _max[i]-vPoint[i];
-			fDist += m*m;
-		}
-	}
-
-	fDist = sqrtf(fDist);
-	return fDist;
-}
-
-bool AABB::intersects(const C3DPlane* plane,int type)
-{
-	Vec3 center = getCenter();
-	float length = 0;
-
-	float dis = fabsf(plane->dist2Plane(center));
-	if(type == 0) //x
-	{
-		length = (_max.x - _min.x) * 0.5f;
-	}
-	else if(type == 1)//y
-	{
-		length = (_max.y - _min.y) * 0.5f;
-	}
-	else //z
-	{
-		length = (_max.z - _min.z) * 0.5f;
-	}
-
-	if(dis < length)
-		return true;
-	else
-		return false;
 }
 
 void AABB::merge(const AABB& box)
@@ -271,6 +203,24 @@ void AABB::transform(const C3DMatrix& matrix)
     }
     _min = newMin;
     _max = newMax;
+}
+
+AABB::AABB()
+{
+}
+
+AABB::AABB(const Vec3& min, const Vec3& max)
+{
+    set(min, max);
+}
+
+AABB::AABB(const AABB& box)
+{
+	set(box._min,box._max);
+}
+
+AABB::~AABB()
+{
 }
 
 NS_CC_END

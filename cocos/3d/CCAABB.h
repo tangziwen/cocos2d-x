@@ -25,84 +25,92 @@
 #ifndef __CC_AABB_H__
 #define __CC_AABB_H__
 
-#include "base/CCRef.h"
-#include "base/CCPlatformMacros.h"
-#include "base/CCConsole.h"
+#include "2d/CCNode.h"
 
 NS_CC_BEGIN
 
 /**
  * Defines a class describe 3-dimensional axis-aligned bounding box.
  */
-class AABB
+class AABB : public Node
 {
 public:
-
-    Vec3 _min;
-
-    Vec3 _max;
-
-	/**
-     * Constructor.
-     */
-    AABB();
-
-	/**
-     * Constructor.
-     */
-    AABB(const Vec3& min, const Vec3& max);
-
-	/**
-     * Constructor.
-     */
-	AABB(const AABB& box);
-
-	/**
-     * Destructor.
-     */
-    ~AABB();
-
-	/**
-     * Gets the center point of the bounding box.
+    /**
+     * create AABB box
 	 */
+    static AABB* create();
+    static AABB* create(const Vec3& min, const Vec3& max);
+    
+    /**
+     * Gets the center point of the bounding box.
+     */
     Vec3 getCenter();
 
-	Vec3 getSize();
-
-	float getLength();
-
-	 /**
+    /**
      * Gets the corners of the bounding box in the specified array.
      */
-	void getCorners(Vec3* dst) const;
+    void getCorners(Vec3 (* dst)[8]) const;
 
-	 /**
+    /**
      * Tests whether this bounding box intersects the specified bounding object.
      */
     bool intersects(const AABB& box) const;
 
-	bool containPoint( const Vec3& point) const;
-	bool containSphere( const Vec3 &center,float radius ) const;
+    /**
+     * check whether the point is in.
+     */
+    bool containPoint(const Vec3& point) const;
 
-	float distance( const Vec3& vPoint);
-
-	 /**
+    /**
      * Sets this bounding box to the smallest bounding box
      * that contains both this bounding object and the specified bounding box.
      */
     void merge(const AABB& box);
 
-	 /**
+    /**
      * Sets this bounding box to the specified values.
      */
     void set(const Vec3& min, const Vec3& max);
+    
+    /**
+     * Gets min and max value.
+     */
+    void get(Vec3& min, Vec3& max);
+    
+    /**
+     * reset min and max value.
+     */
+    void reset();
 
-	void reset();
-
-	/**
+    /**
      * Transforms the bounding box by the given transformation matrix.
      */
     void transform(const C3DMatrix& matrix);
+    
+ CC_CONSTRUCTOR_ACCESS:
+    /**
+     * Constructor.
+     */
+    AABB();
+    
+    /**
+     * Constructor.
+     */
+    AABB(const Vec3& min, const Vec3& max);
+    
+    /**
+     * Constructor.
+     */
+    AABB(const AABB& box);
+    
+    /**
+     * Destructor.
+     */
+    ~AABB();
+    
+protected:
+    Vec3 _min;
+    Vec3 _max;
 };
 
 NS_CC_END
