@@ -71,8 +71,7 @@ Sprite3D* Sprite3D::create(const std::string &modelPath, const std::string &text
     return sprite;
 }
 
-//.mtl file should at the same directory with the same name if exist
-bool Sprite3D::loadFromObj(const std::string& path)
+bool Sprite3D::loadFromCache(const std::string& path)
 {
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(path);
     
@@ -84,13 +83,31 @@ bool Sprite3D::loadFromObj(const std::string& path)
         _mesh = mesh;
         _mesh->retain();
         
-        auto tex = Sprite3DMaterialCache::getInstance()->getSprite3DMaterial(key);
-        setTexture(tex);
+        char str[20];
+        _textures.resize(_mesh->getSubMeshCount(), nullptr);
+        for (int i = 0; i < (int)_mesh->getSubMeshCount(); i++) {
+            sprintf(str, "submesh%d", i);
+            std::string submeshkey = key + std::string(str);
+            auto tex = Sprite3DMaterialCache::getInstance()->getSprite3DMaterial(submeshkey);
+            setTexture(i, tex);
+        }
+        
+        _skin = MeshSkin::create(fullPath, "");
+        CC_SAFE_RETAIN(_skin);
         
         genGLProgramState();
         
         return true;
     }
+    
+    return false;
+}
+
+//.mtl file should at the same directory with the same name if exist
+bool Sprite3D::loadFromObj(const std::string& path)
+{
+    std::string fullPath = FileUtils::getInstance()->fullPathForFilename(path);
+    std::string key = fullPath + "#";
     
     //.mtl file directory
     std::string dir = "";
@@ -117,25 +134,15 @@ bool Sprite3D::loadFromObj(const std::string& path)
         matnames.push_back(texname);
     }
     _mesh = Mesh::create(shapes.positions, shapes.normals, shapes.texcoords, submeshIndices);
-    
     _mesh->retain();
     if (_mesh == nullptr)
         return false;
-    
-    if (matnames.size())
-    {
-        setTexture(matnames[0]);
-    }
-    genGLProgramState();
-    
-    //add to cache
-    
-    if (_texture)
-    {
-        Sprite3DMaterialCache::getInstance()->addSprite3DMaterial(key, _texture);
-    }
-    
+    //add mesh to cache
     MeshCache::getInstance()->addMesh(key, _mesh);
+
+    genMaterials(key, matnames);
+    
+    genGLProgramState();
 
     return true;
 }
@@ -143,24 +150,7 @@ bool Sprite3D::loadFromObj(const std::string& path)
 bool Sprite3D::loadFromC3x(const std::string& path)
 {
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(path);
-    //find from the cache
     std::string key = fullPath + "#";
-    auto mesh = MeshCache::getInstance()->getMesh(key);
-    if (mesh)
-    {
-        _mesh = mesh;
-        _mesh->retain();
-        
-        auto tex = Sprite3DMaterialCache::getInstance()->getSprite3DMaterial(key);
-        setTexture(tex);
-        
-        _skin = MeshSkin::create(fullPath, "");
-        CC_SAFE_RETAIN(_skin);
-        
-        genGLProgramState();
-        
-        return true;
-    }
     
     //load from .c3b or .c3t
     auto bundle = Bundle3D::getInstance();
@@ -176,6 +166,8 @@ bool Sprite3D::loadFromC3x(const std::string& path)
     
     _mesh = Mesh::create(meshdata.vertex, meshdata.vertexSizeInFloat, meshdata.subMeshIndices, meshdata.numIndex, meshdata.attribs, meshdata.attribCount);
     CC_SAFE_RETAIN(_mesh);
+    //add mesh to cache
+    MeshCache::getInstance()->addMesh(key, _mesh);
     
     _skin = MeshSkin::create(fullPath, "");
     CC_SAFE_RETAIN(_skin);
@@ -184,18 +176,16 @@ bool Sprite3D::loadFromC3x(const std::string& path)
     ret = bundle->loadMaterialData("", &materialdata);
     if (ret)
     {
-        setTexture(materialdata.texturePath);
+        std::vector<std::string> texpaths;
+        texpaths.resize(_mesh->getSubMeshCount(), "");
+        for (auto& it : materialdata.texturePaths)
+        {
+            texpaths[it.first] = it.second;
+        }
+        genMaterials(key, texpaths);
     }
     
     genGLProgramState();
-    
-    //add to cache
-    auto cache = Director::getInstance()->getTextureCache();
-    auto tex = cache->addImage(materialdata.texturePath);
-    if (tex)
-        Sprite3DMaterialCache::getInstance()->addSprite3DMaterial(key, tex);
-    
-    MeshCache::getInstance()->addMesh(key, _mesh);
     
     return true;
 }
@@ -203,23 +193,31 @@ bool Sprite3D::loadFromC3x(const std::string& path)
 Sprite3D::Sprite3D()
 : _mesh(nullptr)
 , _skin(nullptr)
-, _texture(nullptr)
 , _blend(BlendFunc::ALPHA_NON_PREMULTIPLIED)
 {
 }
 
 Sprite3D::~Sprite3D()
 {
-    CC_SAFE_RELEASE_NULL(_texture);
+    for (auto& it : _textures) {
+        CC_SAFE_RELEASE_NULL(it);
+    }
+    _textures.clear();
     CC_SAFE_RELEASE_NULL(_mesh);
     CC_SAFE_RELEASE_NULL(_skin);
 }
 
 bool Sprite3D::initWithFile(const std::string &path)
 {
+    for (auto& it : _textures) {
+        CC_SAFE_RELEASE_NULL(it);
+    }
+    _textures.clear();
     CC_SAFE_RELEASE_NULL(_mesh);
     CC_SAFE_RELEASE_NULL(_skin);
-    CC_SAFE_RELEASE_NULL(_texture);
+    
+    if (loadFromCache(path))
+        return true;
     
     //load from file
     std::string ext = path.substr(path.length() - 4, 4);
@@ -256,11 +254,13 @@ void Sprite3D::genGLProgramState()
     setGLProgramState(programstate);
     auto count = _mesh->getSubMeshCount();
     _meshCommands.resize(count);
+    _subMeshVisible.resize(count);
     for (int i = 0; i < count; i++) {
         auto submesh = _mesh->getSubMesh(i);
 
-        GLuint texID = _texture ? _texture->getName() : 0;
+        GLuint texID = _textures[i] ? _textures[i]->getName() : 0;
         _meshCommands[i].genMaterialID(texID, programstate, submesh, _blend);
+        _subMeshVisible[i] = true;
     }
     
 }
@@ -283,29 +283,57 @@ GLProgram* Sprite3D::getDefaultGLProgram(bool textured)
     }
 }
 
+void Sprite3D::genMaterials(const std::string& keyprefix, const std::vector<std::string>& texpaths)
+{
+    for (auto& it : _textures) {
+        CC_SAFE_RELEASE_NULL(it);
+    }
+    _textures.clear();
+    
+    char str[20];
+    auto cache = Director::getInstance()->getTextureCache();
+    _textures.resize(_mesh->getSubMeshCount(), nullptr);
+    int index = 0;
+    for (auto& it : texpaths) {
+        auto tex = cache->addImage(it);
+        setTexture(index, tex);
+        
+        //add to cache
+        sprintf(str, "submesh%d", index);
+        std::string submeshkey = keyprefix + std::string(str);
+        Sprite3DMaterialCache::getInstance()->addSprite3DMaterial(submeshkey, tex);
+    }
+}
+
 void Sprite3D::setTexture(const std::string& texFile)
 {
     auto tex = Director::getInstance()->getTextureCache()->addImage(texFile);
-//    if( tex && _texture != tex ) {
-//        CC_SAFE_RETAIN(tex);
-//        CC_SAFE_RELEASE_NULL(_texture);
-//        _texture = tex;
-//    }
     setTexture(tex);
+}
+
+void Sprite3D::setTexture(int index, Texture2D* texture)
+{
+    CCASSERT(index < _textures.size(), "invalid index");
+    if (index < _textures.size())
+    {
+        if (texture != _textures[index])
+        {
+            CC_SAFE_RETAIN(texture);
+            CC_SAFE_RELEASE_NULL(_textures[index]);
+            _textures[index] = texture;
+            
+            if (getGLProgramState())
+            {
+                GLuint texID = texture ? texture->getName() : 0;
+                _meshCommands[index].genMaterialID(texID, getGLProgramState(), _mesh->getSubMesh(index), _blend);
+            }
+        }
+    }
 }
 
 void Sprite3D::setTexture(Texture2D* texture)
 {
-    if(_texture != texture) {
-        CC_SAFE_RETAIN(texture);
-        CC_SAFE_RELEASE_NULL(_texture);
-        _texture = texture;
-        if (getGLProgramState() && _mesh)
-        {
-            GLuint texID = _texture ? _texture->getName() : 0;
-            _meshCommands[0].genMaterialID(texID, getGLProgramState(), _mesh, _blend);
-        }
-    }
+    setTexture(0, texture);
 }
 
 void Sprite3D::setSubMeshVisible(int index, bool visible)
@@ -336,9 +364,12 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
     color.a = getDisplayedOpacity() / 255.0f;
     
     for (ssize_t i = 0; i < _mesh->getSubMeshCount(); i++) {
+        if (!_subMeshVisible[i])
+            continue;
+        
         auto submesh = _mesh->getSubMesh((int)i);
         auto& meshCommand = _meshCommands[i];
-        GLuint textureID = _texture ? _texture->getName() : 0;
+        GLuint textureID = _textures[i] ? _textures[i]->getName() : 0;
         meshCommand.init(_globalZOrder, textureID, programstate, _blend, _mesh->getVertexBuffer(), submesh->getIndexBuffer(), (GLenum)submesh->getPrimitiveType(), (GLenum)submesh->getIndexFormat(), submesh->getIndexCount(), transform);
         
         meshCommand.setCullFaceEnabled(true);
