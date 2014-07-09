@@ -30,6 +30,7 @@
 #include "CCBundleReader.h"
 #include "base/CCData.h"
 #include "json/document.h"
+#include "CCString.h"
 
 
 #define BUNDLE_TYPE_SCENE               1
@@ -326,11 +327,15 @@ bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
     meshdata->numIndex = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
     
     // indices
-    meshdata->indices.resize(meshdata->numIndex);
+    std::vector<unsigned short> indices;
+    indices.resize(meshdata->numIndex);
+
     const rapidjson::Value& mesh_data_body_indices_val = mesh_data_body_array_0[MESHDATA_INDICES];
     for (rapidjson::SizeType i = 0; i < mesh_data_body_indices_val.Size(); i++)
-        meshdata->indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+        indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
     
+    meshdata->subMeshIndices.push_back(indices);
+
     return true;
 }
 
@@ -359,17 +364,19 @@ bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
     for (rapidjson::SizeType i = 0; i < mesh_submesh_array.Size(); i++)
     {
         const rapidjson::Value& mesh_submesh_val = mesh_submesh_array[i];
-        std::string id = mesh_submesh_val["id"].GetString();
+        std::string id = mesh_submesh_val[ID].GetString();
         
         // index_number
         meshdata->numIndex = mesh_submesh_val[MESHDATA_INDEXNUM].GetUint();
         
         // indices
-        meshdata->indices.resize(meshdata->numIndex);
+        std::vector<unsigned short> indices;
+        indices.resize(meshdata->numIndex);
         const rapidjson::Value& mesh_data_body_indices_val = mesh_submesh_val[MESHDATA_INDICES];
         for (rapidjson::SizeType j = 0; j < mesh_data_body_indices_val.Size(); j++)
-            meshdata->indices[j] = (unsigned short)mesh_data_body_indices_val[j].GetUint();
+            indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
         
+        meshdata->subMeshIndices.push_back(indices);
     }
     return true;
 }
@@ -409,7 +416,6 @@ bool Bundle3D::loadSkinDataJson(SkinData* skindata)
     
     // parent and child relationship map
     skindata->skinBoneOriginMatrices.resize(skindata->skinBoneNames.size());
-    //skindata->nodeBoneOriginMatrices.resize(skindata->nodeBoneNames.size());
     getChildMap(skindata->boneChild, skindata, skin_data_1);
     return true;
 }
@@ -566,18 +572,7 @@ bool Bundle3D::loadBinary(const std::string& path)
         return false;
     }
     
-    if (ver[0] != 0) {
-        clear();
-        CCLOGINFO(false, "Unsupported version: (%d, %d)", ver[0], ver[1]);
-        return false;
-    }
-    
-    if (ver[1] <= 0 || ver[1] > 2) {
-        clear();
-        CCLOGINFO(false, "Unsupported version: (%d, %d)", ver[0], ver[1]);
-        return false;
-    }
-    
+    _version = StringUtils::toString((short)ver[0]) + "." + StringUtils::toString((short)ver[1]);
 
     // Read ref table size
     if (_binaryReader.read(&_referenceCount, 4, 1) != 1)
@@ -608,7 +603,7 @@ bool Bundle3D::loadBinary(const std::string& path)
 
 bool Bundle3D::loadMeshDataBinary(MeshData* meshdata)
 {
-    if (_version == "1.2")
+    if (_version == "0.1")
     {
         return loadMeshDataBinary_0_1(meshdata);
     }
@@ -679,14 +674,16 @@ bool Bundle3D::loadMeshDataBinary_0_1(MeshData* meshdata)
             CCLOGINFO("Failed to read meshdata: nIndexCount '%s'.", _path.c_str());
             return false;
         }
-
-        meshdata->numIndex = nIndexCount;
-        meshdata->indices.resize(meshdata->numIndex);
-        if (_binaryReader.read(&meshdata->indices[0], 2, meshdata->numIndex) != nIndexCount)
+        
+        std::vector<unsigned short> indices;
+        indices.resize(nIndexCount);
+        if (_binaryReader.read(&indices[0], 2, nIndexCount) != nIndexCount)
         {
             CCLOGINFO("Failed to read meshdata: indices '%s'.", _path.c_str());
             return false;
         }
+        
+        meshdata->subMeshIndices.push_back(indices);
     }
 
     return true;
@@ -754,20 +751,15 @@ bool Bundle3D::loadMeshDataBinary_0_2(MeshData* meshdata)
             return false;
         }
         
-        meshdata->numIndex = nIndexCount;
-        meshdata->indices.resize(meshdata->numIndex);
-        if (_binaryReader.read(&meshdata->indices[0], 2, meshdata->numIndex) != nIndexCount)
+        std::vector<unsigned short> indices;
+        indices.resize(nIndexCount);
+        if (_binaryReader.read(&indices[0], 2, nIndexCount) != nIndexCount)
         {
             CCLOGINFO("Failed to read meshdata: indices '%s'.", _path.c_str());
             return false;
         }
         
-        unsigned int materialIndex;
-        if (_binaryReader.read(&materialIndex, 4, 1) != 1)
-        {
-            CCLOGINFO("Failed to read meshdata: materialIndex '%s'.", _path.c_str());
-            return false;
-        }
+        meshdata->subMeshIndices.push_back(indices);
     }
     
     return true;
