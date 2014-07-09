@@ -308,6 +308,27 @@ void Sprite3D::setTexture(Texture2D* texture)
     }
 }
 
+void Sprite3D::setSubMeshVisible(int index, bool visible)
+{
+    CCASSERT(index < _subMeshVisible.size(), "invalid parameter");
+    if (index < (int)_subMeshVisible.size())
+         _subMeshVisible[index] = visible;
+}
+
+bool Sprite3D::getSubMeshVisible(int index) const
+{
+    CCASSERT(index < _subMeshVisible.size(), "invalid parameter");
+    if (index < (int)_subMeshVisible.size())
+        return _subMeshVisible[index];
+    
+    return false;
+}
+
+ssize_t Sprite3D::getSubMeshCount() const
+{
+    return _mesh->getSubMeshCount();
+}
+
 void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
     GLProgramState* programstate = getGLProgramState();

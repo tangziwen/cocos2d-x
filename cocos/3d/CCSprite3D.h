@@ -56,6 +56,11 @@ public:
     /**set texture for sub mesh by index*/
     void setTexture(int index, Texture2D* texture);
     
+    /**set & get visible*/
+    void setSubMeshVisible(int index, bool visible);
+    bool getSubMeshVisible(int index) const;
+    /**get sub mesh count*/
+    ssize_t getSubMeshCount() const;
 
     /**get mesh*/
     Mesh* getMesh() const { return _mesh; }
@@ -93,7 +98,7 @@ protected:
     MeshSkin*                    _skin;//skin
     
     std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
-    std::vector<bool>            _visible; // is submesh visible?
+    std::vector<bool>            _subMeshVisible; // is submesh visible?
     std::vector<Texture2D*>      _textures;
     Texture2D*                   _texture;
 
