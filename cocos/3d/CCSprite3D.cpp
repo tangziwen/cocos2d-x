@@ -28,6 +28,7 @@
 #include "3d/CCMeshSkin.h"
 #include "3d/CCBundle3D.h"
 #include "3d/CCSprite3DMaterial.h"
+#include "3d/CCSubMesh.h"
 
 #include "base/CCDirector.h"
 #include "base/CCPlatformMacros.h"
@@ -70,22 +71,6 @@ Sprite3D* Sprite3D::create(const std::string &modelPath, const std::string &text
     return sprite;
 }
 
-// Sprite3D* Sprite3D::create(Mesh* mesh, const std::string& texturePath)
-// {
-//     CCASSERT(nullptr != mesh, "Could not create a Sprite3D from a null Mesh");
-//     auto sprite = new Sprite3D();
-//     if(sprite)
-//     {
-//         sprite->_mesh = mesh;
-//         sprite->_mesh->retain();
-//         sprite->setTexture(texturePath);
-//         sprite->autorelease();
-//         return sprite;
-//     }
-//     CC_SAFE_DELETE(sprite);
-//     return nullptr;
-// }
-
 //.mtl file should at the same directory with the same name if exist
 bool Sprite3D::loadFromObj(const std::string& path)
 {
@@ -119,23 +104,19 @@ bool Sprite3D::loadFromObj(const std::string& path)
         return false;
     
     //convert to mesh and material
-    std::vector<unsigned short> indices;
+    std::vector<std::vector<unsigned short> > submeshIndices;
     std::vector<std::string> matnames;
     std::string texname;
     for (auto it = shapes.shapes.begin(); it != shapes.shapes.end(); it++)
     {
-        indices.insert(indices.end(), (*it).mesh.indices.begin(),(*it).mesh.indices.end());
-        //indices.push_back((*it).mesh.indices);
-        if (texname.empty())
-            texname = (*it).material.diffuse_texname;
-        else if (texname != (*it).material.diffuse_texname)
-        {
-            CCLOGWARN("cocos2d:WARNING: more than one texture in %s", path.c_str());
-        }
-            
-        matnames.push_back(dir + (*it).material.diffuse_texname);
+        submeshIndices.push_back((*it).mesh.indices);
+        
+        texname = (*it).material.diffuse_texname;
+        if (!texname.empty())
+            texname = dir + (*it).material.diffuse_texname;
+        matnames.push_back(texname);
     }
-    _mesh = Mesh::create(shapes.positions, shapes.normals, shapes.texcoords, indices);
+    _mesh = Mesh::create(shapes.positions, shapes.normals, shapes.texcoords, submeshIndices);
     
     _mesh->retain();
     if (_mesh == nullptr)
@@ -193,7 +174,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
         return false;
     }
     
-    _mesh = Mesh::create(meshdata.vertex, meshdata.vertexSizeInFloat, meshdata.indices, meshdata.numIndex, meshdata.attribs, meshdata.attribCount);
+    _mesh = Mesh::create(meshdata.vertex, meshdata.vertexSizeInFloat, meshdata.subMeshIndices, meshdata.numIndex, meshdata.attribs, meshdata.attribCount);
     CC_SAFE_RETAIN(_mesh);
     
     _skin = MeshSkin::create(fullPath, "");
@@ -273,8 +254,15 @@ void Sprite3D::genGLProgramState()
     }
     
     setGLProgramState(programstate);
-    GLuint texID = _texture ? _texture->getName() : 0;
-    _meshCommand.genMaterialID(texID, programstate, _mesh, _blend);
+    auto count = _mesh->getSubMeshCount();
+    _meshCommands.resize(count);
+    for (int i = 0; i < count; i++) {
+        auto submesh = _mesh->getSubMesh(i);
+
+        GLuint texID = _texture ? _texture->getName() : 0;
+        _meshCommands[i].genMaterialID(texID, programstate, submesh, _blend);
+    }
+    
 }
 
 GLProgram* Sprite3D::getDefaultGLProgram(bool textured)
@@ -315,7 +303,7 @@ void Sprite3D::setTexture(Texture2D* texture)
         if (getGLProgramState() && _mesh)
         {
             GLuint texID = _texture ? _texture->getName() : 0;
-            _meshCommand.genMaterialID(texID, getGLProgramState(), _mesh, _blend);
+            _meshCommands[0].genMaterialID(texID, getGLProgramState(), _mesh, _blend);
         }
     }
 }
@@ -326,28 +314,23 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
     Color4F color(getDisplayedColor());
     color.a = getDisplayedOpacity() / 255.0f;
     
-    GLuint textureID = _texture ? _texture->getName() : 0;
-    _meshCommand.init(_globalZOrder,
-                      textureID,
-                      programstate,
-                      _blend,
-                      _mesh->getVertexBuffer(),
-                      _mesh->getIndexBuffer(),
-                      (GLenum)_mesh->getPrimitiveType(),
-                      (GLenum)_mesh->getIndexFormat(),
-                      _mesh->getIndexCount(),
-                      transform);
-    
-    _meshCommand.setCullFaceEnabled(true);
-    _meshCommand.setDepthTestEnabled(true);
-    if (_skin)
-    {
-        _meshCommand.setMatrixPaletteSize(_skin->getMatrixPaletteSize());
-        _meshCommand.setMatrixPalette(_skin->getMatrixPalette());
+    for (ssize_t i = 0; i < _mesh->getSubMeshCount(); i++) {
+        auto submesh = _mesh->getSubMesh((int)i);
+        auto& meshCommand = _meshCommands[i];
+        GLuint textureID = _texture ? _texture->getName() : 0;
+        meshCommand.init(_globalZOrder, textureID, programstate, _blend, _mesh->getVertexBuffer(), submesh->getIndexBuffer(), (GLenum)submesh->getPrimitiveType(), (GLenum)submesh->getIndexFormat(), submesh->getIndexCount(), transform);
+        
+        meshCommand.setCullFaceEnabled(true);
+        meshCommand.setDepthTestEnabled(true);
+        if (_skin)
+        {
+            meshCommand.setMatrixPaletteSize((int)_skin->getMatrixPaletteSize());
+            meshCommand.setMatrixPalette(_skin->getMatrixPalette());
+        }
+        //support tint and fade
+        meshCommand.setDisplayColor(Vec4(color.r, color.g, color.b, color.a));
+        Director::getInstance()->getRenderer()->addCommand(&meshCommand);
     }
-    //support tint and fade
-    _meshCommand.setDisplayColor(Vec4(color.r, color.g, color.b, color.a));
-    Director::getInstance()->getRenderer()->addCommand(&_meshCommand);
 }
 
 void Sprite3D::setBlendFunc(const BlendFunc &blendFunc)

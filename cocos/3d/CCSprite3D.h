@@ -50,9 +50,12 @@ public:
     // creates a Sprite3D. It only supports one texture, and overrides the internal texture with 'texturePath'
     static Sprite3D* create(const std::string &modelPath, const std::string &texturePath);
     
-    /**set texture*/
+    /**set texture, set the first if multiple textures exist*/
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
+    /**set texture for sub mesh by index*/
+    void setTexture(int index, Texture2D* texture);
+    
 
     /**get mesh*/
     Mesh* getMesh() const { return _mesh; }
@@ -86,12 +89,15 @@ CC_CONSTRUCTOR_ACCESS:
     void genGLProgramState();
 
 protected:
-    Mesh*              _mesh;//mesh
-    MeshSkin*          _skin;//skin
+    Mesh*                        _mesh;//mesh
+    MeshSkin*                    _skin;//skin
     
-    MeshCommand       _meshCommand; //render command
-    Texture2D*        _texture;
-    BlendFunc         _blend;
+    std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
+    std::vector<bool>            _visible; // is submesh visible?
+    std::vector<Texture2D*>      _textures;
+    Texture2D*                   _texture;
+
+    BlendFunc                    _blend;
 };
 
 extern std::string s_attributeNames[];//attribute names array

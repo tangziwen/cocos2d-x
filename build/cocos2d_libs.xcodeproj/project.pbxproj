@@ -1037,6 +1037,10 @@
 		3EA47871195478E00068D9D1 /* CCBundleReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EA4786E195478E00068D9D1 /* CCBundleReader.cpp */; };
 		3EA47872195478E00068D9D1 /* CCBundleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EA4786F195478E00068D9D1 /* CCBundleReader.h */; };
 		3EA47873195478E00068D9D1 /* CCBundleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EA4786F195478E00068D9D1 /* CCBundleReader.h */; };
+		3EBE7886196A40F500A2844D /* CCSubMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EBE7884196A40F500A2844D /* CCSubMesh.cpp */; };
+		3EBE7887196A40F500A2844D /* CCSubMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EBE7884196A40F500A2844D /* CCSubMesh.cpp */; };
+		3EBE7888196A40F500A2844D /* CCSubMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EBE7885196A40F500A2844D /* CCSubMesh.h */; };
+		3EBE7889196A40F500A2844D /* CCSubMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EBE7885196A40F500A2844D /* CCSubMesh.h */; };
 		460E468118080832000CDD6D /* cocos-ext.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A167D21807AF4D005B8026 /* cocos-ext.h */; };
 		460E468218080836000CDD6D /* cocos-ext.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A167D21807AF4D005B8026 /* cocos-ext.h */; };
 		460E477B180808F5000CDD6D /* ExtensionMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 46A168321807AF4E005B8026 /* ExtensionMacros.h */; };
@@ -2369,6 +2373,8 @@
 		3EA0FB6A191C841D00B170C8 /* UIVideoPlayerIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UIVideoPlayerIOS.mm; sourceTree = "<group>"; };
 		3EA4786E195478E00068D9D1 /* CCBundleReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCBundleReader.cpp; sourceTree = "<group>"; };
 		3EA4786F195478E00068D9D1 /* CCBundleReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBundleReader.h; sourceTree = "<group>"; };
+		3EBE7884196A40F500A2844D /* CCSubMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCSubMesh.cpp; sourceTree = "<group>"; };
+		3EBE7885196A40F500A2844D /* CCSubMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSubMesh.h; sourceTree = "<group>"; };
 		46A15FCC1807A544005B8026 /* AUTHORS */ = {isa = PBXFileReference; lastKnownFileType = text; name = AUTHORS; path = ../AUTHORS; sourceTree = "<group>"; };
 		46A15FCE1807A544005B8026 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		46A15FE11807A56F005B8026 /* Export.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Export.h; sourceTree = "<group>"; };
@@ -2864,8 +2870,6 @@
 		50FCEB9018C72017004AD434 /* WidgetReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WidgetReader.cpp; sourceTree = "<group>"; };
 		50FCEB9118C72017004AD434 /* WidgetReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReader.h; sourceTree = "<group>"; };
 		50FCEB9218C72017004AD434 /* WidgetReaderProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReaderProtocol.h; sourceTree = "<group>"; };
-		5E60739E196CD6AB00DBB038 /* CCAABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAABB.cpp; sourceTree = "<group>"; };
-		5E60739F196CD6AB00DBB038 /* CCAABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAABB.h; sourceTree = "<group>"; };
 		A03F2CB81780BD04006731B9 /* libchipmunk Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libchipmunk Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A03F2D9B1780BDF7006731B9 /* libbox2d Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbox2d Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A03F2ED617814268006731B9 /* libCocosDenshion Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCocosDenshion Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4960,8 +4964,8 @@
 		B29594B81926D61F003EEF37 /* 3d */ = {
 			isa = PBXGroup;
 			children = (
-				5E60739E196CD6AB00DBB038 /* CCAABB.cpp */,
-				5E60739F196CD6AB00DBB038 /* CCAABB.h */,
+				3EBE7884196A40F500A2844D /* CCSubMesh.cpp */,
+				3EBE7885196A40F500A2844D /* CCSubMesh.h */,
 				3EA4786E195478E00068D9D1 /* CCBundleReader.cpp */,
 				3EA4786F195478E00068D9D1 /* CCBundleReader.h */,
 				B6AAF83F19404E0D0069DE01 /* CCBundle3D.cpp */,
@@ -5087,6 +5091,7 @@
 				50ABBED91925AB6F00A911A9 /* ZipUtils.h in Headers */,
 				1A5701C3180BCB5A0088DEC7 /* CCLabelBMFont.h in Headers */,
 				50ABBE5F1925AB6F00A911A9 /* CCEventListener.h in Headers */,
+				3EBE7888196A40F500A2844D /* CCSubMesh.h in Headers */,
 				1A5701C9180BCB5A0088DEC7 /* CCLabelTextFormatter.h in Headers */,
 				5034CA37191D591100CE6051 /* ccShader_PositionColorLengthTexture.vert in Headers */,
 				1A5701CD180BCB5A0088DEC7 /* CCLabelTTF.h in Headers */,
@@ -5579,6 +5584,7 @@
 				2905FA4318CF08D100240AA3 /* CocosGUI.h in Headers */,
 				5034CA30191D591100CE6051 /* ccShader_PositionTexture.vert in Headers */,
 				50E6D33718E174130051CA34 /* UIHBox.h in Headers */,
+				3EBE7889196A40F500A2844D /* CCSubMesh.h in Headers */,
 				1A570111180BC8EE0088DEC7 /* CCDrawingPrimitives.h in Headers */,
 				50E6D33F18E174130051CA34 /* UIVBox.h in Headers */,
 				50ABBE381925AB6F00A911A9 /* CCConsole.h in Headers */,
@@ -6277,6 +6283,7 @@
 				1A570085180BC5A10088DEC7 /* CCActionPageTurn3D.cpp in Sources */,
 				1A570089180BC5A10088DEC7 /* CCActionProgressTimer.cpp in Sources */,
 				1A57008D180BC5A10088DEC7 /* CCActionTiledGrid.cpp in Sources */,
+				3EBE7886196A40F500A2844D /* CCSubMesh.cpp in Sources */,
 				1A570091180BC5A10088DEC7 /* CCActionTween.cpp in Sources */,
 				50ABBEBF1925AB6F00A911A9 /* CCValue.cpp in Sources */,
 				1A570098180BC5C10088DEC7 /* CCAtlasNode.cpp in Sources */,
@@ -6864,6 +6871,7 @@
 				06CAAAC8186AD7EB0012A414 /* TriggerObj.cpp in Sources */,
 				1AD71DF0180E26E600808F54 /* CCNode+CCBRelativePositioning.cpp in Sources */,
 				503DD8E91926736A00CD74DD /* CCES2Renderer.m in Sources */,
+				3EBE7887196A40F500A2844D /* CCSubMesh.cpp in Sources */,
 				5027253D190BF1B900AAF4ED /* cocos2d.cpp in Sources */,
 				50ABBE6A1925AB6F00A911A9 /* CCEventListenerFocus.cpp in Sources */,
 				50ABBE661925AB6F00A911A9 /* CCEventListenerCustom.cpp in Sources */,
