@@ -56,6 +56,11 @@ public:
     /**set texture for sub mesh by index*/
     void setTexture(int index, Texture2D* texture);
     
+    /**set & get visible*/
+    void setSubMeshVisible(int index, bool visible);
+    bool getSubMeshVisible(int index) const;
+    /**get sub mesh count*/
+    ssize_t getSubMeshCount() const;
 
     /**get mesh*/
     Mesh* getMesh() const { return _mesh; }
@@ -73,6 +78,9 @@ CC_CONSTRUCTOR_ACCESS:
     virtual ~Sprite3D();
     bool initWithFile(const std::string &path);
     
+    /**load sprite3d from cache, return true if succeed, false otherwise*/
+    bool loadFromCache(const std::string& path);
+    
     /**.mtl file should at the same directory with the same name if exist*/
     bool loadFromObj(const std::string& path);
     
@@ -87,15 +95,17 @@ CC_CONSTRUCTOR_ACCESS:
     
     /**generate default GLProgramState*/
     void genGLProgramState();
+    
+    /**generate materials, and add them to cache, keyprefix is used as key prefix when added to cache*/
+    void genMaterials(const std::string& keyprefix, const std::vector<std::string>& texpaths);
 
 protected:
     Mesh*                        _mesh;//mesh
     MeshSkin*                    _skin;//skin
     
     std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
-    std::vector<bool>            _visible; // is submesh visible?
+    std::vector<bool>            _subMeshVisible; // is submesh visible?
     std::vector<Texture2D*>      _textures;
-    Texture2D*                   _texture;
 
     BlendFunc                    _blend;
 };

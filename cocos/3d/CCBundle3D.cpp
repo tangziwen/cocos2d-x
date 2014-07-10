@@ -202,6 +202,8 @@ bool Bundle3D::load(const std::string& path)
     
 bool Bundle3D::loadMeshData(const std::string& id, MeshData* meshdata)
 {
+    meshdata->resetData();
+    
     if (_isBinary)
     {
         return loadMeshDataBinary(meshdata);
@@ -214,6 +216,8 @@ bool Bundle3D::loadMeshData(const std::string& id, MeshData* meshdata)
     
 bool Bundle3D::loadSkinData(const std::string& id, SkinData* skindata)
 {
+    skindata->resetData();
+    
     if (_isBinary)
     {
         return loadSkinDataBinary(skindata);
@@ -226,6 +230,8 @@ bool Bundle3D::loadSkinData(const std::string& id, SkinData* skindata)
     
 bool Bundle3D::loadMaterialData(const std::string& id, MaterialData* materialdata)
 {
+    materialdata->resetData();
+    
     if (_isBinary)
     {
         return loadMaterialDataBinary(materialdata);
@@ -238,6 +244,8 @@ bool Bundle3D::loadMaterialData(const std::string& id, MaterialData* materialdat
     
 bool Bundle3D::loadAnimationData(const std::string& id, Animation3DData* animationdata)
 {
+    animationdata->resetData();
+    
     if (_isBinary)
     {
         return loadAnimationDataBinary(animationdata);
@@ -482,10 +490,6 @@ bool Bundle3D::loadAnimationDataJson(Animation3DData* animationdata)
 {
     if (!_jsonReader.HasMember(ANIMATIONDATA_ANIMATION)) return false;
 
-    animationdata->_rotationKeys.clear();
-    animationdata->_scaleKeys.clear();
-    animationdata->_translationKeys.clear();
-
     const rapidjson::Value& animation_data_array =  _jsonReader[ANIMATIONDATA_ANIMATION];
     if (animation_data_array.Size()==0) return false;
 
@@ -622,8 +626,6 @@ bool Bundle3D::loadMeshDataBinary_0_1(MeshData* meshdata)
 {
     if (!seekToFirstType(BUNDLE_TYPE_MESH))
         return false;
-    
-    meshdata->resetData();
 
     // read mesh data
     if (_binaryReader.read(&meshdata->attribCount, 4, 1) != 1 || meshdata->attribCount < 1)
@@ -770,8 +772,6 @@ bool Bundle3D::loadSkinDataBinary(SkinData* skindata)
     if (!seekToFirstType(BUNDLE_TYPE_MESHSKIN))
         return false;
     
-    skindata->resetData();
-    
     std::string boneName = _binaryReader.readString();
     
     // transform
@@ -880,7 +880,8 @@ bool Bundle3D::loadMaterialDataBinary(MaterialData* materialdata)
         return false;
     }
 
-    materialdata->texturePath = _modelRelativePath + texturePath;
+    std::string path = _modelRelativePath + texturePath;
+    materialdata->texturePaths[0] = path;
     return true;
 }
 
@@ -888,10 +889,6 @@ bool Bundle3D::loadAnimationDataBinary(Animation3DData* animationdata)
 {
     if (!seekToFirstType(BUNDLE_TYPE_ANIMATIONS))
         return false;
-
-    animationdata->_rotationKeys.clear();
-    animationdata->_scaleKeys.clear();
-    animationdata->_translationKeys.clear();
 
     _binaryReader.readString();
 

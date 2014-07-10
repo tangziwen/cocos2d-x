@@ -160,7 +160,11 @@ struct SkinData
 /**material data*/
 struct MaterialData
 {
-    std::string texturePath;
+    std::map<int, std::string> texturePaths; //submesh id, texture path
+    void resetData()
+    {
+        texturePaths.clear();
+    }
 };
 
 /**animation data*/
@@ -224,7 +228,7 @@ public:
     {
     }
     
-    void clear()
+    void resetData()
     {
         _totalTime = 0;
         _translationKeys.clear();
