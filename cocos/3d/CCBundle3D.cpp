@@ -30,6 +30,7 @@
 #include "CCBundleReader.h"
 #include "base/CCData.h"
 #include "json/document.h"
+#include "CCString.h"
 
 
 #define BUNDLE_TYPE_SCENE               1
@@ -46,14 +47,17 @@
 #define BUNDLE_TYPE_MESHPART            35
 #define BUNDLE_TYPE_MESHSKIN            36
 
+static const char* VERSION = "version";
 static const char* ID = "id";
 
 static const char* MESHDATA_MESH = "mesh";
 static const char* MESHDATA_DEFAULTPART = "body";
 static const char* MESHDATA_VERTEXSIZE = "vertexsize";
+static const char* MESHDATA_VERTEX = "vertex";
 static const char* MESHDATA_VERTICES = "vertices";
 static const char* MESHDATA_INDEXNUM = "indexnum";
 static const char* MESHDATA_INDICES = "indices";
+static const char* MESHDATA_SUBMESH = "submesh";
 static const char* MESHDATA_ATTRIBUTES = "attributes";
 static const char* MESHDATA_SIZE = "size";
 static const char* MESHDATA_TYPE = "type";
@@ -69,6 +73,7 @@ static const char* SKINDATA_TRANSFORM = "tansform";
 static const char* MATERIALDATA_MATERIAL = "material";
 static const char* MATERIALDATA_BASE = "base";
 static const char* MATERIALDATA_FILENAME = "filename";
+static const char* MATERIALDATA_TEXTURES = "textures";
 
 static const char* ANIMATIONDATA_ANIMATION = "animation";
 static const char* ANIMATIONDATA_LENGTH =   "length";
@@ -268,64 +273,127 @@ bool Bundle3D::loadJson(const std::string& path)
          clear();
          return false;
     }
+    
+    const rapidjson::Value& mash_data_array = _jsonReader[VERSION];
+    _version = mash_data_array.GetString();
     return true;
 }
 
 bool Bundle3D::loadMeshDataJson(MeshData* meshdata)
 {
-    assert(_jsonReader.HasMember(MESHDATA_MESH));
-    const rapidjson::Value& mash_data_array = _jsonReader[MESHDATA_MESH];
-    
-    assert(mash_data_array.IsArray());
-    const rapidjson::Value& mash_data_val = mash_data_array[(rapidjson::SizeType)0];
+    if (_version == "1.2")
+    {
+        return loadMeshDataJson_0_1(meshdata);
+    }
+    else if(_version == "0.2")
+    {
+        return loadMeshDataJson_0_2(meshdata);
+    }
+    else
+    {
+        CCLOGINFO(false, "Unsupported version of loadMeshDataJson(): %s", _version);
+        return false;
+    }
+}
 
-    assert(mash_data_val.HasMember(MESHDATA_DEFAULTPART));
-    const rapidjson::Value& mesh_data_body_array = mash_data_val[MESHDATA_DEFAULTPART];
+bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
+{
+    meshdata->resetData();
     
-    assert(mesh_data_body_array.IsArray());
+    const rapidjson::Value& mesh_data_array = _jsonReader[MESHDATA_MESH];
+    
+    const rapidjson::Value& mesh_data_val = mesh_data_array[(rapidjson::SizeType)0];
+    
+    const rapidjson::Value& mesh_data_body_array = mesh_data_val[MESHDATA_DEFAULTPART];
+    
     const rapidjson::Value& mesh_data_body_array_0 = mesh_data_body_array[(rapidjson::SizeType)0];
     
-    // vertex_size
-    assert(mesh_data_body_array_0.HasMember(MESHDATA_VERTEXSIZE));
-    meshdata->vertexSizeInFloat = mesh_data_body_array_0[MESHDATA_VERTEXSIZE].GetInt();
-
-    // vertices
-    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
-    const rapidjson::Value& mesh_data_body_vertices = mesh_data_body_array_0[MESHDATA_VERTICES];
-    for (rapidjson::SizeType i = 0; i < mesh_data_body_vertices.Size(); i++)
-        meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
-
-    // index_number
-    meshdata->numIndex = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
-
-    std::vector<unsigned short> indices;
-    indices.resize(meshdata->numIndex);
-    // indices
-    const rapidjson::Value& mesh_data_body_indices_val = mesh_data_body_array_0[MESHDATA_INDICES];
-    for (rapidjson::SizeType i = 0; i < mesh_data_body_indices_val.Size(); i++)
-        indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
-    meshdata->subMeshIndices.push_back(indices);
-
     // mesh_vertex_attribute
-    const rapidjson::Value& mesh_vertex_attribute = mash_data_val[MESHDATA_ATTRIBUTES];
+    const rapidjson::Value& mesh_vertex_attribute = mesh_data_val[MESHDATA_ATTRIBUTES];
     meshdata->attribCount = mesh_vertex_attribute.Size();
     meshdata->attribs.resize(meshdata->attribCount);
     for (rapidjson::SizeType i = 0; i < mesh_vertex_attribute.Size(); i++)
     {
         const rapidjson::Value& mesh_vertex_attribute_val = mesh_vertex_attribute[i];
-
+        
         meshdata->attribs[i].size = mesh_vertex_attribute_val[MESHDATA_SIZE].GetUint();
         meshdata->attribs[i].attribSizeBytes = meshdata->attribs[i].size * 4;
         meshdata->attribs[i].type = parseGLType(mesh_vertex_attribute_val[MESHDATA_TYPE].GetString());
         meshdata->attribs[i].vertexAttrib = parseGLProgramAttribute(mesh_vertex_attribute_val[MESHDATA_ATTRIBUTE].GetString());
     }
     
+    // vertex_size
+    meshdata->vertexSizeInFloat = mesh_data_body_array_0[MESHDATA_VERTEXSIZE].GetInt();
+    
+    // vertices
+    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    const rapidjson::Value& mesh_data_body_vertices = mesh_data_body_array_0[MESHDATA_VERTICES];
+    for (rapidjson::SizeType i = 0; i < mesh_data_body_vertices.Size(); i++)
+        meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
+    
+    // index_number
+    meshdata->numIndex = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
+    
+    // indices
+    std::vector<unsigned short> indices;
+    indices.resize(meshdata->numIndex);
+
+    const rapidjson::Value& mesh_data_body_indices_val = mesh_data_body_array_0[MESHDATA_INDICES];
+    for (rapidjson::SizeType i = 0; i < mesh_data_body_indices_val.Size(); i++)
+        indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+    
+    meshdata->subMeshIndices.push_back(indices);
+
+    return true;
+}
+
+bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
+{
+    meshdata->resetData();
+    
+    const rapidjson::Value& mesh_array = _jsonReader[MESHDATA_MESH];
+    
+    const rapidjson::Value& mesh_array_0 = mesh_array[(rapidjson::SizeType)0];
+    
+    // vertices
+    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    const rapidjson::Value& mesh_data_vertex = mesh_array_0[MESHDATA_VERTEX];
+    const rapidjson::Value& mesh_data_vertex_0 = mesh_data_vertex[(rapidjson::SizeType)0];
+
+    meshdata->vertexSizeInFloat = mesh_data_vertex_0[MESHDATA_VERTEXSIZE].GetInt();
+    
+    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    const rapidjson::Value& mesh_data_body_vertices = mesh_data_vertex_0[MESHDATA_VERTICES];
+    for (rapidjson::SizeType i = 0; i < mesh_data_body_vertices.Size(); i++)
+        meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
+    
+    // submesh
+    const rapidjson::Value& mesh_submesh_array = mesh_array_0[MESHDATA_SUBMESH];
+    for (rapidjson::SizeType i = 0; i < mesh_submesh_array.Size(); i++)
+    {
+        const rapidjson::Value& mesh_submesh_val = mesh_submesh_array[i];
+        std::string id = mesh_submesh_val[ID].GetString();
+        
+        // index_number
+        meshdata->numIndex = mesh_submesh_val[MESHDATA_INDEXNUM].GetUint();
+        
+        // indices
+        std::vector<unsigned short> indices;
+        indices.resize(meshdata->numIndex);
+        const rapidjson::Value& mesh_data_body_indices_val = mesh_submesh_val[MESHDATA_INDICES];
+        for (rapidjson::SizeType j = 0; j < mesh_data_body_indices_val.Size(); j++)
+            indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+        
+        meshdata->subMeshIndices.push_back(indices);
+    }
     return true;
 }
 
 bool Bundle3D::loadSkinDataJson(SkinData* skindata)
 {
     if (!_jsonReader.HasMember(SKINDATA_SKIN )) return false;
+    
+    skindata->resetData();
     
     const rapidjson::Value& skin_data_array = _jsonReader[SKINDATA_SKIN ];
     
@@ -356,12 +424,28 @@ bool Bundle3D::loadSkinDataJson(SkinData* skindata)
     
     // parent and child relationship map
     skindata->skinBoneOriginMatrices.resize(skindata->skinBoneNames.size());
-    //skindata->nodeBoneOriginMatrices.resize(skindata->nodeBoneNames.size());
     getChildMap(skindata->boneChild, skindata, skin_data_1);
     return true;
 }
 
 bool Bundle3D::loadMaterialDataJson(MaterialData* materialdata)
+{
+    if (_version == "1.2")
+    {
+        return loadMaterialDataJson_0_1(materialdata);
+    }
+    else if(_version == "0.2")
+    {
+        return loadMaterialDataJson_0_2(materialdata);
+    }
+    else
+    {
+        CCLOGINFO(false, "Unsupported version of loadMaterialDataJson() : %s", _version);
+        return false;
+    }
+}
+
+bool Bundle3D::loadMaterialDataJson_0_1(MaterialData* materialdata)
 {
     if (!_jsonReader.HasMember(MATERIALDATA_MATERIAL))
         return false;
@@ -374,9 +458,31 @@ bool Bundle3D::loadMaterialDataJson(MaterialData* materialdata)
 
     const rapidjson::Value& material_data_base_array_0 = material_data_base_array[(rapidjson::SizeType)0];
 
-    std::string texturePath =_modelRelativePath + material_data_base_array_0[MATERIALDATA_FILENAME].GetString();
-    materialdata->texturePaths[0] = texturePath;
+    materialdata->texturePath = _modelRelativePath + material_data_base_array_0[MATERIALDATA_FILENAME].GetString();
 
+    return true;
+}
+
+bool Bundle3D::loadMaterialDataJson_0_2(MaterialData* materialdata)
+{
+    if (!_jsonReader.HasMember(MATERIALDATA_MATERIAL))
+        return false;
+    
+    const rapidjson::Value& material_array = _jsonReader[MATERIALDATA_MATERIAL];
+    
+    for (rapidjson::SizeType i = 0; i < material_array.Size(); i++)
+    {
+        const rapidjson::Value& material_val = material_array[i];
+        std::string id = material_val[ID].GetString();
+        
+        // get each texture
+        const rapidjson::Value& testure_array = material_val[MATERIALDATA_TEXTURES];
+        for (rapidjson::SizeType j = 0; j < testure_array.Size(); j++)
+        {
+            std::string texture = testure_array[j].GetString();
+        }
+    }
+    
     return true;
 }
 
@@ -470,18 +576,7 @@ bool Bundle3D::loadBinary(const std::string& path)
         return false;
     }
     
-    if (ver[0] != 0) {
-        clear();
-        CCLOGINFO(false, "Unsupported version: (%d, %d)", ver[0], ver[1]);
-        return false;
-    }
-    
-    if (ver[1] <= 0 || ver[1] > 2) {
-        clear();
-        CCLOGINFO(false, "Unsupported version: (%d, %d)", ver[0], ver[1]);
-        return false;
-    }
-    
+    _version = StringUtils::toString((short)ver[0]) + "." + StringUtils::toString((short)ver[1]);
 
     // Read ref table size
     if (_binaryReader.read(&_referenceCount, 4, 1) != 1)
@@ -511,6 +606,23 @@ bool Bundle3D::loadBinary(const std::string& path)
 }
 
 bool Bundle3D::loadMeshDataBinary(MeshData* meshdata)
+{
+    if (_version == "0.1")
+    {
+        return loadMeshDataBinary_0_1(meshdata);
+    }
+    else if(_version == "0.2")
+    {
+        return loadMeshDataBinary_0_2(meshdata);
+    }
+    else
+    {
+        CCLOGINFO(false, "Unsupported version of loadMeshDataBinary() : %s", _version);
+        return false;
+    }
+}
+
+bool Bundle3D::loadMeshDataBinary_0_1(MeshData* meshdata)
 {
     if (!seekToFirstType(BUNDLE_TYPE_MESH))
         return false;
@@ -564,18 +676,94 @@ bool Bundle3D::loadMeshDataBinary(MeshData* meshdata)
             CCLOGINFO("Failed to read meshdata: nIndexCount '%s'.", _path.c_str());
             return false;
         }
-
-        meshdata->numIndex = nIndexCount;
+        
         std::vector<unsigned short> indices;
-        indices.resize(meshdata->numIndex);
-        if (_binaryReader.read(&indices[0], 2, meshdata->numIndex) != nIndexCount)
+        indices.resize(nIndexCount);
+        if (_binaryReader.read(&indices[0], 2, nIndexCount) != nIndexCount)
         {
             CCLOGINFO("Failed to read meshdata: indices '%s'.", _path.c_str());
             return false;
         }
+        
         meshdata->subMeshIndices.push_back(indices);
     }
 
+    return true;
+}
+
+bool Bundle3D::loadMeshDataBinary_0_2(MeshData* meshdata)
+{
+ 
+    if (!seekToFirstType(BUNDLE_TYPE_MESH))
+        return false;
+    
+    meshdata->resetData();
+    
+    // read mesh data
+    if (_binaryReader.read(&meshdata->attribCount, 4, 1) != 1 || meshdata->attribCount < 1)
+    {
+        CCLOGINFO("Failed to read meshdata: attribCount '%s'.", _path.c_str());
+        return false;
+    }
+    
+    meshdata->attribs.resize(meshdata->attribCount);
+    for (ssize_t i = 0; i < meshdata->attribCount; i++)
+    {
+        unsigned int vUsage, vSize;
+        if (_binaryReader.read(&vUsage, 4, 1) != 1 || _binaryReader.read(&vSize, 4, 1) != 1)
+        {
+            CCLOGINFO("Failed to read meshdata: usage or size '%s'.", _path.c_str());
+            return false;
+        }
+        
+        meshdata->attribs[i].size = vSize;
+        meshdata->attribs[i].attribSizeBytes = meshdata->attribs[i].size * 4;
+        meshdata->attribs[i].type = GL_FLOAT;
+        meshdata->attribs[i].vertexAttrib = vUsage;
+    }
+    
+    // Read vertex data
+    if (_binaryReader.read(&meshdata->vertexSizeInFloat, 4, 1) != 1 || meshdata->vertexSizeInFloat == 0)
+    {
+        CCLOGINFO("Failed to read meshdata: vertexSizeInFloat '%s'.", _path.c_str());
+        return false;
+    }
+    
+    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    if (_binaryReader.read(&meshdata->vertex[0], 4, meshdata->vertexSizeInFloat) != meshdata->vertexSizeInFloat)
+    {
+        CCLOGINFO("Failed to read meshdata: vertex element '%s'.", _path.c_str());
+        return false;
+    }
+    
+    // read submesh
+    unsigned int submeshCount;
+    if (_binaryReader.read(&submeshCount, 4, 1))
+    {
+        CCLOGINFO("Failed to read meshdata: submeshCount '%s'.", _path.c_str());
+        return false;
+    }
+    
+    for (unsigned int i = 0; i < submeshCount; ++i)
+    {
+        unsigned int nIndexCount;
+        if (_binaryReader.read(&nIndexCount, 4, 1) != 1)
+        {
+            CCLOGINFO("Failed to read meshdata: nIndexCount '%s'.", _path.c_str());
+            return false;
+        }
+        
+        std::vector<unsigned short> indices;
+        indices.resize(nIndexCount);
+        if (_binaryReader.read(&indices[0], 2, nIndexCount) != nIndexCount)
+        {
+            CCLOGINFO("Failed to read meshdata: indices '%s'.", _path.c_str());
+            return false;
+        }
+        
+        meshdata->subMeshIndices.push_back(indices);
+    }
+    
     return true;
 }
 
@@ -875,6 +1063,7 @@ Bundle3D::Bundle3D()
 :_isBinary(false),
 _modelRelativePath(""),
 _path(""),
+_version(""),
 _jsonBuffer(nullptr),
 _binaryBuffer(nullptr),
 _referenceCount(0),
