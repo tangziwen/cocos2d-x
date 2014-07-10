@@ -298,8 +298,6 @@ bool Bundle3D::loadMeshDataJson(MeshData* meshdata)
 
 bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
 {
-    meshdata->resetData();
-    
     const rapidjson::Value& mesh_data_array = _jsonReader[MESHDATA_MESH];
     
     const rapidjson::Value& mesh_data_val = mesh_data_array[(rapidjson::SizeType)0];
@@ -332,15 +330,15 @@ bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
         meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
     
     // index_number
-    meshdata->numIndex = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
+    unsigned int indexnum = mesh_data_body_array_0[MESHDATA_INDEXNUM].GetUint();
     
     // indices
     std::vector<unsigned short> indices;
-    indices.resize(meshdata->numIndex);
+    indices.resize(indexnum);
 
-    const rapidjson::Value& mesh_data_body_indices_val = mesh_data_body_array_0[MESHDATA_INDICES];
-    for (rapidjson::SizeType i = 0; i < mesh_data_body_indices_val.Size(); i++)
-        indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+    const rapidjson::Value& indices_val_array = mesh_data_body_array_0[MESHDATA_INDICES];
+    for (rapidjson::SizeType i = 0; i < indices_val_array.Size(); i++)
+        indices[i] = (unsigned short)indices_val_array[i].GetUint();
     
     meshdata->subMeshIndices.push_back(indices);
 
@@ -349,8 +347,6 @@ bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
 
 bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
 {
-    meshdata->resetData();
-    
     const rapidjson::Value& mesh_array = _jsonReader[MESHDATA_MESH];
     
     const rapidjson::Value& mesh_array_0 = mesh_array[(rapidjson::SizeType)0];
@@ -375,14 +371,15 @@ bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
         std::string id = mesh_submesh_val[ID].GetString();
         
         // index_number
-        meshdata->numIndex = mesh_submesh_val[MESHDATA_INDEXNUM].GetUint();
+        unsigned int indexnum = mesh_submesh_val[MESHDATA_INDEXNUM].GetUint();
         
         // indices
         std::vector<unsigned short> indices;
-        indices.resize(meshdata->numIndex);
-        const rapidjson::Value& mesh_data_body_indices_val = mesh_submesh_val[MESHDATA_INDICES];
-        for (rapidjson::SizeType j = 0; j < mesh_data_body_indices_val.Size(); j++)
-            indices[i] = (unsigned short)mesh_data_body_indices_val[i].GetUint();
+        indices.resize(indexnum);
+        
+        const rapidjson::Value& indices_val_array = mesh_submesh_val[MESHDATA_INDICES];
+        for (rapidjson::SizeType j = 0; j < indices_val_array.Size(); j++)
+            indices[j] = (unsigned short)indices_val_array[j].GetUint();
         
         meshdata->subMeshIndices.push_back(indices);
     }
@@ -392,8 +389,6 @@ bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
 bool Bundle3D::loadSkinDataJson(SkinData* skindata)
 {
     if (!_jsonReader.HasMember(SKINDATA_SKIN )) return false;
-    
-    skindata->resetData();
     
     const rapidjson::Value& skin_data_array = _jsonReader[SKINDATA_SKIN ];
     
@@ -458,7 +453,8 @@ bool Bundle3D::loadMaterialDataJson_0_1(MaterialData* materialdata)
 
     const rapidjson::Value& material_data_base_array_0 = material_data_base_array[(rapidjson::SizeType)0];
 
-    materialdata->texturePath = _modelRelativePath + material_data_base_array_0[MATERIALDATA_FILENAME].GetString();
+    // set texture
+    materialdata->texturePaths[0] =_modelRelativePath + material_data_base_array_0[MATERIALDATA_FILENAME].GetString();
 
     return true;
 }
@@ -475,12 +471,8 @@ bool Bundle3D::loadMaterialDataJson_0_2(MaterialData* materialdata)
         const rapidjson::Value& material_val = material_array[i];
         std::string id = material_val[ID].GetString();
         
-        // get each texture
-        const rapidjson::Value& testure_array = material_val[MATERIALDATA_TEXTURES];
-        for (rapidjson::SizeType j = 0; j < testure_array.Size(); j++)
-        {
-            std::string texture = testure_array[j].GetString();
-        }
+        // set texture
+        materialdata->texturePaths[i] = _modelRelativePath + material_val[MATERIALDATA_TEXTURES].GetString();
     }
     
     return true;
