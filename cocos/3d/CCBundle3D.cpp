@@ -320,11 +320,10 @@ bool Bundle3D::loadMeshDataJson_0_1(MeshData* meshdata)
         meshdata->attribs[i].vertexAttrib = parseGLProgramAttribute(mesh_vertex_attribute_val[MESHDATA_ATTRIBUTE].GetString());
     }
     
-    // vertex_size
-    meshdata->vertexSizeInFloat = mesh_data_body_array_0[MESHDATA_VERTEXSIZE].GetInt();
-    
     // vertices
+    meshdata->vertexSizeInFloat = mesh_data_body_array_0[MESHDATA_VERTEXSIZE].GetInt();
     meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    
     const rapidjson::Value& mesh_data_body_vertices = mesh_data_body_array_0[MESHDATA_VERTICES];
     for (rapidjson::SizeType i = 0; i < mesh_data_body_vertices.Size(); i++)
         meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
@@ -351,14 +350,27 @@ bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
     
     const rapidjson::Value& mesh_array_0 = mesh_array[(rapidjson::SizeType)0];
     
+    // mesh_vertex_attribute
+    const rapidjson::Value& mesh_vertex_attribute = mesh_array_0[MESHDATA_ATTRIBUTES];
+    meshdata->attribCount = mesh_vertex_attribute.Size();
+    meshdata->attribs.resize(meshdata->attribCount);
+    for (rapidjson::SizeType i = 0; i < mesh_vertex_attribute.Size(); i++)
+    {
+        const rapidjson::Value& mesh_vertex_attribute_val = mesh_vertex_attribute[i];
+        
+        meshdata->attribs[i].size = mesh_vertex_attribute_val[MESHDATA_SIZE].GetUint();
+        meshdata->attribs[i].attribSizeBytes = meshdata->attribs[i].size * 4;
+        meshdata->attribs[i].type = parseGLType(mesh_vertex_attribute_val[MESHDATA_TYPE].GetString());
+        meshdata->attribs[i].vertexAttrib = parseGLProgramAttribute(mesh_vertex_attribute_val[MESHDATA_ATTRIBUTE].GetString());
+    }
+    
     // vertices
-    meshdata->vertex.resize(meshdata->vertexSizeInFloat);
     const rapidjson::Value& mesh_data_vertex = mesh_array_0[MESHDATA_VERTEX];
     const rapidjson::Value& mesh_data_vertex_0 = mesh_data_vertex[(rapidjson::SizeType)0];
-
-    meshdata->vertexSizeInFloat = mesh_data_vertex_0[MESHDATA_VERTEXSIZE].GetInt();
     
+    meshdata->vertexSizeInFloat = mesh_data_vertex_0[MESHDATA_VERTEXSIZE].GetInt();
     meshdata->vertex.resize(meshdata->vertexSizeInFloat);
+    
     const rapidjson::Value& mesh_data_body_vertices = mesh_data_vertex_0[MESHDATA_VERTICES];
     for (rapidjson::SizeType i = 0; i < mesh_data_body_vertices.Size(); i++)
         meshdata->vertex[i] = mesh_data_body_vertices[i].GetDouble();
@@ -368,7 +380,7 @@ bool Bundle3D::loadMeshDataJson_0_2(MeshData* meshdata)
     for (rapidjson::SizeType i = 0; i < mesh_submesh_array.Size(); i++)
     {
         const rapidjson::Value& mesh_submesh_val = mesh_submesh_array[i];
-        std::string id = mesh_submesh_val[ID].GetString();
+        //std::string id = mesh_submesh_val[ID].GetString();
         
         // index_number
         unsigned int indexnum = mesh_submesh_val[MESHDATA_INDEXNUM].GetUint();
@@ -469,7 +481,7 @@ bool Bundle3D::loadMaterialDataJson_0_2(MaterialData* materialdata)
     for (rapidjson::SizeType i = 0; i < material_array.Size(); i++)
     {
         const rapidjson::Value& material_val = material_array[i];
-        std::string id = material_val[ID].GetString();
+        //std::string id = material_val[ID].GetString();
         
         // set texture
         materialdata->texturePaths[i] = _modelRelativePath + material_val[MATERIALDATA_TEXTURES].GetString();

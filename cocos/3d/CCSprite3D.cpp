@@ -297,11 +297,11 @@ void Sprite3D::genMaterials(const std::string& keyprefix, const std::vector<std:
     for (auto& it : texpaths) {
         auto tex = cache->addImage(it);
         setTexture(index, tex);
-        index++;
         //add to cache
         sprintf(str, "submesh%d", index);
         std::string submeshkey = keyprefix + std::string(str);
         Sprite3DMaterialCache::getInstance()->addSprite3DMaterial(submeshkey, tex);
+        index++;
     }
 }
 
