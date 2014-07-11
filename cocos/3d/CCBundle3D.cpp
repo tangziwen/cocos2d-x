@@ -30,8 +30,6 @@
 #include "CCBundleReader.h"
 #include "base/CCData.h"
 #include "json/document.h"
-#include "CCString.h"
-
 
 #define BUNDLE_TYPE_SCENE               1
 #define BUNDLE_TYPE_NODE                2
@@ -580,7 +578,9 @@ bool Bundle3D::loadBinary(const std::string& path)
         return false;
     }
     
-    _version = StringUtils::toString((short)ver[0]) + "." + StringUtils::toString((short)ver[1]);
+    char version[20] = {0};
+    sprintf(version, "%d.%d", ver[0], ver[1]);
+    _version = version;
 
     // Read ref table size
     if (_binaryReader.read(&_referenceCount, 4, 1) != 1)
