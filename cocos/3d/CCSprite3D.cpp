@@ -256,13 +256,10 @@ void Sprite3D::genGLProgramState()
     _meshCommands.resize(count);
     _subMeshVisible.resize(count);
     for (int i = 0; i < count; i++) {
-        auto submesh = _mesh->getSubMesh(i);
-
         GLuint texID = _textures[i] ? _textures[i]->getName() : 0;
-        _meshCommands[i].genMaterialID(texID, programstate, submesh, _blend);
+        _meshCommands[i].genMaterialID(texID, programstate, _mesh, _blend);
         _subMeshVisible[i] = true;
     }
-    
 }
 
 GLProgram* Sprite3D::getDefaultGLProgram(bool textured)
@@ -325,7 +322,7 @@ void Sprite3D::setTexture(int index, Texture2D* texture)
             if (getGLProgramState())
             {
                 GLuint texID = texture ? texture->getName() : 0;
-                _meshCommands[index].genMaterialID(texID, getGLProgramState(), _mesh->getSubMesh(index), _blend);
+                _meshCommands[index].genMaterialID(texID, getGLProgramState(), _mesh, _blend);
             }
         }
     }

@@ -41,6 +41,8 @@
 
 NS_CC_BEGIN
 
+GLuint MeshCommand::s_currentIndexBuffer = 0;
+
 MeshCommand::MeshCommand()
 : _textureID(0)
 , _blendType(BlendFunc::DISABLE)
@@ -193,8 +195,10 @@ void MeshCommand::preBatchDraw()
     {
         glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
         _glProgramState->applyAttributes();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
     }
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+    s_currentIndexBuffer = _indexBuffer;
 }
 void MeshCommand::batchDraw()
 {
@@ -210,6 +214,11 @@ void MeshCommand::batchDraw()
     _glProgramState->applyUniforms();
     
     // Draw
+    if (s_currentIndexBuffer != _indexBuffer)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+        s_currentIndexBuffer = _indexBuffer;
+    }
     glDrawElements(_primitive, (GLsizei)_indexCount, _indexFormat, 0);
     
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, _indexCount);
@@ -224,9 +233,10 @@ void MeshCommand::postBatchDraw()
     }
     else
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    s_currentIndexBuffer = 0;
 }
 
 void MeshCommand::execute()
@@ -276,11 +286,8 @@ void MeshCommand::buildVAO()
     }
     _glProgramState->applyAttributes(false);
     
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    
     GL::bindVAO(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void MeshCommand::releaseVAO()
 {
