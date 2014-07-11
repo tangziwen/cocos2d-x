@@ -122,6 +122,8 @@ protected:
     // ModelView transform
     Mat4 _mv;
     
+    static GLuint s_currentIndexBuffer;
+    
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     EventListenerCustom* _backToForegroundlistener;
 #endif
