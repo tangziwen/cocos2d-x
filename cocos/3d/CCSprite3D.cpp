@@ -164,7 +164,8 @@ bool Sprite3D::loadFromC3x(const std::string& path)
         return false;
     }
     
-    _mesh = Mesh::create(meshdata.vertex, meshdata.vertexSizeInFloat, meshdata.subMeshIndices, meshdata.numIndex, meshdata.attribs, meshdata.attribCount);
+    _mesh = Mesh::create(meshdata.vertex, meshdata.vertexSizeInFloat, meshdata.subMeshIndices, meshdata.attribs);
+
     CC_SAFE_RETAIN(_mesh);
     //add mesh to cache
     MeshCache::getInstance()->addMesh(key, _mesh);

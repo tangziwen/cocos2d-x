@@ -126,7 +126,7 @@ bool RenderMeshData::init(const std::vector<float>& positions,
     return true;
 }
 
-bool RenderMeshData::init(const std::vector<float>& vertices, int vertexSizeInFloat, const std::vector<IndexArray>& indices, int numIndex, const std::vector<MeshVertexAttrib>& attribs, int attribCount)
+bool RenderMeshData::init(const std::vector<float>& vertices, int vertexSizeInFloat, const std::vector<IndexArray>& indices, const std::vector<MeshVertexAttrib>& attribs)
 {
     _vertexs = vertices;
     _subMeshIndices = indices;
@@ -160,6 +160,13 @@ Mesh::~Mesh()
     cleanAndFreeBuffers();
 }
 
+Mesh* Mesh::create(const std::vector<float>& positions, const std::vector<float>& normals, const std::vector<float>& texs, const IndexArray& indices)
+{
+    std::vector<IndexArray> submeshIndices;
+    submeshIndices.push_back(indices);
+    return create(positions, normals, texs, submeshIndices);
+}
+
 Mesh* Mesh::create(const std::vector<float>& positions, const std::vector<float>& normals, const std::vector<float>& texs, const std::vector<IndexArray>& indices)
 {
     auto mesh = new Mesh();
@@ -172,10 +179,17 @@ Mesh* Mesh::create(const std::vector<float>& positions, const std::vector<float>
     return nullptr;
 }
 
-Mesh* Mesh::create(const std::vector<float> &vertices, int vertexSizeInFloat, const std::vector<IndexArray> &indices, int numIndex, const std::vector<MeshVertexAttrib> &attribs, int attribCount)
+Mesh* Mesh::create(const std::vector<float>& vertices, int vertexSizeInFloat, const IndexArray& indices, const std::vector<MeshVertexAttrib>& attribs)
+{
+    std::vector<IndexArray> submeshIndices;
+    submeshIndices.push_back(indices);
+    return create(vertices, vertexSizeInFloat, submeshIndices, attribs);
+}
+
+Mesh* Mesh::create(const std::vector<float> &vertices, int vertexSizeInFloat, const std::vector<IndexArray> &indices, const std::vector<MeshVertexAttrib> &attribs)
 {
     auto mesh = new Mesh();
-    if (mesh && mesh->init(vertices, vertexSizeInFloat, indices, numIndex, attribs, attribCount))
+    if (mesh && mesh->init(vertices, vertexSizeInFloat, indices, attribs))
     {
         mesh->autorelease();
         return mesh;
@@ -196,9 +210,10 @@ bool Mesh::init(const std::vector<float>& positions, const std::vector<float>& n
     return true;
 }
 
-bool Mesh::init(const std::vector<float>& vertices, int vertexSizeInFloat, const std::vector<IndexArray>& indices, int numIndex, const std::vector<MeshVertexAttrib>& attribs, int attribCount)
+
+bool Mesh::init(const std::vector<float>& vertices, int vertexSizeInFloat, const std::vector<IndexArray>& indices, const std::vector<MeshVertexAttrib>& attribs)
 {
-    bool bRet = _renderdata.init(vertices, vertexSizeInFloat, indices, numIndex, attribs, attribCount);
+    bool bRet = _renderdata.init(vertices, vertexSizeInFloat, indices, attribs);
     if (!bRet)
         return false;
     

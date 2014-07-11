@@ -38,7 +38,7 @@
 NS_CC_BEGIN
 
 class Animation3D;
-class Bone;
+class Bone3D;
 /**
  * Animate3D, Animates a Sprite3D given with an Animation3D
  */
@@ -75,7 +75,7 @@ public:
     float getWeight() const { return _weight; }
     void setWeight(float weight);
     
-    /**get & set play reverse*/
+    /**get & set play reverse, these are deprecated, use set negative speed instead*/
     CC_DEPRECATED_ATTRIBUTE bool getPlayBack() const { return _playReverse; }
     CC_DEPRECATED_ATTRIBUTE void setPlayBack(bool reverse) { _playReverse = reverse; }
     
@@ -92,7 +92,7 @@ protected:
     float      _start; //start time 0 - 1, used to generate sub Animate3D
     float      _last; //last time 0 - 1, used to generate sub Animate3D
     bool       _playReverse; // is playing reverse
-    std::map<Bone*, Animation3D::Curve*> _boneCurves; //weak ref
+    std::map<Bone3D*, Animation3D::Curve*> _boneCurves; //weak ref
 };
 
 NS_CC_END
