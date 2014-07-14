@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_OBB3D_H_
-#define __CC_OBB3D_H_
+#ifndef __CC_OBB_H_
+#define __CC_OBB_H_
 
 #include "CCAABB3D.h"
 
@@ -32,11 +32,11 @@ NS_CC_BEGIN
 /**
  * Defines a class to describe oriented bounding box
  */
-class OBB3D
+class OBB
 {
 public:
-    OBB3D();
-    OBB3D(const OBB3D& obb);
+    OBB();
+    OBB(const OBB& obb);
 
     // is point in this obb
     bool isPointIn(const Vec3& point) const;

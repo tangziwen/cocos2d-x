@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_AABB3D_H__
-#define __CC_AABB3D_H__
+#ifndef __CC_AABB_H__
+#define __CC_AABB_H__
 
 #include "base/ccMacros.h"
 #include "base/CCRef.h"
@@ -33,14 +33,14 @@ NS_CC_BEGIN
 /**
  * Defines a class describe 3-dimensional axis-aligned bounding box.
  */
-class AABB3D : public cocos2d::Ref
+class AABB : public cocos2d::Ref
 {
 public:
     /**
-     * create AABB3D box
+     * create AABB box
 	 */
-    static AABB3D* create();
-    static AABB3D* create(const Vec3& min, const Vec3& max);
+    static AABB* create();
+    static AABB* create(const Vec3& min, const Vec3& max);
     
     /**
      * Gets the center point of the bounding box.
@@ -55,7 +55,7 @@ public:
     /**
      * Tests whether this bounding box intersects the specified bounding object.
      */
-    bool intersects(const AABB3D& box) const;
+    bool intersects(const AABB& box) const;
 
     /**
      * check whether the point is in.
@@ -66,7 +66,7 @@ public:
      * Sets this bounding box to the smallest bounding box
      * that contains both this bounding object and the specified bounding box.
      */
-    void merge(const AABB3D& box);
+    void merge(const AABB& box);
 
     /**
      * Sets this bounding box to the specified values.
@@ -97,22 +97,22 @@ public:
     /**
      * Constructor.
      */
-    AABB3D();
+    AABB();
     
     /**
      * Constructor.
      */
-    AABB3D(const Vec3& min, const Vec3& max);
+    AABB(const Vec3& min, const Vec3& max);
     
     /**
      * Constructor.
      */
-    AABB3D(const AABB3D& box);
+    AABB(const AABB& box);
     
     /**
      * Destructor.
      */
-    ~AABB3D();
+    ~AABB();
     
 protected:
     Vec3 _min;

@@ -22,13 +22,13 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "CCAABB3D.h"
+#include "CCAABB.h"
 
 NS_CC_BEGIN
 
-static AABB3D* AABB3D::create()
+static AABB* AABB::create()
 {
-    auto aabb = new AABB3D();
+    auto aabb = new AABB();
     if(aabb)
     {
         aabb->reset();
@@ -39,9 +39,9 @@ static AABB3D* AABB3D::create()
     return nullptr;
 }
 
-static AABB3D* AABB3D::create(const Vec3& min, const Vec3& max)
+static AABB* AABB::create(const Vec3& min, const Vec3& max)
 {
-    auto aabb = new AABB3D();
+    auto aabb = new AABB();
     if(aabb)
     {
         aabb->set(min, max);
@@ -52,7 +52,7 @@ static AABB3D* AABB3D::create(const Vec3& min, const Vec3& max)
     return nullptr;
 }
 
-Vec3 AABB3D::getCenter()
+Vec3 AABB::getCenter()
 {
     Vec3 center;
 	center.x = 0.5f*(_min.x+_max.x);
@@ -62,7 +62,7 @@ Vec3 AABB3D::getCenter()
     return center;
 }
 
-void AABB3D::getCorners(Vec3 (* dst)[8]) const
+void AABB::getCorners(Vec3 (* dst)[8]) const
 {
     assert(dst);
 
@@ -87,14 +87,14 @@ void AABB3D::getCorners(Vec3 (* dst)[8]) const
     dst[7].set(_min.x, _max.y, _min.z);
 }
 
-bool AABB3D::intersects(const AABB3D& box) const
+bool AABB::intersects(const AABB& box) const
 {
     return ((_min.x >= box._min.x && _min.x <= box._max.x) || (box._min.x >= _min.x && box._min.x <= _max.x)) &&
            ((_min.y >= box._min.y && _min.y <= box._max.y) || (box._min.y >= _min.y && box._min.y <= _max.y)) &&
            ((_min.z >= box._min.z && _min.z <= box._max.z) || (box._min.z >= _min.z && box._min.z <= _max.z));
 }
 
-bool AABB3D::containPoint( const Vec3& point) const
+bool AABB::containPoint( const Vec3& point) const
 {
 	if (point.x < _min.x) return false;
 	if (point.y < _min.y) return false;
@@ -105,7 +105,7 @@ bool AABB3D::containPoint( const Vec3& point) const
 	return true;
 }
 
-void AABB3D::merge(const AABB3D& box)
+void AABB::merge(const AABB& box)
 {
     // Calculate the new minimum point.
     _min.x = std::min(_min.x, box._min.x);
@@ -118,19 +118,19 @@ void AABB3D::merge(const AABB3D& box)
     _max.z = std::max(_max.z, box._max.z);
 }
 
-void AABB3D::set(const Vec3& min, const Vec3& max)
+void AABB::set(const Vec3& min, const Vec3& max)
 {
     this->_min = min;
     this->_max = max;
 }
 
-void AABB3D::reset()
+void AABB::reset()
 {
 	_min.set(99999.0f, 99999.0f, 99999.0f);
 	_max.set(-99999.0f, -99999.0f, -99999.0f);
 }
 
-void AABB3D::updateMinMax(Vec3* point, Vec3* min, Vec3* max)
+void AABB::updateMinMax(Vec3* point, Vec3* min, Vec3* max)
 {
     // Leftmost point.
     if (point->x < min->x)
@@ -169,7 +169,7 @@ void AABB3D::updateMinMax(Vec3* point, Vec3* min, Vec3* max)
     }
 }
 
-void AABB3D::transform(const Mat4& matrix)
+void AABB::transform(const Mat4& matrix)
 {
     Vec3 corners[8];
 	 // Near face, specified counter-clockwise
@@ -205,21 +205,21 @@ void AABB3D::transform(const Mat4& matrix)
     _max = newMax;
 }
 
-AABB3D::AABB3D()
+AABB::AABB()
 {
 }
 
-AABB3D::AABB3D(const Vec3& min, const Vec3& max)
+AABB::AABB(const Vec3& min, const Vec3& max)
 {
     set(min, max);
 }
 
-AABB3D::AABB3D(const AABB3D& box)
+AABB::AABB(const AABB& box)
 {
 	set(box._min,box._max);
 }
 
-AABB3D::~AABB3D()
+AABB::~AABB()
 {
 }
 

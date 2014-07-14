@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "Base.h"
-#include "CCOBB3D.h"
+#include "CCOBB.h"
 
 NS_CC_BEGIN
 
@@ -194,16 +194,16 @@ static Mat4 _GetOBBOrientation(const Vec3* aVertPos, int nVertCount)
 }
 
 ////////
-OBB3D::OBB3D()
+OBB::OBB()
 {
     clear();
 }
-OBB3D::OBB3D(const OBB3D& obb)
+OBB::OBB(const OBB& obb)
 {
 }
 
 // is point in this obb
-bool OBB3D::isPointIn(const Vec3& point) const
+bool OBB::isPointIn(const Vec3& point) const
 {
     Vec3 vd = point - center;
 
@@ -223,13 +223,13 @@ bool OBB3D::isPointIn(const Vec3& point) const
 }
 
 // clear obb
-void OBB3D::clear()
+void OBB::clear()
 {
-    memset(this, 0, sizeof(OBB3D));
+    memset(this, 0, sizeof(OBB));
 }
 
 // build obb from oriented bounding box
-void OBB3D::build(const C3DAABB& aabb)
+void OBB::build(const C3DAABB& aabb)
 {
     center = (aabb._min + aabb._max);
     center.scale(0.5f);
@@ -244,7 +244,7 @@ void OBB3D::build(const C3DAABB& aabb)
 }
 
 // build obb from points
-void OBB3D::build(const Vec3* verts, int nVerts)
+void OBB::build(const Vec3* verts, int nVerts)
 {
     clear();
 
@@ -300,7 +300,7 @@ void OBB3D::build(const Vec3* verts, int nVerts)
 // verts[5] : back right bottom corner
 // verts[6] : back right top corner
 // verts[7] : back left top corner
-void OBB3D::getVertices(Vec3* verts) const
+void OBB::getVertices(Vec3* verts) const
 {
     verts[0] = center - extX  - extY + extZ; //front left bottom;
 
@@ -319,7 +319,7 @@ void OBB3D::getVertices(Vec3* verts) const
     verts[7] = center - extX + extY - extZ; //back left top corner;
 }
 
-void OBB3D::transform(const Mat4& mat)
+void OBB::transform(const Mat4& mat)
 {
     C3DVector4 newcenter = mat * C3DVector4(center.x, center.y, center.z, 1.0f);// center;
     center.x = newcenter.x;
