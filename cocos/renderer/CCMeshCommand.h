@@ -74,8 +74,8 @@ public:
     
     uint32_t getMaterialID() const { return _materialID; }
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    void listenBackToForeground(EventCustom* event);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+    void listenRendererRecreated(EventCustom* event);
 #endif
 
 protected:
@@ -124,8 +124,8 @@ protected:
     
     static GLuint s_currentIndexBuffer;
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    EventListenerCustom* _backToForegroundlistener;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+    EventListenerCustom* _rendererRecreatedListener;
 #endif
 };
 

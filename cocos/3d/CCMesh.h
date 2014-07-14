@@ -184,8 +184,8 @@ public:
     /**remove unused meshes*/
     void removeUnusedMesh();
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    void listenBackToForeground(EventCustom* event);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+    void listenRendererRecreated(EventCustom* event);
 #endif
     
 CC_CONSTRUCTOR_ACCESS:
@@ -199,8 +199,8 @@ protected:
     
     std::unordered_map<std::string, Mesh*> _meshes; //cached meshes
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    EventListenerCustom* _backToForegroundlistener;
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+    EventListenerCustom* _rendererRecreatedListener;
 #endif
 };
 
