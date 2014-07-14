@@ -24,10 +24,8 @@
 
 #ifndef __CC_OBB3D_H_
 #define __CC_OBB3D_H_
-#include "C3DVector3.h"
-#include "C3DMatrix.h"
 
-#include "C3DAABB.h"
+#include "CCAABB3D.h"
 
 NS_CC_BEGIN
     
@@ -41,16 +39,16 @@ public:
     OBB3D(const OBB3D& obb);
 
     // is point in this obb
-    bool isPointIn(const C3DVector3& point) const;
+    bool isPointIn(const Vec3& point) const;
 
     // clear obb
     void clear();
 
     // build obb from oriented bounding box
-    void build(const C3DAABB& aabb);
+    void build(const AABB3D& aabb);
 
     // build obb from points
-    void build(const C3DVector3* verts, int nVerts);
+    void build(const Vec3* verts, int nVerts);
 
     // face to the obb's -z direction
     // verts[0] : front left bottom corner
@@ -61,7 +59,7 @@ public:
     // verts[5] : back right bottom corner
     // verts[6] : back right top corner
     // verts[7] : back left top corner
-    void getVertices(C3DVector3* verts) const;
+    void getVertices(Vec3* verts) const;
 
     // compute extX, extY, extZ
     // if obb axis changed call this function before use ext axis
@@ -75,21 +73,21 @@ public:
 	/**
      * Transforms the obb by the given transformation matrix.
      */
-    void transform(const C3DMatrix& mat);
+    void transform(const Mat4& mat);
 
 public:
 
-    C3DVector3 center; // obb center
+    Vec3 center; // obb center
 
-    C3DVector3 xAxis; // x axis of obb, unit vector
-    C3DVector3 yAxis; // y axis of obb, unit vecotr
-    C3DVector3 zAxis; // z axis of obb, unit vector
+    Vec3 xAxis; // x axis of obb, unit vector
+    Vec3 yAxis; // y axis of obb, unit vecotr
+    Vec3 zAxis; // z axis of obb, unit vector
 
-    C3DVector3 extX; // xAxis * extents.x
-    C3DVector3 extY; // yAxis * extents.y
-    C3DVector3 extZ; // zAxis * extents.z
+    Vec3 extX; // xAxis * extents.x
+    Vec3 extY; // yAxis * extents.y
+    Vec3 extZ; // zAxis * extents.z
 
-    C3DVector3 extents; // obb length along each axis
+    Vec3 extents; // obb length along each axis
 };
 
 NS_CC_END

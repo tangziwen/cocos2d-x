@@ -22,24 +22,25 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_AABB_H__
-#define __CC_AABB_H__
+#ifndef __CC_AABB3D_H__
+#define __CC_AABB3D_H__
 
-#include "2d/CCNode.h"
+#include "base/ccMacros.h"
+#include "base/CCRef.h"
 
 NS_CC_BEGIN
 
 /**
  * Defines a class describe 3-dimensional axis-aligned bounding box.
  */
-class AABB : public Node
+class AABB3D : public cocos2d::Ref
 {
 public:
     /**
-     * create AABB box
+     * create AABB3D box
 	 */
-    static AABB* create();
-    static AABB* create(const Vec3& min, const Vec3& max);
+    static AABB3D* create();
+    static AABB3D* create(const Vec3& min, const Vec3& max);
     
     /**
      * Gets the center point of the bounding box.
@@ -54,7 +55,7 @@ public:
     /**
      * Tests whether this bounding box intersects the specified bounding object.
      */
-    bool intersects(const AABB& box) const;
+    bool intersects(const AABB3D& box) const;
 
     /**
      * check whether the point is in.
@@ -65,7 +66,7 @@ public:
      * Sets this bounding box to the smallest bounding box
      * that contains both this bounding object and the specified bounding box.
      */
-    void merge(const AABB& box);
+    void merge(const AABB3D& box);
 
     /**
      * Sets this bounding box to the specified values.
@@ -83,30 +84,35 @@ public:
     void reset();
 
     /**
+     * update the min and max from the given point.
+     */
+    void updateMinMax(Vec3* point, Vec3* min, Vec3* max);
+    
+    /**
      * Transforms the bounding box by the given transformation matrix.
      */
-    void transform(const C3DMatrix& matrix);
+    void transform(const Mat4& matrix);
     
  CC_CONSTRUCTOR_ACCESS:
     /**
      * Constructor.
      */
-    AABB();
+    AABB3D();
     
     /**
      * Constructor.
      */
-    AABB(const Vec3& min, const Vec3& max);
+    AABB3D(const Vec3& min, const Vec3& max);
     
     /**
      * Constructor.
      */
-    AABB(const AABB& box);
+    AABB3D(const AABB3D& box);
     
     /**
      * Destructor.
      */
-    ~AABB();
+    ~AABB3D();
     
 protected:
     Vec3 _min;

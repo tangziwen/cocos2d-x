@@ -2870,8 +2870,10 @@
 		50FCEB9018C72017004AD434 /* WidgetReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WidgetReader.cpp; sourceTree = "<group>"; };
 		50FCEB9118C72017004AD434 /* WidgetReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReader.h; sourceTree = "<group>"; };
 		50FCEB9218C72017004AD434 /* WidgetReaderProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReaderProtocol.h; sourceTree = "<group>"; };
-		5E6073A4196D2AB700DBB038 /* CCAABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAABB.cpp; sourceTree = "<group>"; };
-		5E6073A5196D2AB700DBB038 /* CCAABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAABB.h; sourceTree = "<group>"; };
+		5E37D0DA19736D9C00AEE8C9 /* CCOBB3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCOBB3D.cpp; sourceTree = "<group>"; };
+		5E37D0DB19736D9D00AEE8C9 /* CCOBB3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOBB3D.h; sourceTree = "<group>"; };
+		5E6073A4196D2AB700DBB038 /* CCAABB3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAABB3D.cpp; sourceTree = "<group>"; };
+		5E6073A5196D2AB700DBB038 /* CCAABB3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAABB3D.h; sourceTree = "<group>"; };
 		A03F2CB81780BD04006731B9 /* libchipmunk Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libchipmunk Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A03F2D9B1780BDF7006731B9 /* libbox2d Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbox2d Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A03F2ED617814268006731B9 /* libCocosDenshion Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCocosDenshion Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4966,8 +4968,10 @@
 		B29594B81926D61F003EEF37 /* 3d */ = {
 			isa = PBXGroup;
 			children = (
-				5E6073A4196D2AB700DBB038 /* CCAABB.cpp */,
-				5E6073A5196D2AB700DBB038 /* CCAABB.h */,
+				5E37D0DA19736D9C00AEE8C9 /* CCOBB3D.cpp */,
+				5E37D0DB19736D9D00AEE8C9 /* CCOBB3D.h */,
+				5E6073A4196D2AB700DBB038 /* CCAABB3D.cpp */,
+				5E6073A5196D2AB700DBB038 /* CCAABB3D.h */,
 				3EBE7884196A40F500A2844D /* CCSubMesh.cpp */,
 				3EBE7885196A40F500A2844D /* CCSubMesh.h */,
 				3EA4786E195478E00068D9D1 /* CCBundleReader.cpp */,

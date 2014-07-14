@@ -24,17 +24,15 @@
 
 #include "Base.h"
 #include "CCOBB3D.h"
-#include "C3DQuaternion.h"
-#include "cocos2d.h"
 
 NS_CC_BEGIN
 
 #define ROTATE(a,i,j,k,l) g=a.m[i + 4 * j]; h=a.m[k + 4 * l]; a.m[i + 4 * j]=(float)(g-s*(h+g*tau)); a.m[k + 4 * l]=(float)(h+s*(g-h*tau));
 
-static C3DMatrix _convarianceMatrix(const C3DVector3* aVertPos, int nVertCount)
+static Mat4 _convarianceMatrix(const Vec3* aVertPos, int nVertCount)
 {
     int i;
-    C3DMatrix Cov;
+    Mat4 Cov;
 
     double S1[3];
     double S2[3][3];
@@ -74,7 +72,7 @@ static C3DMatrix _convarianceMatrix(const C3DVector3* aVertPos, int nVertCount)
     return Cov;
 }
 
-static float& _getElement( C3DVector3& point, int index)
+static float& _getElement( Vec3& point, int index)
 {
     if (index == 0)
         return point.x;
@@ -87,18 +85,18 @@ static float& _getElement( C3DVector3& point, int index)
     return point.x;
 }
 
-static void _eigenVectors(C3DMatrix* vout, C3DVector3* dout, C3DMatrix a)
+static void _eigenVectors(Mat4* vout, Vec3* dout, Mat4 a)
 {
     int n = 3;
     int j,iq,ip,i;
     double tresh,theta,tau,t,sm,s,h,g,c;
     int nrot;
-    C3DVector3 b;
-    C3DVector3 z;
-    C3DMatrix v;
-    C3DVector3 d;
+    Vec3 b;
+    Vec3 z;
+    Mat4 v;
+    Vec3 d;
 
-    v = C3DMatrix::identity();
+    v = Mat4::identity();
     for(ip=0; ip<n; ip++)
     {
         _getElement(b, ip) = a.m[ip + 4 * ip];
@@ -176,18 +174,18 @@ static void _eigenVectors(C3DMatrix* vout, C3DVector3* dout, C3DMatrix a)
 }
 
 //	return an OBB extracing from the vertices;
-static C3DMatrix _GetOBBOrientation(const C3DVector3* aVertPos, int nVertCount)
+static Mat4 _GetOBBOrientation(const Vec3* aVertPos, int nVertCount)
 {
-    C3DMatrix Cov;
+    Mat4 Cov;
 
     if (nVertCount <= 0)
-        return C3DMatrix::identity();
+        return Mat4::identity();
 
     Cov = _convarianceMatrix(aVertPos, nVertCount);
 
     // now get eigenvectors
-    C3DMatrix Evecs;
-    C3DVector3 Evals;
+    Mat4 Evecs;
+    Vec3 Evals;
     _eigenVectors(&Evecs, &Evals, Cov);
 
     Evecs.transpose();
@@ -205,9 +203,9 @@ OBB3D::OBB3D(const OBB3D& obb)
 }
 
 // is point in this obb
-bool OBB3D::isPointIn(const C3DVector3& point) const
+bool OBB3D::isPointIn(const Vec3& point) const
 {
-    C3DVector3 vd = point - center;
+    Vec3 vd = point - center;
 
     float d = vd.dot(xAxis);
     if (d > extents.x || d < -extents.x)
@@ -235,9 +233,9 @@ void OBB3D::build(const C3DAABB& aabb)
 {
     center = (aabb._min + aabb._max);
     center.scale(0.5f);
-    xAxis = C3DVector3(1.0f, 0.0f, 0.0f);
-    yAxis = C3DVector3(0.0f, 1.0f, 0.0f);
-    zAxis = C3DVector3(0.0f, 0.0f, 1.0f);
+    xAxis = Vec3(1.0f, 0.0f, 0.0f);
+    yAxis = Vec3(0.0f, 1.0f, 0.0f);
+    zAxis = Vec3(0.0f, 0.0f, 1.0f);
 
     extents = aabb._max - aabb._min;
     extents.scale(0.5f);
@@ -246,25 +244,25 @@ void OBB3D::build(const C3DAABB& aabb)
 }
 
 // build obb from points
-void OBB3D::build(const C3DVector3* verts, int nVerts)
+void OBB3D::build(const Vec3* verts, int nVerts)
 {
     clear();
 
     if (nVerts <= 0)
         return;
 
-    C3DMatrix matTransform = _GetOBBOrientation(verts, nVerts);
+    Mat4 matTransform = _GetOBBOrientation(verts, nVerts);
 
     //	For matTransform is orthogonal, so the inverse matrix is just rotate it;
     matTransform.transpose();
 
-    C3DVector3 vecMax = matTransform * C3DVector3(verts[0].x, verts[0].y, verts[0].z);
+    Vec3 vecMax = matTransform * Vec3(verts[0].x, verts[0].y, verts[0].z);
 
-    C3DVector3 vecMin = vecMax;
+    Vec3 vecMin = vecMax;
 
     for (int i=1; i < nVerts; i++)
     {
-        C3DVector3 vect = matTransform * C3DVector3(verts[i].x, verts[i].y, verts[i].z);
+        Vec3 vect = matTransform * Vec3(verts[i].x, verts[i].y, verts[i].z);
 
         vecMax.x = vecMax.x > vect.x ? vecMax.x : vect.x;
         vecMax.y = vecMax.y > vect.y ? vecMax.y : vect.y;
@@ -277,9 +275,9 @@ void OBB3D::build(const C3DVector3* verts, int nVerts)
 
     matTransform.transpose();
 
-    xAxis = C3DVector3(matTransform.m[0], matTransform.m[1], matTransform.m[2]);
-    yAxis = C3DVector3(matTransform.m[4], matTransform.m[5], matTransform.m[6]);
-    zAxis = C3DVector3(matTransform.m[8], matTransform.m[9], matTransform.m[10]);
+    xAxis = Vec3(matTransform.m[0], matTransform.m[1], matTransform.m[2]);
+    yAxis = Vec3(matTransform.m[4], matTransform.m[5], matTransform.m[6]);
+    zAxis = Vec3(matTransform.m[8], matTransform.m[9], matTransform.m[10]);
 
     center	= 0.5f * (vecMax + vecMin);
     center *= matTransform;
@@ -302,7 +300,7 @@ void OBB3D::build(const C3DVector3* verts, int nVerts)
 // verts[5] : back right bottom corner
 // verts[6] : back right top corner
 // verts[7] : back left top corner
-void OBB3D::getVertices(C3DVector3* verts) const
+void OBB3D::getVertices(Vec3* verts) const
 {
     verts[0] = center - extX  - extY + extZ; //front left bottom;
 
@@ -321,7 +319,7 @@ void OBB3D::getVertices(C3DVector3* verts) const
     verts[7] = center - extX + extY - extZ; //back left top corner;
 }
 
-void OBB3D::transform(const C3DMatrix& mat)
+void OBB3D::transform(const Mat4& mat)
 {
     C3DVector4 newcenter = mat * C3DVector4(center.x, center.y, center.z, 1.0f);// center;
     center.x = newcenter.x;
@@ -336,8 +334,8 @@ void OBB3D::transform(const C3DMatrix& mat)
     yAxis.normalize();
     zAxis.normalize();
 
-    C3DVector3 scale, trans;
-    C3DQuaternion quat;
+    Vec3 scale, trans;
+    Quaternion quat;
     mat.decompose(&scale, &quat, &trans);
 
     extents.x *= scale.x;
