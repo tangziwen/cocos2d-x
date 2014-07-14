@@ -22,7 +22,6 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "Base.h"
 #include "CCOBB.h"
 
 NS_CC_BEGIN

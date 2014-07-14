@@ -25,7 +25,7 @@
 #ifndef __CC_OBB_H_
 #define __CC_OBB_H_
 
-#include "CCAABB3D.h"
+#include "CCAABB.h"
 
 NS_CC_BEGIN
     
@@ -45,7 +45,7 @@ public:
     void clear();
 
     // build obb from oriented bounding box
-    void build(const AABB3D& aabb);
+    void build(const AABB& aabb);
 
     // build obb from points
     void build(const Vec3* verts, int nVerts);
