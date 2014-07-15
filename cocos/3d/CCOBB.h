@@ -35,20 +35,33 @@ NS_CC_BEGIN
 class OBB
 {
 public:
+    
+    Vec3 center; // obb center
+    
+    Vec3 xAxis; // x axis of obb, unit vector
+    Vec3 yAxis; // y axis of obb, unit vecotr
+    Vec3 zAxis; // z axis of obb, unit vector
+    
+    Vec3 extX; // xAxis * extents.x
+    Vec3 extY; // yAxis * extents.y
+    Vec3 extZ; // zAxis * extents.z
+    
+    Vec3 extents; // obb length along each axis
+    
+public:
     OBB();
-    OBB(const OBB& obb);
 
+    // construct obb from oriented bounding box
+    OBB(const AABB& aabb);
+    
+    // construct obb from points
+    OBB(const Vec3* verts, int nVerts);
+    
     // is point in this obb
     bool isPointIn(const Vec3& point) const;
 
     // clear obb
-    void clear();
-
-    // build obb from oriented bounding box
-    void build(const AABB& aabb);
-
-    // build obb from points
-    void build(const Vec3* verts, int nVerts);
+    void reset();
 
     // face to the obb's -z direction
     // verts[0] : front left bottom corner
@@ -74,20 +87,6 @@ public:
      * Transforms the obb by the given transformation matrix.
      */
     void transform(const Mat4& mat);
-
-public:
-
-    Vec3 center; // obb center
-
-    Vec3 xAxis; // x axis of obb, unit vector
-    Vec3 yAxis; // y axis of obb, unit vecotr
-    Vec3 zAxis; // z axis of obb, unit vector
-
-    Vec3 extX; // xAxis * extents.x
-    Vec3 extY; // yAxis * extents.y
-    Vec3 extZ; // zAxis * extents.z
-
-    Vec3 extents; // obb length along each axis
 };
 
 NS_CC_END

@@ -195,10 +195,72 @@ static Mat4 _GetOBBOrientation(const Vec3* aVertPos, int nVertCount)
 ////////
 OBB::OBB()
 {
-    clear();
+    reset();
 }
-OBB::OBB(const OBB& obb)
+
+
+// build obb from oriented bounding box
+void OBB::OBB(const C3DAABB& aabb)
 {
+    reset();
+    
+    center = (aabb._min + aabb._max);
+    center.scale(0.5f);
+    xAxis = Vec3(1.0f, 0.0f, 0.0f);
+    yAxis = Vec3(0.0f, 1.0f, 0.0f);
+    zAxis = Vec3(0.0f, 0.0f, 1.0f);
+    
+    extents = aabb._max - aabb._min;
+    extents.scale(0.5f);
+    
+    completeExtAxis();
+}
+
+// build obb from points
+void OBB::OBB(const Vec3* verts, int nVerts)
+{
+    if (!nVerts) return;
+    
+    reset();
+    
+    Mat4 matTransform = _GetOBBOrientation(verts, nVerts);
+    
+    //	For matTransform is orthogonal, so the inverse matrix is just rotate it;
+    matTransform.transpose();
+    
+    Vec3 vecMax = matTransform * Vec3(verts[0].x, verts[0].y, verts[0].z);
+    
+    Vec3 vecMin = vecMax;
+    
+    for (int i=1; i < nVerts; i++)
+    {
+        Vec3 vect = matTransform * Vec3(verts[i].x, verts[i].y, verts[i].z);
+        
+        vecMax.x = vecMax.x > vect.x ? vecMax.x : vect.x;
+        vecMax.y = vecMax.y > vect.y ? vecMax.y : vect.y;
+        vecMax.z = vecMax.z > vect.z ? vecMax.z : vect.z;
+        
+        vecMin.x = vecMin.x < vect.x ? vecMin.x : vect.x;
+        vecMin.y = vecMin.y < vect.y ? vecMin.y : vect.y;
+        vecMin.z = vecMin.z < vect.z ? vecMin.z : vect.z;
+    }
+    
+    matTransform.transpose();
+    
+    xAxis = Vec3(matTransform.m[0], matTransform.m[1], matTransform.m[2]);
+    yAxis = Vec3(matTransform.m[4], matTransform.m[5], matTransform.m[6]);
+    zAxis = Vec3(matTransform.m[8], matTransform.m[9], matTransform.m[10]);
+    
+    center	= 0.5f * (vecMax + vecMin);
+    center *= matTransform;
+    
+    xAxis.normalize();
+    yAxis.normalize();
+    zAxis.normalize();
+    
+    extents = 0.5f * (vecMax - vecMin);
+    
+    completeExtAxis();
 }
 
 // is point in this obb
@@ -222,72 +284,9 @@ bool OBB::isPointIn(const Vec3& point) const
 }
 
 // clear obb
-void OBB::clear()
+void OBB::reset()
 {
     memset(this, 0, sizeof(OBB));
-}
-
-// build obb from oriented bounding box
-void OBB::build(const C3DAABB& aabb)
-{
-    center = (aabb._min + aabb._max);
-    center.scale(0.5f);
-    xAxis = Vec3(1.0f, 0.0f, 0.0f);
-    yAxis = Vec3(0.0f, 1.0f, 0.0f);
-    zAxis = Vec3(0.0f, 0.0f, 1.0f);
-
-    extents = aabb._max - aabb._min;
-    extents.scale(0.5f);
-
-    completeExtAxis();
-}
-
-// build obb from points
-void OBB::build(const Vec3* verts, int nVerts)
-{
-    clear();
-
-    if (nVerts <= 0)
-        return;
-
-    Mat4 matTransform = _GetOBBOrientation(verts, nVerts);
-
-    //	For matTransform is orthogonal, so the inverse matrix is just rotate it;
-    matTransform.transpose();
-
-    Vec3 vecMax = matTransform * Vec3(verts[0].x, verts[0].y, verts[0].z);
-
-    Vec3 vecMin = vecMax;
-
-    for (int i=1; i < nVerts; i++)
-    {
-        Vec3 vect = matTransform * Vec3(verts[i].x, verts[i].y, verts[i].z);
-
-        vecMax.x = vecMax.x > vect.x ? vecMax.x : vect.x;
-        vecMax.y = vecMax.y > vect.y ? vecMax.y : vect.y;
-        vecMax.z = vecMax.z > vect.z ? vecMax.z : vect.z;
-
-        vecMin.x = vecMin.x < vect.x ? vecMin.x : vect.x;
-        vecMin.y = vecMin.y < vect.y ? vecMin.y : vect.y;
-        vecMin.z = vecMin.z < vect.z ? vecMin.z : vect.z;
-    }
-
-    matTransform.transpose();
-
-    xAxis = Vec3(matTransform.m[0], matTransform.m[1], matTransform.m[2]);
-    yAxis = Vec3(matTransform.m[4], matTransform.m[5], matTransform.m[6]);
-    zAxis = Vec3(matTransform.m[8], matTransform.m[9], matTransform.m[10]);
-
-    center	= 0.5f * (vecMax + vecMin);
-    center *= matTransform;
-
-    xAxis.normalize();
-    yAxis.normalize();
-    zAxis.normalize();
-
-    extents = 0.5f * (vecMax - vecMin);
-
-    completeExtAxis();
 }
 
 // face to the obb's -z direction

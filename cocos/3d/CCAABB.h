@@ -26,21 +26,33 @@
 #define __CC_AABB_H__
 
 #include "base/ccMacros.h"
-#include "base/CCRef.h"
 
 NS_CC_BEGIN
 
 /**
  * Defines a class describe 3-dimensional axis-aligned bounding box.
  */
-class AABB : public cocos2d::Ref
+class AABB
 {
 public:
+    Vec3 _min;
+    Vec3 _max;
+    
+public:
     /**
-     * create AABB box
-	 */
-    static AABB* create();
-    static AABB* create(const Vec3& min, const Vec3& max);
+     * Constructor.
+     */
+    AABB();
+    
+    /**
+     * Constructor.
+     */
+    AABB(const Vec3& min, const Vec3& max);
+    
+    /**
+     * Constructor.
+     */
+    AABB(const AABB& box);
     
     /**
      * Gets the center point of the bounding box.
@@ -93,30 +105,8 @@ public:
      */
     void transform(const Mat4& matrix);
     
- CC_CONSTRUCTOR_ACCESS:
-    /**
-     * Constructor.
-     */
-    AABB();
+
     
-    /**
-     * Constructor.
-     */
-    AABB(const Vec3& min, const Vec3& max);
-    
-    /**
-     * Constructor.
-     */
-    AABB(const AABB& box);
-    
-    /**
-     * Destructor.
-     */
-    ~AABB();
-    
-protected:
-    Vec3 _min;
-    Vec3 _max;
 };
 
 NS_CC_END

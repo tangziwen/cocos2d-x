@@ -26,30 +26,18 @@
 
 NS_CC_BEGIN
 
-static AABB* AABB::create()
+AABB::AABB()
 {
-    auto aabb = new AABB();
-    if(aabb)
-    {
-        aabb->reset();
-        aabb->autorelease();
-        return aabb;
-    }
-    CC_SAFE_DELETE(aabb);
-    return nullptr;
 }
 
-static AABB* AABB::create(const Vec3& min, const Vec3& max)
+AABB::AABB(const Vec3& min, const Vec3& max)
 {
-    auto aabb = new AABB();
-    if(aabb)
-    {
-        aabb->set(min, max);
-        aabb->autorelease();
-        return aabb;
-    }
-    CC_SAFE_DELETE(aabb);
-    return nullptr;
+    set(min, max);
+}
+
+AABB::AABB(const AABB& box)
+{
+	set(box._min,box._max);
 }
 
 Vec3 AABB::getCenter()
@@ -205,22 +193,5 @@ void AABB::transform(const Mat4& matrix)
     _max = newMax;
 }
 
-AABB::AABB()
-{
-}
-
-AABB::AABB(const Vec3& min, const Vec3& max)
-{
-    set(min, max);
-}
-
-AABB::AABB(const AABB& box)
-{
-	set(box._min,box._max);
-}
-
-AABB::~AABB()
-{
-}
 
 NS_CC_END
