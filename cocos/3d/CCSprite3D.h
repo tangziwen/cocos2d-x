@@ -26,6 +26,7 @@
 #define __CCSPRITE3D_H__
 
 #include <vector>
+#include <unordered_map>
 
 #include "base/CCVector.h"
 #include "base/ccTypes.h"
@@ -39,6 +40,7 @@ class GLProgramState;
 class Mesh;
 class Texture2D;
 class MeshSkin;
+class AttachNode;
 
 /** Sprite3D: A sprite can be loaded from 3D model files, .obj, .c3t, .c3b, then can be drawed as sprite */
 class Sprite3D : public Node, public BlendProtocol
@@ -67,6 +69,15 @@ public:
     
     /**get skin*/
     MeshSkin* getSkin() const { return _skin; }
+    
+    /**get AttachNode by bone name, return nullptr if not exist*/
+    AttachNode* getAttachNode(const std::string& boneName);
+    
+    /**remove attach node*/
+    void removeAttachNode(const std::string& boneName);
+    
+    /**remove all attach nodes*/
+    void removeAllAttachNode();
 
     // overrides
     virtual void setBlendFunc(const BlendFunc &blendFunc) override;
@@ -106,6 +117,8 @@ protected:
     std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
     std::vector<bool>            _subMeshVisible; // is submesh visible?
     std::vector<Texture2D*>      _textures;
+    
+    std::unordered_map<std::string, AttachNode*> _attachments;
 
     BlendFunc                    _blend;
 };

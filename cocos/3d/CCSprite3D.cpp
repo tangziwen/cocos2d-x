@@ -29,6 +29,7 @@
 #include "3d/CCBundle3D.h"
 #include "3d/CCSprite3DMaterial.h"
 #include "3d/CCSubMesh.h"
+#include "3d/CCAttachNode.h"
 
 #include "base/CCDirector.h"
 #include "base/CCPlatformMacros.h"
@@ -206,6 +207,7 @@ Sprite3D::~Sprite3D()
     _textures.clear();
     CC_SAFE_RELEASE_NULL(_mesh);
     CC_SAFE_RELEASE_NULL(_skin);
+    removeAllAttachNode();
 }
 
 bool Sprite3D::initWithFile(const std::string &path)
@@ -353,6 +355,42 @@ bool Sprite3D::getSubMeshVisible(int index) const
 ssize_t Sprite3D::getSubMeshCount() const
 {
     return _mesh->getSubMeshCount();
+}
+
+AttachNode* Sprite3D::getAttachNode(const std::string& boneName)
+{
+    auto it = _attachments.find(boneName);
+    if (it != _attachments.end())
+        return it->second;
+    
+    if (_skin)
+    {
+        auto bone = _skin->getBoneByName(boneName);
+        auto attachNode = AttachNode::create(bone);
+        addChild(attachNode);
+        _attachments[boneName] = attachNode;
+        return attachNode;
+    }
+    
+    return nullptr;
+}
+
+void Sprite3D::removeAttachNode(const std::string& boneName)
+{
+    auto it = _attachments.find(boneName);
+    if (it != _attachments.end())
+    {
+        removeChild(it->second);
+        _attachments.erase(it);
+    }
+}
+
+void Sprite3D::removeAllAttachNode()
+{
+    for (auto& it : _attachments) {
+        removeChild(it.second);
+    }
+    _attachments.clear();
 }
 
 void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
