@@ -34,7 +34,7 @@ NS_CC_BEGIN
 /**
  * Sets the inverse bind pose matrix.
  *
- * @param m C3DMatrix representing the inverse bind pose for this Bone.
+ * @param m Mat4 representing the inverse bind pose for this Bone.
  */
 void Bone3D::setInverseBindPose(const Mat4& m)
 {

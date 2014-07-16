@@ -41,6 +41,7 @@ class Mesh;
 class Texture2D;
 class MeshSkin;
 class AttachNode;
+class SubMeshState;
 
 /** Sprite3D: A sprite can be loaded from 3D model files, .obj, .c3t, .c3b, then can be drawed as sprite */
 class Sprite3D : public Node, public BlendProtocol
@@ -55,14 +56,9 @@ public:
     /**set texture, set the first if multiple textures exist*/
     void setTexture(const std::string& texFile);
     void setTexture(Texture2D* texture);
-    /**set texture for sub mesh by index*/
-    void setTexture(int index, Texture2D* texture);
     
-    /**set & get visible*/
-    void setSubMeshVisible(int index, bool visible);
-    bool getSubMeshVisible(int index) const;
-    /**get sub mesh count*/
-    ssize_t getSubMeshCount() const;
+    /**get SubMeshState by index*/
+    SubMeshState* getSubMeshState(int index) const;
 
     /**get mesh*/
     Mesh* getMesh() const { return _mesh; }
@@ -115,8 +111,8 @@ protected:
     MeshSkin*                    _skin;//skin
     
     std::vector<MeshCommand>     _meshCommands; //render command each for one submesh
-    std::vector<bool>            _subMeshVisible; // is submesh visible?
-    std::vector<Texture2D*>      _textures;
+    
+    Vector<SubMeshState*>        _subMeshStates; // SubMeshStates
     
     std::unordered_map<std::string, AttachNode*> _attachments;
 

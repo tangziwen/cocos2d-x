@@ -69,7 +69,10 @@ Mat4 AttachNode::getWorldToNodeTransform() const
 
 void AttachNode::visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
 {
-    Node::visit(renderer, parentTransform * _attachBone->getWorldMat(), parentFlags);
+    _transformUpdated = false;
+    auto mat = parentTransform * _attachBone->getWorldMat();
+    CCLOG("pos %f, %f, %f", mat.m[12], mat.m[13], mat.m[14]);
+    Node::visit(renderer, mat, parentFlags);
 }
 
 NS_CC_END

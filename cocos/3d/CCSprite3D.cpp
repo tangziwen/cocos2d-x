@@ -30,6 +30,7 @@
 #include "3d/CCSprite3DMaterial.h"
 #include "3d/CCSubMesh.h"
 #include "3d/CCAttachNode.h"
+#include "3d/CCSubMeshState.h"
 
 #include "base/CCDirector.h"
 #include "base/CCPlatformMacros.h"
@@ -85,12 +86,13 @@ bool Sprite3D::loadFromCache(const std::string& path)
         _mesh->retain();
         
         char str[20];
-        _textures.resize(_mesh->getSubMeshCount(), nullptr);
         for (int i = 0; i < (int)_mesh->getSubMeshCount(); i++) {
             sprintf(str, "submesh%d", i);
             std::string submeshkey = key + std::string(str);
             auto tex = Sprite3DMaterialCache::getInstance()->getSprite3DMaterial(submeshkey);
-            setTexture(i, tex);
+            auto submeshstate = SubMeshState::create();
+            submeshstate->setTexture(tex);
+            _subMeshStates.pushBack(submeshstate);
         }
         
         _skin = MeshSkin::create(fullPath, "");
@@ -201,10 +203,7 @@ Sprite3D::Sprite3D()
 
 Sprite3D::~Sprite3D()
 {
-    for (auto& it : _textures) {
-        CC_SAFE_RELEASE_NULL(it);
-    }
-    _textures.clear();
+    _subMeshStates.clear();
     CC_SAFE_RELEASE_NULL(_mesh);
     CC_SAFE_RELEASE_NULL(_skin);
     removeAllAttachNode();
@@ -212,10 +211,7 @@ Sprite3D::~Sprite3D()
 
 bool Sprite3D::initWithFile(const std::string &path)
 {
-    for (auto& it : _textures) {
-        CC_SAFE_RELEASE_NULL(it);
-    }
-    _textures.clear();
+    _subMeshStates.clear();
     CC_SAFE_RELEASE_NULL(_mesh);
     CC_SAFE_RELEASE_NULL(_skin);
     
@@ -257,11 +253,10 @@ void Sprite3D::genGLProgramState()
     setGLProgramState(programstate);
     auto count = _mesh->getSubMeshCount();
     _meshCommands.resize(count);
-    _subMeshVisible.resize(count);
     for (int i = 0; i < count; i++) {
-        GLuint texID = _textures[i] ? _textures[i]->getName() : 0;
+        auto tex = _subMeshStates.at(i)->getTexture();
+        GLuint texID = tex ? tex->getName() : 0;
         _meshCommands[i].genMaterialID(texID, programstate, _mesh, _blend);
-        _subMeshVisible[i] = true;
     }
 }
 
@@ -285,18 +280,17 @@ GLProgram* Sprite3D::getDefaultGLProgram(bool textured)
 
 void Sprite3D::genMaterials(const std::string& keyprefix, const std::vector<std::string>& texpaths)
 {
-    for (auto& it : _textures) {
-        CC_SAFE_RELEASE_NULL(it);
-    }
-    _textures.clear();
+    _subMeshStates.clear();
     
     char str[20];
     auto cache = Director::getInstance()->getTextureCache();
-    _textures.resize(_mesh->getSubMeshCount(), nullptr);
     int index = 0;
     for (auto& it : texpaths) {
         auto tex = cache->addImage(it);
-        setTexture(index, tex);
+        auto subMeshState = SubMeshState::create();
+        subMeshState->setTexture(tex);
+        _subMeshStates.pushBack(subMeshState);
+
         //add to cache
         sprintf(str, "submesh%d", index);
         std::string submeshkey = keyprefix + std::string(str);
@@ -311,50 +305,9 @@ void Sprite3D::setTexture(const std::string& texFile)
     setTexture(tex);
 }
 
-void Sprite3D::setTexture(int index, Texture2D* texture)
-{
-    CCASSERT(index < _textures.size(), "invalid index");
-    if (index < _textures.size())
-    {
-        if (texture != _textures[index])
-        {
-            CC_SAFE_RETAIN(texture);
-            CC_SAFE_RELEASE_NULL(_textures[index]);
-            _textures[index] = texture;
-            
-            if (getGLProgramState())
-            {
-                GLuint texID = texture ? texture->getName() : 0;
-                _meshCommands[index].genMaterialID(texID, getGLProgramState(), _mesh, _blend);
-            }
-        }
-    }
-}
-
 void Sprite3D::setTexture(Texture2D* texture)
 {
-    setTexture(0, texture);
-}
-
-void Sprite3D::setSubMeshVisible(int index, bool visible)
-{
-    CCASSERT(index < _subMeshVisible.size(), "invalid parameter");
-    if (index < (int)_subMeshVisible.size())
-         _subMeshVisible[index] = visible;
-}
-
-bool Sprite3D::getSubMeshVisible(int index) const
-{
-    CCASSERT(index < _subMeshVisible.size(), "invalid parameter");
-    if (index < (int)_subMeshVisible.size())
-        return _subMeshVisible[index];
-    
-    return false;
-}
-
-ssize_t Sprite3D::getSubMeshCount() const
-{
-    return _mesh->getSubMeshCount();
+    _subMeshStates.at(0)->setTexture(texture);
 }
 
 AttachNode* Sprite3D::getAttachNode(const std::string& boneName)
@@ -400,12 +353,14 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
     color.a = getDisplayedOpacity() / 255.0f;
     
     for (ssize_t i = 0; i < _mesh->getSubMeshCount(); i++) {
-        if (!_subMeshVisible[i])
+        auto submeshstate = _subMeshStates.at(i);
+        if (!submeshstate->isVisible())
             continue;
         
         auto submesh = _mesh->getSubMesh((int)i);
         auto& meshCommand = _meshCommands[i];
-        GLuint textureID = _textures[i] ? _textures[i]->getName() : 0;
+        
+        GLuint textureID = submeshstate->getTexture() ? submeshstate->getTexture()->getName() : 0;
         meshCommand.init(_globalZOrder, textureID, programstate, _blend, _mesh->getVertexBuffer(), submesh->getIndexBuffer(), (GLenum)submesh->getPrimitiveType(), (GLenum)submesh->getIndexFormat(), submesh->getIndexCount(), transform);
         
         meshCommand.setCullFaceEnabled(true);

@@ -1849,6 +1849,10 @@
 		B6B26344193884D60088FE25 /* CCAnimation3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6B26341193884D60088FE25 /* CCAnimation3D.cpp */; };
 		B6B26345193884D60088FE25 /* CCAnimation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = B6B26342193884D60088FE25 /* CCAnimation3D.h */; };
 		B6B26346193884D60088FE25 /* CCAnimation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = B6B26342193884D60088FE25 /* CCAnimation3D.h */; };
+		B6FADBA919760F09000272A3 /* CCSubMeshState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6FADBA719760F09000272A3 /* CCSubMeshState.cpp */; };
+		B6FADBAA19760F09000272A3 /* CCSubMeshState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B6FADBA719760F09000272A3 /* CCSubMeshState.cpp */; };
+		B6FADBAB19760F09000272A3 /* CCSubMeshState.h in Headers */ = {isa = PBXBuildFile; fileRef = B6FADBA819760F09000272A3 /* CCSubMeshState.h */; };
+		B6FADBAC19760F09000272A3 /* CCSubMeshState.h in Headers */ = {isa = PBXBuildFile; fileRef = B6FADBA819760F09000272A3 /* CCSubMeshState.h */; };
 		ED9C6A9418599AD8000A5232 /* CCNodeGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */; };
 		ED9C6A9518599AD8000A5232 /* CCNodeGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */; };
 		ED9C6A9618599AD8000A5232 /* CCNodeGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = ED9C6A9318599AD8000A5232 /* CCNodeGrid.h */; };
@@ -2928,6 +2932,8 @@
 		B6B2633C19381FBF0088FE25 /* CCAnimationCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAnimationCurve.h; sourceTree = "<group>"; };
 		B6B26341193884D60088FE25 /* CCAnimation3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAnimation3D.cpp; sourceTree = "<group>"; };
 		B6B26342193884D60088FE25 /* CCAnimation3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAnimation3D.h; sourceTree = "<group>"; };
+		B6FADBA719760F09000272A3 /* CCSubMeshState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCSubMeshState.cpp; sourceTree = "<group>"; };
+		B6FADBA819760F09000272A3 /* CCSubMeshState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSubMeshState.h; sourceTree = "<group>"; };
 		ED9C6A9218599AD8000A5232 /* CCNodeGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = CCNodeGrid.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		ED9C6A9318599AD8000A5232 /* CCNodeGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNodeGrid.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4972,6 +4978,8 @@
 		B29594B81926D61F003EEF37 /* 3d */ = {
 			isa = PBXGroup;
 			children = (
+				B6FADBA719760F09000272A3 /* CCSubMeshState.cpp */,
+				B6FADBA819760F09000272A3 /* CCSubMeshState.h */,
 				3ED450511973E081007D58ED /* CCAttachNode.cpp */,
 				3ED450521973E081007D58ED /* CCAttachNode.h */,
 				5E6073A4196D2AB700DBB038 /* CCAABB.cpp */,
@@ -5191,6 +5199,7 @@
 				1A01C69418F57BE800EFE3A6 /* CCFloat.h in Headers */,
 				2905FA5818CF08D100240AA3 /* UILayout.h in Headers */,
 				1A57034D180BD09B0088DEC7 /* tinyxml2.h in Headers */,
+				B6FADBAB19760F09000272A3 /* CCSubMeshState.h in Headers */,
 				1A570356180BD0B00088DEC7 /* ioapi.h in Headers */,
 				B29594C41926D61F003EEF37 /* CCMesh.h in Headers */,
 				50ABBE331925AB6F00A911A9 /* CCConfiguration.h in Headers */,
@@ -5753,6 +5762,7 @@
 				1AD71DF6180E26E600808F54 /* CCNodeLoader.h in Headers */,
 				50ABBD861925AB4100A911A9 /* CCBatchCommand.h in Headers */,
 				1AD71DFA180E26E600808F54 /* CCNodeLoaderLibrary.h in Headers */,
+				B6FADBAC19760F09000272A3 /* CCSubMeshState.h in Headers */,
 				50ABBE481925AB6F00A911A9 /* CCEvent.h in Headers */,
 				5027253B190BF1B900AAF4ED /* cocos2d.h in Headers */,
 				B29594CD1926D61F003EEF37 /* CCSprite3D.h in Headers */,
@@ -6306,6 +6316,7 @@
 				50ABBE651925AB6F00A911A9 /* CCEventListenerCustom.cpp in Sources */,
 				B37510781823AC9F00B3BA6A /* CCPhysicsShapeInfo_chipmunk.cpp in Sources */,
 				50FCEBB718C72017004AD434 /* TextAtlasReader.cpp in Sources */,
+				B6FADBA919760F09000272A3 /* CCSubMeshState.cpp in Sources */,
 				50ABBE391925AB6F00A911A9 /* CCData.cpp in Sources */,
 				1A57010E180BC8EE0088DEC7 /* CCDrawingPrimitives.cpp in Sources */,
 				50ABBED71925AB6F00A911A9 /* ZipUtils.cpp in Sources */,
@@ -6834,6 +6845,7 @@
 				1A570297180BCCAB0088DEC7 /* CCAnimationCache.cpp in Sources */,
 				50FCEBC418C72017004AD434 /* TextReader.cpp in Sources */,
 				50FCEB9418C72017004AD434 /* ButtonReader.cpp in Sources */,
+				B6FADBAA19760F09000272A3 /* CCSubMeshState.cpp in Sources */,
 				50ABBE321925AB6F00A911A9 /* CCConfiguration.cpp in Sources */,
 				1A5702C9180BCE370088DEC7 /* CCTextFieldTTF.cpp in Sources */,
 				1A5702EB180BCE750088DEC7 /* CCTileMapAtlas.cpp in Sources */,
