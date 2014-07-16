@@ -264,6 +264,15 @@ struct V3F_T2F
     Tex2F          texCoords;
 };
 
+struct V3F_C4B
+{
+    //! vertices (3F)
+    Vec3     vertices;                // 12 bytes
+    
+    //! colors (4B)
+    Color4B      colors;              // 4 bytes
+};
+
 //! A Triangle of V2F_C4B_T2F
 struct V2F_C4B_T2F_Triangle
 {

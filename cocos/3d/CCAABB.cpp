@@ -26,30 +26,19 @@
 
 NS_CC_BEGIN
 
-static AABB* AABB::create()
+AABB::AABB()
 {
-    auto aabb = new AABB();
-    if(aabb)
-    {
-        aabb->reset();
-        aabb->autorelease();
-        return aabb;
-    }
-    CC_SAFE_DELETE(aabb);
-    return nullptr;
+    reset();
 }
 
-static AABB* AABB::create(const Vec3& min, const Vec3& max)
+AABB::AABB(const Vec3& min, const Vec3& max)
 {
-    auto aabb = new AABB();
-    if(aabb)
-    {
-        aabb->set(min, max);
-        aabb->autorelease();
-        return aabb;
-    }
-    CC_SAFE_DELETE(aabb);
-    return nullptr;
+    set(min, max);
+}
+
+AABB::AABB(const AABB& box)
+{
+	set(box._min,box._max);
 }
 
 Vec3 AABB::getCenter()
@@ -62,10 +51,10 @@ Vec3 AABB::getCenter()
     return center;
 }
 
-void AABB::getCorners(Vec3 (* dst)[8]) const
+void AABB::getCorners(Vec3 *dst) const
 {
     assert(dst);
-
+    
     // Near face, specified counter-clockwise looking towards the origin from the positive z-axis.
     // Left-top-front.
     dst[0].set(_min.x, _max.y, _max.z);
@@ -130,46 +119,46 @@ void AABB::reset()
 	_max.set(-99999.0f, -99999.0f, -99999.0f);
 }
 
-void updateMinMax(Vec3* point, Vec3* min, Vec3* max)
+void AABB::updateMinMax(Vec3* point)
 {
     // Leftmost point.
-    if (point->x < min->x)
+    if (point->x < _min.x)
     {
-        min->x = point->x;
+        _min.x = point->x;
     }
 
     // Lowest point.
-    if (point->y < min->y)
+    if (point->y < _min.y)
     {
-        min->y = point->y;
+        _min.y = point->y;
     }
 
     // Farthest point.
-    if (point->z < min->z)
+    if (point->z < _min.z)
     {
-        min->z = point->z;
+        _min.z = point->z;
     }
 
     // Rightmost point.
-    if (point->x > max->x)
+    if (point->x > _max.x)
     {
-        max->x = point->x;
+        _max.x = point->x;
     }
 
     // Highest point.
-    if (point->y > max->y)
+    if (point->y > _max.y)
     {
-        max->y = point->y;
+        _max.y = point->y;
     }
 
     // Nearest point.
-    if (point->z > max->z)
+    if (point->z > _max.z)
     {
-        max->z = point->z;
+        _max.z = point->z;
     }
 }
 
-void AABB::transform(const C3DMatrix& matrix)
+void AABB::transform(const Mat4& matrix)
 {
     Vec3 corners[8];
 	 // Near face, specified counter-clockwise
@@ -199,28 +188,11 @@ void AABB::transform(const C3DMatrix& matrix)
     for (int i = 1; i < 8; i++)
     {
         matrix.transformPoint(&corners[i]);
-        updateMinMax(&corners[i], &newMin, &newMax);
+        updateMinMax(&corners[i]);
     }
     _min = newMin;
     _max = newMax;
 }
 
-AABB::AABB()
-{
-}
-
-AABB::AABB(const Vec3& min, const Vec3& max)
-{
-    set(min, max);
-}
-
-AABB::AABB(const AABB& box)
-{
-	set(box._min,box._max);
-}
-
-AABB::~AABB()
-{
-}
 
 NS_CC_END

@@ -545,15 +545,15 @@ std::string Sprite3DWithSkinTest::subtitle() const
 
 void Sprite3DWithSkinTest::addNewSpriteWithCoords(Vec2 p)
 {
-    std::string fileName = "Sprite3DTest/orc.c3b";
+    std::string fileName = "Sprite3DTest/orc.c3t";
     auto sprite = Sprite3D::create(fileName);
     sprite->setScale(3);
     sprite->setRotation3D(Vec3(0,180,0));
     addChild(sprite);
     sprite->setPosition( Vec2( p.x, p.y) );
-    
+
     //test attach
-    auto sp = Sprite3D::create("Sprite3DTest/orc.c3b");
+    auto sp = Sprite3D::create("Sprite3DTest/orc.c3t");
     sp->setScale(0.5f);
     sprite->getAttachNode("Bip001 L Hand")->addChild(sp);
 
