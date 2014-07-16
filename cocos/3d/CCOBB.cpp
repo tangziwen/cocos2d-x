@@ -212,8 +212,6 @@ OBB::OBB(const AABB& aabb)
     
     extents = aabb._max - aabb._min;
     extents.scale(0.5f);
-    
-    completeExtAxis();
 }
 
 // build obb from points
@@ -259,8 +257,6 @@ OBB::OBB(const Vec3* verts, int nVerts)
     zAxis.normalize();
     
     extents = 0.5f * (vecMax - vecMin);
-    
-    completeExtAxis();
 }
 
 // is point in this obb
@@ -300,6 +296,10 @@ void OBB::reset()
 // verts[7] : back left top corner
 void OBB::getCorners(Vec3* verts) const
 {
+    Vec3 extX = xAxis * extents.x;
+    Vec3 extY = yAxis * extents.y;
+    Vec3 extZ = zAxis * extents.z;
+    
     verts[0] = center - extX  - extY + extZ; //front left bottom;
 
     verts[1] = center + extX - extY + extZ; //front right bottom;
@@ -339,8 +339,6 @@ void OBB::transform(const Mat4& mat)
     extents.x *= scale.x;
     extents.y *= scale.y;
     extents.z *= scale.z;
-
-    completeExtAxis();
 }
 
 NS_CC_END

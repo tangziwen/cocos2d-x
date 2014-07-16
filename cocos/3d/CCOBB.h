@@ -28,10 +28,7 @@
 #include "CCAABB.h"
 
 NS_CC_BEGIN
-    
-/**
- * Defines a class to describe oriented bounding box
- */
+
 class OBB
 {
 public:
@@ -41,10 +38,6 @@ public:
     Vec3 xAxis; // x axis of obb, unit vector
     Vec3 yAxis; // y axis of obb, unit vecotr
     Vec3 zAxis; // z axis of obb, unit vector
-    
-    Vec3 extX; // xAxis * extents.x
-    Vec3 extY; // yAxis * extents.y
-    Vec3 extZ; // zAxis * extents.z
     
     Vec3 extents; // obb length along each axis
     
@@ -73,15 +66,6 @@ public:
     // verts[6] : back right top corner
     // verts[7] : back left top corner
     void getCorners(Vec3* verts) const;
-
-    // compute extX, extY, extZ
-    // if obb axis changed call this function before use ext axis
-    void completeExtAxis()
-    {
-        extX = xAxis * extents.x;
-        extY = yAxis * extents.y;
-        extZ = zAxis * extents.z;
-    }
 
 	/**
      * Transforms the obb by the given transformation matrix.

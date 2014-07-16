@@ -30,9 +30,6 @@
 
 NS_CC_BEGIN
 
-/**
- * Defines a class describe 3-dimensional axis-aligned bounding box.
- */
 class AABB
 {
 public:
@@ -87,27 +84,20 @@ public:
     void set(const Vec3& min, const Vec3& max);
     
     /**
-     * Gets min and max value.
-     */
-    void get(Vec3& min, Vec3& max);
-    
-    /**
      * reset min and max value.
      */
     void reset();
 
     /**
-     * update the min and max from the given point.
+     * update the _min and _max from the given point.
      */
-    void updateMinMax(Vec3* point, Vec3* min, Vec3* max);
+    void updateMinMax(Vec3* point);
     
     /**
      * Transforms the bounding box by the given transformation matrix.
      */
     void transform(const Mat4& matrix);
-    
 
-    
 };
 
 NS_CC_END

@@ -31,6 +31,9 @@
 
 NS_CC_BEGIN
 
+/**
+ * Copy DrawNode for 3D geometry drawing.
+ */
 class CC_DLL DrawNode3D: public Node
 {
 public:
