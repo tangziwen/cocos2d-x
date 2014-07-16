@@ -28,6 +28,7 @@
 #include "3d/CCAnimate3D.h"
 #include "3d/CCMesh.h"
 #include "3d/CCSubMesh.h"
+#include "3d/CCAttachNode.h"
 
 #include <algorithm>
 #include "../testResource.h"
@@ -550,6 +551,11 @@ void Sprite3DWithSkinTest::addNewSpriteWithCoords(Vec2 p)
     sprite->setRotation3D(Vec3(0,180,0));
     addChild(sprite);
     sprite->setPosition( Vec2( p.x, p.y) );
+    
+    //test attach
+    auto sp = Sprite3D::create("Sprite3DTest/orc.c3b");
+    sp->setScale(0.5f);
+    sprite->getAttachNode("Bip001 L Hand")->addChild(sp);
 
     auto animation = Animation3D::create(fileName);
     if (animation)
