@@ -697,7 +697,6 @@ bool Bundle3D::loadMeshDataBinary_0_1(MeshData* meshdata)
 
 bool Bundle3D::loadMeshDataBinary_0_2(MeshData* meshdata)
 {
- 
     if (!seekToFirstType(BUNDLE_TYPE_MESH))
         return false;
     
@@ -742,7 +741,7 @@ bool Bundle3D::loadMeshDataBinary_0_2(MeshData* meshdata)
     
     // read submesh
     unsigned int submeshCount;
-    if (_binaryReader.read(&submeshCount, 4, 1))
+    if (_binaryReader.read(&submeshCount, 4, 1) != 1)
     {
         CCLOGINFO("Failed to read meshdata: submeshCount '%s'.", _path.c_str());
         return false;
@@ -877,15 +876,25 @@ bool Bundle3D::loadMaterialDataBinary(MaterialData* materialdata)
     if (!seekToFirstType(BUNDLE_TYPE_MATERIAL))
         return false;
 
-    std::string texturePath = _binaryReader.readString();
-    if (texturePath.empty())
+    unsigned int materialnum = 0;
+    if (_version == "0.2")
     {
-        CCLOGINFO("Failed to read Materialdata: texturePath is empty '%s'.", _path.c_str());
-        return false;
+        _binaryReader.read(&materialnum, 4, 1);
     }
-
-    std::string path = _modelRelativePath + texturePath;
-    materialdata->texturePaths[0] = path;
+    
+    for (int i = 0; i < materialnum; i++)
+    {
+        std::string texturePath = _binaryReader.readString();
+        if (texturePath.empty())
+        {
+            CCLOGINFO("Failed to read Materialdata: texturePath is empty '%s'.", _path.c_str());
+            return false;
+        }
+        
+        std::string path = _modelRelativePath + texturePath;
+        materialdata->texturePaths[i] = path;
+    }
+    
     return true;
 }
 

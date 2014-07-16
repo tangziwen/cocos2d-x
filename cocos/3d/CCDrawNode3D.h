@@ -22,35 +22,50 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CCDRAWNODE3D_H__
-#define __CCDRAWNODE3D_H__
+#ifndef __CCDRAW_NODE_3D_H__
+#define __CCDRAW_NODE_3D_H__
 
 #include "2d/CCNode.h"
 #include "base/ccTypes.h"
 #include "renderer/CCCustomCommand.h"
 
-
 NS_CC_BEGIN
 
-class CC_DLL DrawNode3D : public Node
+class CC_DLL DrawNode3D: public Node
 {
 public:
     /** creates and initialize a DrawNode3D node */
-    static DrawNode* create();
-
-    //void drawLine(const Vec3 &from, const Vec3 &to, const Color4F &color);
+    static DrawNode3D* create();
     
-    void drawTriangle(const Vec3 &p1, const Vec3 &p2, const Vec3 &p3, const Color4F &color)；
+    /**
+     * Draw 3D Line
+     */
+    void drawLine(const Vec3 &from, const Vec3 &to, const Color4F &color);
     
-    //void drawCube(Vec2 *verts);
+    /**
+    * Draw 3D cube
+    * @param point to a vertex array who has 8 element.
+    *        vertices[0]:Left-top-front,
+    *        vertices[1]:Left-bottom-front,
+    *        vertices[2]:Right-bottom-front,
+    *        vertices[3]:Right-top-front,
+    *        vertices[4]:Right-top-back,
+    *        vertices[5]:Right-bottom-back,
+    *        vertices[6]:Left-bottom-back,
+    *        vertices[7]:Left-top-back.
+    * @param color
+    */
+    void drawCube(Vec3* vertices, const Color4F &color);
     
     /** Clear the geometry in the node's buffer. */
     void clear();
+    
     /**
     * @js NA
     * @lua NA
     */
     const BlendFunc& getBlendFunc() const;
+    
     /**
     * @code
     * When this function bound into js or lua,the parameter will be changed
@@ -67,7 +82,7 @@ public:
     
 CC_CONSTRUCTOR_ACCESS:
     DrawNode3D();
-    virtual DrawNode3D();
+    virtual ~DrawNode3D();
     virtual bool init();
 
 protected:
@@ -78,7 +93,7 @@ protected:
 
     int         _bufferCapacity;
     GLsizei     _bufferCount;
-    V2F_C4F_T2F *_buffer;
+    V3F_C4B*    _buffer;
 
     BlendFunc   _blendFunc;
     CustomCommand _customCommand;

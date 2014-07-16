@@ -26,6 +26,7 @@
 #define __CC_AABB_H__
 
 #include "base/ccMacros.h"
+#include "math/CCMath.h"
 
 NS_CC_BEGIN
 
@@ -62,7 +63,7 @@ public:
     /**
      * Gets the corners of the bounding box in the specified array.
      */
-    void getCorners(Vec3 (* dst)[8]) const;
+    void getCorners(Vec3 *dst) const;
 
     /**
      * Tests whether this bounding box intersects the specified bounding object.

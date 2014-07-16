@@ -50,10 +50,10 @@ Vec3 AABB::getCenter()
     return center;
 }
 
-void AABB::getCorners(Vec3 (* dst)[8]) const
+void AABB::getCorners(Vec3 *dst) const
 {
     assert(dst);
-
+    
     // Near face, specified counter-clockwise looking towards the origin from the positive z-axis.
     // Left-top-front.
     dst[0].set(_min.x, _max.y, _max.z);

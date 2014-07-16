@@ -72,7 +72,7 @@ public:
     // verts[5] : back right bottom corner
     // verts[6] : back right top corner
     // verts[7] : back left top corner
-    void getVertices(Vec3* verts) const;
+    void getCorners(Vec3* verts) const;
 
     // compute extX, extY, extZ
     // if obb axis changed call this function before use ext axis

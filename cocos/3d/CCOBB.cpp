@@ -95,7 +95,7 @@ static void _eigenVectors(Mat4* vout, Vec3* dout, Mat4 a)
     Mat4 v;
     Vec3 d;
 
-    v = Mat4::identity();
+    v = Mat4::IDENTITY;
     for(ip=0; ip<n; ip++)
     {
         _getElement(b, ip) = a.m[ip + 4 * ip];
@@ -178,7 +178,7 @@ static Mat4 _GetOBBOrientation(const Vec3* aVertPos, int nVertCount)
     Mat4 Cov;
 
     if (nVertCount <= 0)
-        return Mat4::identity();
+        return Mat4::IDENTITY;
 
     Cov = _convarianceMatrix(aVertPos, nVertCount);
 
@@ -200,7 +200,7 @@ OBB::OBB()
 
 
 // build obb from oriented bounding box
-void OBB::OBB(const C3DAABB& aabb)
+OBB::OBB(const AABB& aabb)
 {
     reset();
     
@@ -217,7 +217,7 @@ void OBB::OBB(const C3DAABB& aabb)
 }
 
 // build obb from points
-void OBB::OBB(const Vec3* verts, int nVerts)
+OBB::OBB(const Vec3* verts, int nVerts)
 {
     if (!nVerts) return;
     
@@ -298,7 +298,7 @@ void OBB::reset()
 // verts[5] : back right bottom corner
 // verts[6] : back right top corner
 // verts[7] : back left top corner
-void OBB::getVertices(Vec3* verts) const
+void OBB::getCorners(Vec3* verts) const
 {
     verts[0] = center - extX  - extY + extZ; //front left bottom;
 
@@ -319,7 +319,7 @@ void OBB::getVertices(Vec3* verts) const
 
 void OBB::transform(const Mat4& mat)
 {
-    C3DVector4 newcenter = mat * C3DVector4(center.x, center.y, center.z, 1.0f);// center;
+    Vec4 newcenter = mat * Vec4(center.x, center.y, center.z, 1.0f);// center;
     center.x = newcenter.x;
     center.y = newcenter.y;
     center.z = newcenter.z;
