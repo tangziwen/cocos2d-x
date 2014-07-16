@@ -1772,6 +1772,15 @@
 		50FCEBCA18C72017004AD434 /* WidgetReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 50FCEB9118C72017004AD434 /* WidgetReader.h */; };
 		50FCEBCB18C72017004AD434 /* WidgetReaderProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50FCEB9218C72017004AD434 /* WidgetReaderProtocol.h */; };
 		50FCEBCC18C72017004AD434 /* WidgetReaderProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 50FCEB9218C72017004AD434 /* WidgetReaderProtocol.h */; };
+		5E092FFA197676C300A3C5FA /* CCDrawNode3D.cpp in Headers */ = {isa = PBXBuildFile; fileRef = 5E092FF61976768200A3C5FA /* CCDrawNode3D.cpp */; };
+		5E092FFB197676C300A3C5FA /* CCDrawNode3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E092FF71976768200A3C5FA /* CCDrawNode3D.h */; };
+		5E092FFC197676C300A3C5FA /* CCOBB.cpp in Headers */ = {isa = PBXBuildFile; fileRef = 5E092FF81976768200A3C5FA /* CCOBB.cpp */; };
+		5E092FFD197676C300A3C5FA /* CCOBB.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E092FF91976768200A3C5FA /* CCOBB.h */; };
+		5E092FFE197676C300A3C5FA /* CCAABB.cpp in Headers */ = {isa = PBXBuildFile; fileRef = 5E6073A4196D2AB700DBB038 /* CCAABB.cpp */; };
+		5E092FFF197676C300A3C5FA /* CCAABB.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E6073A5196D2AB700DBB038 /* CCAABB.h */; };
+		5E0930001976782100A3C5FA /* CCDrawNode3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E092FF61976768200A3C5FA /* CCDrawNode3D.cpp */; };
+		5E0930011976782100A3C5FA /* CCOBB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E092FF81976768200A3C5FA /* CCOBB.cpp */; };
+		5E0930021976782100A3C5FA /* CCAABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E6073A4196D2AB700DBB038 /* CCAABB.cpp */; };
 		A07A4CAF1783777C0073F6A7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1551A342158F2AB200E66CFE /* Foundation.framework */; };
 		B24AA985195A675C007B4522 /* CCFastTMXLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B24AA981195A675C007B4522 /* CCFastTMXLayer.cpp */; };
 		B24AA986195A675C007B4522 /* CCFastTMXLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B24AA981195A675C007B4522 /* CCFastTMXLayer.cpp */; };
@@ -2880,6 +2889,10 @@
 		50FCEB9018C72017004AD434 /* WidgetReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WidgetReader.cpp; sourceTree = "<group>"; };
 		50FCEB9118C72017004AD434 /* WidgetReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReader.h; sourceTree = "<group>"; };
 		50FCEB9218C72017004AD434 /* WidgetReaderProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WidgetReaderProtocol.h; sourceTree = "<group>"; };
+		5E092FF61976768200A3C5FA /* CCDrawNode3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDrawNode3D.cpp; sourceTree = "<group>"; };
+		5E092FF71976768200A3C5FA /* CCDrawNode3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDrawNode3D.h; sourceTree = "<group>"; };
+		5E092FF81976768200A3C5FA /* CCOBB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCOBB.cpp; sourceTree = "<group>"; };
+		5E092FF91976768200A3C5FA /* CCOBB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOBB.h; sourceTree = "<group>"; };
 		5E6073A4196D2AB700DBB038 /* CCAABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCAABB.cpp; sourceTree = "<group>"; };
 		5E6073A5196D2AB700DBB038 /* CCAABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAABB.h; sourceTree = "<group>"; };
 		A03F2CB81780BD04006731B9 /* libchipmunk Mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libchipmunk Mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4978,6 +4991,10 @@
 		B29594B81926D61F003EEF37 /* 3d */ = {
 			isa = PBXGroup;
 			children = (
+				5E092FF61976768200A3C5FA /* CCDrawNode3D.cpp */,
+				5E092FF71976768200A3C5FA /* CCDrawNode3D.h */,
+				5E092FF81976768200A3C5FA /* CCOBB.cpp */,
+				5E092FF91976768200A3C5FA /* CCOBB.h */,
 				B6FADBA719760F09000272A3 /* CCSubMeshState.cpp */,
 				B6FADBA819760F09000272A3 /* CCSubMeshState.h */,
 				3ED450511973E081007D58ED /* CCAttachNode.cpp */,
@@ -5527,6 +5544,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E092FFA197676C300A3C5FA /* CCDrawNode3D.cpp in Headers */,
+				5E092FFB197676C300A3C5FA /* CCDrawNode3D.h in Headers */,
+				5E092FFC197676C300A3C5FA /* CCOBB.cpp in Headers */,
+				5E092FFD197676C300A3C5FA /* CCOBB.h in Headers */,
+				5E092FFE197676C300A3C5FA /* CCAABB.cpp in Headers */,
+				5E092FFF197676C300A3C5FA /* CCAABB.h in Headers */,
 				2AC795E71862875D005EC8E1 /* SkeletonBounds.h in Headers */,
 				2AC795E81862875D005EC8E1 /* Event.h in Headers */,
 				2AC795E91862875D005EC8E1 /* EventData.h in Headers */,
@@ -6710,6 +6733,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E0930001976782100A3C5FA /* CCDrawNode3D.cpp in Sources */,
+				5E0930011976782100A3C5FA /* CCOBB.cpp in Sources */,
+				5E0930021976782100A3C5FA /* CCAABB.cpp in Sources */,
 				1A01C69918F57BE800EFE3A6 /* CCSet.cpp in Sources */,
 				1A01C69D18F57BE800EFE3A6 /* CCString.cpp in Sources */,
 				2986667F18B1B246000E39CA /* CCTweenFunction.cpp in Sources */,
