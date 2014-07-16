@@ -29,7 +29,7 @@ NS_CC_BEGIN
 
 BundleReader::BundleReader()
 {
-    m_buffer = NULL;
+    m_buffer = nullptr;
     m_position = 0;
     m_length = 0;
 };
@@ -147,7 +147,7 @@ bool BundleReader::seek(long int offset, int origin)
 
 bool BundleReader::rewind()
 {
-    if (m_buffer != NULL)
+    if (m_buffer != nullptr)
     {
         m_position = 0;
         return true;

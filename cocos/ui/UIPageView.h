@@ -31,12 +31,12 @@ NS_CC_BEGIN
 
 namespace ui {
 
-CC_DEPRECATED_ATTRIBUTE typedef enum
+typedef enum
 {
     PAGEVIEW_EVENT_TURNING,
 }PageViewEventType;
 
-CC_DEPRECATED_ATTRIBUTE typedef void (Ref::*SEL_PageViewEvent)(Ref*, PageViewEventType);
+typedef void (Ref::*SEL_PageViewEvent)(Ref*, PageViewEventType);
 #define pagevieweventselector(_SELECTOR)(SEL_PageViewEvent)(&_SELECTOR)
 
 class PageView : public Layout
@@ -127,8 +127,7 @@ public:
      */
     ssize_t getCurPageIndex() const;
     
-    //TODO: add Vector<Layout*> member variables into UIPageView, but it only used for reference purpose,
-    //all the pages are added into proteced node, so does scrollview, listview
+    
     Vector<Layout*>& getPages();
     
     Layout* getPage(ssize_t index);
