@@ -28,6 +28,7 @@ NS_CC_BEGIN
 
 AABB::AABB()
 {
+    reset();
 }
 
 AABB::AABB(const Vec3& min, const Vec3& max)
