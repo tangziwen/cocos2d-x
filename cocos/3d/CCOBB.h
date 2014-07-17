@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_OBB_H_
-#define __CC_OBB_H_
+#ifndef __CC_OBB_H__
+#define __CC_OBB_H__
 
 #include "CCAABB.h"
 
