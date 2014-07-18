@@ -33,6 +33,11 @@
 #include <algorithm>
 #include "../testResource.h"
 
+#include "3d/CCDrawNode3D.h"
+#include "3d/CCAABB.h"
+#include "3d/CCOBB.h"
+#include "3d/CCRay.h"
+
 enum
 {
     IDC_NEXT = 100,
@@ -162,8 +167,9 @@ void Sprite3DBasicTest::addNewSpriteWithCoords(Vec2 p)
     
     //option 2: load obj and assign the texture
     auto sprite = Sprite3D::create("Sprite3DTest/boss1.obj");
+
     sprite->setScale(3.f);
-    sprite->setTexture("Sprite3DTest/boss.png");
+    //sprite->setTexture("Sprite3DTest/boss.png");
     
     //
     //sprite->setEffect(cocos2d::EFFECT_OUTLINE);
@@ -596,6 +602,7 @@ Animate3DTest::Animate3DTest()
 , _moveAction(nullptr)
 , _transTime(0.1f)
 , _elapseTransTime(0.f)
+,_obb(nullptr)
 {
     addSprite3D();
     
@@ -611,6 +618,7 @@ Animate3DTest::~Animate3DTest()
     CC_SAFE_RELEASE(_moveAction);
     CC_SAFE_RELEASE(_hurt);
     CC_SAFE_RELEASE(_swim);
+    CC_SAFE_DELETE(_obb);
 }
 
 std::string Animate3DTest::title() const
@@ -651,11 +659,32 @@ void Animate3DTest::update(float dt)
         _swim->setWeight(1.f - t);
         _hurt->setWeight(t);
     }
+    
+    if (_obb && _drawAABB)
+    {
+        _drawAABB->clear();
+        
+        Mat4 mat = _sprite->getNodeToWorldTransform();
+        mat.getRightVector(&_obb->_xAxis);
+        _obb->_xAxis.normalize();
+        
+        mat.getUpVector(&_obb->_yAxis);
+        _obb->_yAxis.normalize();
+        
+        mat.getForwardVector(&_obb->_zAxis);
+        _obb->_zAxis.normalize();
+        
+        _obb->_center = _sprite->getPosition3D();
+        
+        Vec3 corners[8] = {};
+        _obb->getCorners(corners);
+        _drawAABB->drawCube(corners, Color4F(1,0,0,1));
+    }
 }
 
 void Animate3DTest::addSprite3D()
 {
-    std::string fileName = "Sprite3DTest/tortoise.c3t";
+    std::string fileName = "Sprite3DTest/tortoise.c3b";
     auto sprite = Sprite3D::create(fileName);
     sprite->setScale(0.1f);
     auto s = Director::getInstance()->getWinSize();
@@ -679,6 +708,14 @@ void Animate3DTest::addSprite3D()
     auto seq = Sequence::create(_moveAction, CallFunc::create(CC_CALLBACK_0(Animate3DTest::reachEndCallBack, this)), nullptr);
     seq->setTag(100);
     sprite->runAction(seq);
+    
+    _aabbExt = Vec3(30, 20, 20);// test data
+    AABB aabb(Vec3(-_aabbExt.x, -_aabbExt.y, -_aabbExt.z), Vec3(_aabbExt.x, _aabbExt.y, _aabbExt.z));
+    CC_SAFE_DELETE(_obb);
+    _obb = new OBB(aabb);
+    
+    _drawAABB = DrawNode3D::create();
+    addChild(_drawAABB);
 }
 
 void Animate3DTest::reachEndCallBack()
@@ -700,16 +737,63 @@ void Animate3DTest::renewCallBack()
     _state = State::HURT_TO_SWIMMING;
 }
 
+void Animate3DTest::unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst)
+{
+    assert(dst);
+    
+    assert(viewport->width != 0.0f && viewport->height != 0.0f);
+    Vec4 screen(src->x / viewport->width, ((viewport->height - src->y)) / viewport->height, src->z, 1.0f);
+    
+    screen.x = screen.x * 2.0f - 1.0f;
+    screen.y = screen.y * 2.0f - 1.0f;
+    screen.z = screen.z * 2.0f - 1.0f;
+    
+    viewProjection.getInversed().transformVector(screen, &screen);
+    
+    if (screen.w != 0.0f)
+    {
+        screen.x /= screen.w;
+        screen.y /= screen.w;
+        screen.z /= screen.w;
+    }
+    
+    dst->set(screen.x, screen.y, screen.z);
+}
+
+void Animate3DTest::calculateRayByLocationInView(Ray* ray, const Vec2& location)
+{
+    auto dir = Director::getInstance();
+    auto view = dir->getWinSize();
+    Mat4 mat = dir->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    mat = dir->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+    
+    Vec3 src = Vec3(location.x, location.y, -1);
+    Vec3 nearPoint;
+    unproject(mat, &view, &src, &nearPoint);
+    
+    src = Vec3(location.x, location.y, 1);
+    Vec3 farPoint;
+    unproject(mat, &view, &src, &farPoint);
+    
+    Vec3 direction;
+    Vec3::subtract(farPoint, nearPoint, &direction);
+    direction.normalize();
+    
+    ray->_origin = nearPoint;
+    ray->_direction = direction;
+}
+
 void Animate3DTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
 {
     for (auto touch: touches)
     {
-        auto location = touch->getLocation();
+        auto location = touch->getLocationInView();
         
         if (_sprite)
         {
-            float len = (_sprite->getPosition() - location).length();
-            if (len < 40)
+            Ray ray;
+            calculateRayByLocationInView(&ray,location);
+            if(ray.intersects(_obb))
             {
                 //hurt the tortoise
                 if (_state == State::SWIMMING)
@@ -723,6 +807,7 @@ void Animate3DTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* ev
                 }
                 return;
             }
+           
         }
     }
 }
