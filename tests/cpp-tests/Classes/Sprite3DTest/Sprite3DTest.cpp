@@ -48,7 +48,8 @@ static std::function<Layer*()> createFunctions[] =
     CL(Sprite3DBasicTest),
     CL(Sprite3DEffectTest),
     CL(Sprite3DWithSkinTest),
-    CL(Animate3DTest)
+    CL(Animate3DTest),
+    CL(AttachmentTest)
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -545,17 +546,12 @@ std::string Sprite3DWithSkinTest::subtitle() const
 
 void Sprite3DWithSkinTest::addNewSpriteWithCoords(Vec2 p)
 {
-    std::string fileName = "Sprite3DTest/orc.c3t";
+    std::string fileName = "Sprite3DTest/orc.c3b";
     auto sprite = Sprite3D::create(fileName);
     sprite->setScale(3);
     sprite->setRotation3D(Vec3(0,180,0));
     addChild(sprite);
     sprite->setPosition( Vec2( p.x, p.y) );
-
-    //test attach
-    auto sp = Sprite3D::create("Sprite3DTest/orc.c3t");
-    sp->setScale(0.5f);
-    sprite->getAttachNode("Bip001 L Hand")->addChild(sp);
 
     auto animation = Animation3D::create(fileName);
     if (animation)
@@ -655,7 +651,7 @@ void Animate3DTest::update(float dt)
 
 void Animate3DTest::addSprite3D()
 {
-    std::string fileName = "Sprite3DTest/tortoise.c3t";
+    std::string fileName = "Sprite3DTest/tortoise.c3b";
     auto sprite = Sprite3D::create(fileName);
     sprite->setScale(0.1f);
     auto s = Director::getInstance()->getWinSize();
@@ -725,4 +721,63 @@ void Animate3DTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* ev
             }
         }
     }
+}
+
+
+AttachmentTest::AttachmentTest()
+: _hasWeapon(false)
+, _sprite(nullptr)
+{
+    auto s = Director::getInstance()->getWinSize();
+    addNewSpriteWithCoords( Vec2(s.width/2, s.height/2) );
+    
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesEnded = CC_CALLBACK_2(AttachmentTest::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+std::string AttachmentTest::title() const
+{
+    return "Testing Sprite3D";
+}
+std::string AttachmentTest::subtitle() const
+{
+    return "touch to switch weapon";
+}
+
+void AttachmentTest::addNewSpriteWithCoords(Vec2 p)
+{
+    std::string fileName = "Sprite3DTest/orc.c3b";
+    auto sprite = Sprite3D::create(fileName);
+    sprite->setScale(5);
+    sprite->setRotation3D(Vec3(0,180,0));
+    addChild(sprite);
+    sprite->setPosition( Vec2( p.x, p.y) );
+    
+    //test attach
+    auto sp = Sprite3D::create("Sprite3DTest/axe.c3b");
+    sprite->getAttachNode("Bip001 R Hand")->addChild(sp);
+    
+    auto animation = Animation3D::create(fileName);
+    if (animation)
+    {
+        auto animate = Animate3D::create(animation);
+        
+        sprite->runAction(RepeatForever::create(animate));
+    }
+    _sprite = sprite;
+    _hasWeapon = true;
+}
+
+void AttachmentTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
+{
+    if (_hasWeapon)
+    {
+        _sprite->removeAllAttachNode();
+    }
+    else
+    {
+        auto sp = Sprite3D::create("Sprite3DTest/axe.c3b");
+        _sprite->getAttachNode("Bip001 R Hand")->addChild(sp);
+    }
+    _hasWeapon = !_hasWeapon;
 }
