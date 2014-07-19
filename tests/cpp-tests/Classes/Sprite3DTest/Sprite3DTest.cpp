@@ -173,7 +173,7 @@ void Sprite3DBasicTest::addNewSpriteWithCoords(Vec2 p)
     auto sprite = Sprite3D::create("Sprite3DTest/boss1.obj");
 
     sprite->setScale(3.f);
-    //sprite->setTexture("Sprite3DTest/boss.png");
+    sprite->setTexture("Sprite3DTest/boss.png");
     
     //
     //sprite->setEffect(cocos2d::EFFECT_OUTLINE);
@@ -708,8 +708,9 @@ void Animate3DTest::addSprite3D()
     seq->setTag(100);
     sprite->runAction(seq);
     
-    _aabbExt = Vec3(30, 20, 20);// test data
-    AABB aabb(Vec3(-_aabbExt.x, -_aabbExt.y, -_aabbExt.z), Vec3(_aabbExt.x, _aabbExt.y, _aabbExt.z));
+	// Generate a OBB box by AABB
+    Vec3 extents = Vec3(30, 20, 20);
+    AABB aabb(-extents, extents);
     CC_SAFE_DELETE(_obb);
     _obb = new OBB(aabb);
     
