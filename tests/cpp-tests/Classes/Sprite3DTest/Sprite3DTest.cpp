@@ -826,7 +826,7 @@ AttachmentTest::AttachmentTest()
 }
 std::string AttachmentTest::title() const
 {
-    return "Testing Sprite3D";
+    return "Testing Sprite3D Attachment";
 }
 std::string AttachmentTest::subtitle() const
 {
