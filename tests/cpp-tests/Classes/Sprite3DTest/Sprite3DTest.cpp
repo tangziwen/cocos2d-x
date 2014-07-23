@@ -410,6 +410,9 @@ void Effect3DOutline::setTarget(EffectSprite3D *sprite)
 void Effect3DOutline::draw(const Mat4 &transform)
 {
     //draw
+    Color4F color(_sprite->getDisplayedColor());
+    color.a = _sprite->getDisplayedOpacity() / 255.0f;
+    _glProgramState->setUniformVec4("u_color", Vec4(color.r, color.g, color.b, color.a));
     if(_sprite && _sprite->getMesh())
     {
         glEnable(GL_CULL_FACE);
