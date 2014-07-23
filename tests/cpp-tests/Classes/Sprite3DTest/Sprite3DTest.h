@@ -33,6 +33,9 @@ namespace cocos2d {
     class Animate3D;
     class Sprite3D;
     class Delay;
+    class DrawNode3D;
+    class OBB;
+    class Ray;
 }
 
 class Sprite3DTestDemo : public BaseTest
@@ -172,6 +175,10 @@ public:
     virtual void update(float dt) override;
     
 protected:
+    void unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst);
+    void calculateRayByLocationInView(Ray* ray, const Vec2& location);
+    
+protected:
     void addSprite3D();
     
     enum class State
@@ -196,6 +203,28 @@ protected:
     State   _state;
     
     MoveTo* _moveAction;
+    
+    DrawNode3D* _drawAABB;
+    OBB* _obb;
+    Vec3 _aabbExt;
+};
+
+
+class AttachmentTest : public Sprite3DTestDemo
+{
+public:
+    CREATE_FUNC(AttachmentTest);
+    AttachmentTest();
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    
+    void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
+    
+    void addNewSpriteWithCoords(Vec2 p);
+    
+protected:
+    bool _hasWeapon;
+    cocos2d::Sprite3D* _sprite;
 };
 
 class Sprite3DTestScene : public TestScene

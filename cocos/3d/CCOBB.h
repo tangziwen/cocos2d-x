@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_OBB_H_
-#define __CC_OBB_H_
+#ifndef __CC_OBB_H__
+#define __CC_OBB_H__
 
 #include "CCAABB.h"
 
@@ -32,39 +32,52 @@ NS_CC_BEGIN
 class OBB
 {
 public:
-    
-    Vec3 center; // obb center
-    
-    Vec3 xAxis; // x axis of obb, unit vector
-    Vec3 yAxis; // y axis of obb, unit vecotr
-    Vec3 zAxis; // z axis of obb, unit vector
-    
-    Vec3 extents; // obb length along each axis
+    Vec3 _center;   // obb center
+    Vec3 _xAxis;    // x axis of obb, unit vector
+    Vec3 _yAxis;    // y axis of obb, unit vecotr
+    Vec3 _zAxis;    // z axis of obb, unit vector
+    Vec3 _extents;  // obb length along each axis
     
 public:
     OBB();
 
-    // construct obb from oriented bounding box
+    /*
+     * construct obb from oriented bounding box
+     */
     OBB(const AABB& aabb);
     
-    // construct obb from points
+    /*
+     * construct obb from points
+     */
     OBB(const Vec3* verts, int nVerts);
     
-    // is point in this obb
+    /*
+     * is point in this obb
+     */
     bool isPointIn(const Vec3& point) const;
 
-    // clear obb
+    /*
+     * specify obb values
+     */
+    void set(const Vec3& center, const Vec3& _xAxis, const Vec3& _yAxis, const Vec3& _zAxis, const Vec3& _extents);
+    
+    /*
+     * clear obb
+     */ 
     void reset();
 
-    // face to the obb's -z direction
-    // verts[0] : front left bottom corner
-    // verts[1] : front right bottom corner
-    // verts[2] : front right top corner
-    // verts[3] : front left top corner
-    // verts[4] : back left bottom corner
-    // verts[5] : back right bottom corner
-    // verts[6] : back right top corner
-    // verts[7] : back left top corner
+    /* face to the obb's -z direction
+     * verts[0] : left top front
+     * verts[1] : left bottom front
+     * verts[2] : right bottom front
+     * verts[3] : right top front
+     *
+     * face to the obb's z direction
+     * verts[4] : right top back
+     * verts[5] : right bottom back
+     * verts[6] : left bottom back
+     * verts[7] : left top back
+     */
     void getCorners(Vec3* verts) const;
 
 	/**

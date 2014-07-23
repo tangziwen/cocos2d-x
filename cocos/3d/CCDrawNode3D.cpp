@@ -168,7 +168,7 @@ void DrawNode3D::onDraw(const Mat4 &transform, uint32_t flags)
 
         glBindBuffer(GL_ARRAY_BUFFER, _vbo);
         // vertex
-        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B), (GLvoid *)offsetof(V3F_C4B, vertices));
+        glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(V3F_C4B), (GLvoid *)offsetof(V3F_C4B, vertices));
 
         // color
         glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V3F_C4B), (GLvoid *)offsetof(V3F_C4B, colors));
@@ -201,31 +201,23 @@ void DrawNode3D::drawLine(const Vec3 &from, const Vec3 &to, const Color4F &color
 
 void DrawNode3D::drawCube(Vec3* vertices, const Color4F &color)
 {
-    // top
-    //   __
-    // /   /
-    //  ——
-    drawLine(vertices[0], vertices[3], color);
-    drawLine(vertices[3], vertices[4], color);
-    drawLine(vertices[4], vertices[7], color);
-    drawLine(vertices[7], vertices[0], color);
-    
-    // vertical
-    //    |  |
-    //  |  |
+    // front face
     drawLine(vertices[0], vertices[1], color);
-    drawLine(vertices[2], vertices[3], color);
-    drawLine(vertices[4], vertices[5], color);
-    drawLine(vertices[6], vertices[7], color);
-    
-    // bottom
-    //   __
-    // /   /
-    //  ——
     drawLine(vertices[1], vertices[2], color);
-    drawLine(vertices[2], vertices[5], color);
+    drawLine(vertices[2], vertices[3], color);
+    drawLine(vertices[3], vertices[0], color);
+    
+    // back face
+    drawLine(vertices[4], vertices[5], color);
     drawLine(vertices[5], vertices[6], color);
-    drawLine(vertices[6], vertices[1], color);
+    drawLine(vertices[6], vertices[7], color);
+    drawLine(vertices[7], vertices[4], color);
+    
+    // edge
+    drawLine(vertices[0], vertices[7], color);
+    drawLine(vertices[1], vertices[6], color);
+    drawLine(vertices[2], vertices[5], color);
+    drawLine(vertices[3], vertices[4], color);
 }
 
 void DrawNode3D::clear()
