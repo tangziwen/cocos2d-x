@@ -708,7 +708,7 @@ void Animate3DTest::addSprite3D()
     seq->setTag(100);
     sprite->runAction(seq);
     
-	// Generate a OBB box by AABB
+	// Generate OBB by AABB
     Vec3 extents = Vec3(30, 20, 20);
     AABB aabb(-extents, extents);
     CC_SAFE_DELETE(_obb);

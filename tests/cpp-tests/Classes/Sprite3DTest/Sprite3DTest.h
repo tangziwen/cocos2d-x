@@ -206,7 +206,6 @@ protected:
     
     DrawNode3D* _drawAABB;
     OBB* _obb;
-    Vec3 _aabbExt;
 };
 
 
