@@ -191,8 +191,10 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\win32-specific\gles\prebuilt\*.*" "$(Ou
     <ClCompile Include="..\3d\CCMeshSkin.cpp" />
     <ClCompile Include="..\3d\CCOBB.cpp" />
     <ClCompile Include="..\3d\CCObjLoader.cpp" />
-    <ClCompile Include="..\3d\CCRay.cpp" /
-    <ClCompile Include="..\3d\CCParticleSystem3D.cpp" />    <ClCompile Include="..\3d\CCParticleAffector.cpp" />    <ClCompile Include="..\3d\CCSprite3D.cpp" />
+    <ClCompile Include="..\3d\CCRay.cpp" />
+    <ClCompile Include="..\3d\CCParticleSystem3D.cpp" />   
+    <ClCompile Include="..\3d\CCParticleAffector.cpp" />    
+    <ClCompile Include="..\3d\CCSprite3D.cpp" />
     <ClCompile Include="..\3d\CCSprite3DMaterial.cpp" />
     <ClCompile Include="..\3d\CCSubMesh.cpp" />
     <ClCompile Include="..\3d\CCSubMeshState.cpp" />
