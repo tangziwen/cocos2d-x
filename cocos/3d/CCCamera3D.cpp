@@ -90,7 +90,14 @@ Camera3D::~Camera3D()
 void Camera3D::setPosition3D(const Vec3& position)
 {
 	Node::setPosition3D(position);
+
+	// Mat4::createLookAt(getPosition3D(),_lookAtPos,_up, &_view);
 	_transformUpdated = _transformDirty = _inverseDirty = true;
+}
+void Camera3D::setRotation3D(const Vec3& rotation)
+{
+	Node::setRotation3D(rotation);
+	_transformUpdated = _transformDirty = _inverseDirty = true;	
 }
 //set active camera 
 bool Camera3D::setActiveCamera()
@@ -98,44 +105,41 @@ bool Camera3D::setActiveCamera()
 	_activeCamera=this;
     return false;
 }
-void Camera3D::lookAt(const Vec3& position, const Vec3& up, const Vec3& target)
+void Camera3D::lookAt(const Vec3& position, const Vec3& up, const Vec3& lookAtPos)
 {
-	//_center = center;
-	//Mat4 matRotate;
- //   Vec3 upv = up;
- //   upv.normalize();
+	_lookAtPos=lookAtPos;
+	_up=up;
+    Vec3 upv = up;
+    upv.normalize();
+    Vec3 zaxis;
+    Vec3::subtract(position, lookAtPos, &zaxis);
+    zaxis.normalize();
 
- //   Vec3 zaxis;
- //   Vec3::subtract(position, target, &zaxis);
- //   zaxis.normalize();
+    Vec3 xaxis;
+    Vec3::cross(upv, zaxis, &xaxis);
+    xaxis.normalize();
 
- //   Vec3 xaxis;
- //   Vec3::cross(upv, zaxis, &xaxis);
- //   xaxis.normalize();
+    Vec3 yaxis;
+    Vec3::cross(zaxis, xaxis, &yaxis);
+    yaxis.normalize();
 
- //   Vec3 yaxis;
- //   Vec3::cross(zaxis, xaxis, &yaxis);
- //   yaxis.normalize();
+    _rotation.m[0] = xaxis.x;
+    _rotation.m[1] = xaxis.y;
+    _rotation.m[2] = xaxis.z;
+    _rotation.m[3] = 0;
 
- //   matRotate.m[0] = xaxis.x;
- //   matRotate.m[1] = xaxis.y;
- //   matRotate.m[2] = xaxis.z;
- //   matRotate.m[3] = 0;
+    _rotation.m[4] = yaxis.x;
+    _rotation.m[5] = yaxis.y;
+    _rotation.m[6] = yaxis.z;
+    _rotation.m[7] = 0;
 
- //   matRotate.m[4] = yaxis.x;
- //   matRotate.m[5] = yaxis.y;
- //   matRotate.m[6] = yaxis.z;
- //   matRotate.m[7] = 0;
-
- //   matRotate.m[8] = zaxis.x;
- //   matRotate.m[9] = zaxis.y;
- //   matRotate.m[10] = zaxis.z;
- //   matRotate.m[11] = 0;
-	//Quaternion rotationQuat;
- //   Quaternion::createFromRotationMatrix(matRotate, &rotationQuat);
- //   _rotation.set(rotationQuat);
+    _rotation.m[8] = zaxis.x;
+    _rotation.m[9] = zaxis.y;
+    _rotation.m[10] = zaxis.z;
+    _rotation.m[11] = 0;
 	Node::setPosition3D(position);
-	_transformUpdated = _transformDirty = _inverseDirty = true;
+	//Mat4::createLookAt(position,lookAtPos,up, &_view);
+	_transformDirty=true;
 }
 Mat4& Camera3D::getProjectionMatrix() 
 {
@@ -151,7 +155,8 @@ Mat4& Camera3D::getProjectionMatrix()
 }
 Mat4& Camera3D::getViewMatrix()
 {
-	_view=getNodeToWorldTransform().getInversed();
+
+	_view=getNodeToWorldTransform().getInversed();	
 	return _view;
 }
 void Camera3D::applyProjection()
@@ -159,7 +164,6 @@ void Camera3D::applyProjection()
 	getProjectionMatrix();
 	getViewMatrix();
 	Director* director = Director::getInstance();
-	director->loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 	director->loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
 	//if needed, we need to add a rotation for Landscape orientations on Windows Phone 8 since it is always in Portrait Mode
@@ -176,4 +180,68 @@ void Camera3D::applyProjection()
 	director->loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 	GL::setProjectionMatrixDirty();
 }
+ /* returns the Eye value of the Camera */
+Vec3& Camera3D::getEyePos() 
+{
+	Mat4 mat=getNodeToWorldTransform();
+	_realEyePos= Vec3(mat.m[12],mat.m[13],mat.m[14]);
+	return 	  _realEyePos;
+}
+Vec3& Camera3D::getLookPos() 
+{
+	 return _lookAtPos;
+}
+ const Mat4& Camera3D::getNodeToParentTransform() const
+{
+	 if (_transformDirty)
+    {
+		Mat4::createTranslation(getPosition3D(), &_transform);
+		_transform.rotate(_rotation);
+        _transformDirty = false;
+    }
+    return _transform;
+}
+
+ void Camera3D::rotate(const Vec3& axis,float angle)
+ {
+	 Vec3  cameraPos=getPosition3D();
+	 Vec3  cameradir=_lookAtPos-cameraPos;
+	 float length=cameradir.length();
+	 cameradir.normalize();
+	 Mat4 rotMat;
+	 Mat4::createRotation(axis,CC_DEGREES_TO_RADIANS(angle),&rotMat);
+	 rotMat.transformVector(&cameradir);
+	 _lookAtPos=cameraPos+ cameradir*length;
+	 lookAt(cameraPos,_up,_lookAtPos);
+ }
+ void Camera3D::rotateAlong(const Vec3& axis, float angle)
+ {
+	 Vec3  cameraPos=getPosition3D();
+	 Vec3  cameradir=cameraPos-_lookAtPos;
+	 float length=cameradir.length();
+	 cameradir.normalize();
+	 Mat4 rotMat;
+	 Mat4::createRotation(axis,CC_DEGREES_TO_RADIANS(angle),&rotMat);
+	 rotMat.transformVector(&cameradir);
+	 cameraPos=_lookAtPos+ cameradir*length;
+	 lookAt(cameraPos,_up,_lookAtPos);
+ }
+ void Camera3D::scale(float scale)
+ {
+	 Vec3  cameraPos=getPosition3D();
+	 Vec3  cameradir=_lookAtPos-cameraPos;
+	 cameradir.normalize();
+	 cameraPos+=cameradir*scale;
+	 lookAt(cameraPos,_up,_lookAtPos);
+ }
+ void Camera3D::translate(const Vec3& vector)
+ {
+	  _position.x+=vector.x;
+	  _position.y+=vector.y;
+	  _positionZ+= vector.z;
+	  _lookAtPos.x+=vector.x;
+	  _lookAtPos.y+=vector.y;
+	  _lookAtPos.z+=vector.z;
+	  lookAt(getPosition3D(),Vec3(0, 1, 0), _lookAtPos);
+ }
 NS_CC_END

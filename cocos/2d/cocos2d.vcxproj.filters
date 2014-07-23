@@ -607,6 +607,12 @@
     <ClCompile Include="..\3d\CCCamera3D.cpp">
       <Filter>3d</Filter>
     </ClCompile>
+    <ClCompile Include="..\3d\CCParticleSystem3D.cpp">
+      <Filter>3d</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\CCParticleAffector.cpp">
+      <Filter>3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCPhysicsBody.h">
@@ -1235,6 +1241,12 @@
       <Filter>3d</Filter>
     </ClInclude>
     <ClInclude Include="..\3d\CCCamera3D.h">
+      <Filter>3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\CCParticleSystem3D.h">
+      <Filter>3d</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\CCParticleAffector.h">
       <Filter>3d</Filter>
     </ClInclude>
   </ItemGroup>

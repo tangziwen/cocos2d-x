@@ -70,6 +70,11 @@ public:
      * @return The camera type.
      */
     Camera3D::Type  getCameraType() const;
+	 /* returns the Eye value of the Camera */
+    Vec3& getEyePos();
+
+	 /* returns the Look value of the Camera */
+    Vec3& getLookPos();
 private:
     Camera3D(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
     Camera3D(float zoomX, float zoomY, float aspectRatio, float nearPlane, float farPlane);
@@ -80,7 +85,7 @@ public:
 	 *
 	 *
 	 */
-	void lookAt(const Vec3& position, const Vec3& up, const Vec3& target);
+	void lookAt(const Vec3& position, const Vec3& up, const Vec3& lookAtPos);
 	/**
      * Gets the camera's projection matrix.
      *
@@ -101,17 +106,35 @@ public:
      * Sets the position (X, Y, and Z) in its parent's coordinate system
      */
 	virtual void setPosition3D(const Vec3& position);
+	virtual void setRotation3D(const Vec3& rotation);
 	 //set active camera 
     bool setActiveCamera();
+	/**
+     * rotate camera
+     */
+	void rotate(const Vec3& axis, float angle);
+	void rotateAlong(const Vec3& axis, float angle);
+	/**
+     * translate camera
+     */
+	void translate(const Vec3& vector);
+	void scale(float scale);
+	virtual const Mat4& getNodeToParentTransform() const;
 private:
     Mat4 _projection;
     Mat4 _view;
+	Vec3 _lookAtPos;
+	Vec3 _realEyePos;
+	Vec3 _up;
     Camera3D::Type _type;
     float _fieldOfView;
     float _zoom[2];
     float _aspectRatio;
     float _nearPlane;
     float _farPlane;
+	float _fCameraYawAngle;
+	float _fCameraPitchAngle;
+	Mat4  _rotation;
     static Camera3D* _activeCamera;
 };
 NS_CC_END

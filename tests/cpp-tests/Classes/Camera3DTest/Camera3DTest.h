@@ -51,19 +51,23 @@ public:
     virtual std::string subtitle() const override;
     virtual void onEnter() override;
 	void addNewSpriteWithCoords(Vec3 p,std::string fileName,bool playAnimation=false,bool bindCamera=false);
-	//void addNewParticleSystemWithCoords(Vec3 p);
-    bool onTouchBegan(Touch* touch, Event* event); 
-    void onTouchMoved(Touch* touch, Event* event); 
-    void onTouchesEnded(Touch* touch, Event* event);
-    void translateCameraXCallback(Ref* sender,float value);
-    void translateCameraYCallback(Ref* sender,float value);
-    void translateCameraZCallback(Ref* sender,float value);
+	void addNewParticleSystemWithCoords(Vec3 p);
+	void onTouchesBegan(const std::vector<Touch*>& touches, cocos2d::Event  *event);
+    void onTouchesMoved(const std::vector<Touch*>& touches, cocos2d::Event  *event);
+    void onTouchesEnded(const std::vector<Touch*>& touches, cocos2d::Event  *event);
+    void scaleCameraCallback(Ref* sender,float value);
+	void rotateCameraCallback(Ref* sender,float value);
+    void SwitchViewCallback(Ref* sender);
+	void updatelabel(float fDelta);
 protected:
     std::string    _title;
     Layer3D*      _layer3D;
+	Label*		  _labelRolePos;
+	Label*		  _labelCameraPos;
 	Sprite3D*     _sprite3D;
-    Point    _mosPos;
-    Point    _mosPosf;
+	bool		  _ViewType;
+	Vec3		  _EyePos;
+	Camera3D*     _Camerar;
 };
 class Camera3DTestScene : public TestScene
 {
