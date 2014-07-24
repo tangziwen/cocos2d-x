@@ -604,7 +604,7 @@ Animate3DTest::Animate3DTest()
 , _moveAction(nullptr)
 , _transTime(0.1f)
 , _elapseTransTime(0.f)
-,_obb(nullptr)
+,_drawDebug(nullptr)
 {
     addSprite3D();
     
@@ -620,7 +620,6 @@ Animate3DTest::~Animate3DTest()
     CC_SAFE_RELEASE(_moveAction);
     CC_SAFE_RELEASE(_hurt);
     CC_SAFE_RELEASE(_swim);
-    CC_SAFE_DELETE(_obb);
 }
 
 std::string Animate3DTest::title() const
@@ -662,25 +661,25 @@ void Animate3DTest::update(float dt)
         _hurt->setWeight(t);
     }
     
-    if (_obb && _drawAABB)
+    if (_drawDebug)
     {
-        _drawAABB->clear();
+        _drawDebug->clear();
         
         Mat4 mat = _sprite->getNodeToWorldTransform();
-        mat.getRightVector(&_obb->_xAxis);
-        _obb->_xAxis.normalize();
+        mat.getRightVector(&_obb._xAxis);
+        _obb._xAxis.normalize();
         
-        mat.getUpVector(&_obb->_yAxis);
-        _obb->_yAxis.normalize();
+        mat.getUpVector(&_obb._yAxis);
+        _obb._yAxis.normalize();
         
-        mat.getForwardVector(&_obb->_zAxis);
-        _obb->_zAxis.normalize();
+        mat.getForwardVector(&_obb._zAxis);
+        _obb._zAxis.normalize();
         
-        _obb->_center = _sprite->getPosition3D();
+        _obb._center = _sprite->getPosition3D();
         
         Vec3 corners[8] = {};
-        _obb->getCorners(corners);
-        _drawAABB->drawCube(corners, Color4F(1,0,0,1));
+        _obb.getCorners(corners);
+        _drawDebug->drawCube(corners, Color4F(1,0,0,1));
     }
 }
 
@@ -711,14 +710,13 @@ void Animate3DTest::addSprite3D()
     seq->setTag(100);
     sprite->runAction(seq);
     
-	// Generate a OBB box by AABB
+	// Generate OBB by AABB
     Vec3 extents = Vec3(30, 20, 20);
     AABB aabb(-extents, extents);
-    CC_SAFE_DELETE(_obb);
-    _obb = new OBB(aabb);
+    _obb = OBB(aabb);
     
-    _drawAABB = DrawNode3D::create();
-    addChild(_drawAABB);
+    _drawDebug = DrawNode3D::create();
+    addChild(_drawDebug);
 }
 
 void Animate3DTest::reachEndCallBack()
