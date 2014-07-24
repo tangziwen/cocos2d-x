@@ -215,16 +215,16 @@ void Camera3D::rotate(const Vec3& axis,float angle)
     _lookAtPos=cameraPos+ cameradir*length;
     lookAt(cameraPos,_up,_lookAtPos);
 }
-void Camera3D::rotateAlong(const Vec3& axis, float angle)
+void Camera3D::rotateAlong(const Vec3& point,const Vec3& axis, float angle)
 {
-    Vec3  cameraPos=getPosition3D();
+    Vec3  cameraPos=getPosition3D()-point;
     Vec3  cameradir=cameraPos-_lookAtPos;
     float length=cameradir.length();
     cameradir.normalize();
     Mat4 rotMat;
     Mat4::createRotation(axis,CC_DEGREES_TO_RADIANS(angle),&rotMat);
     rotMat.transformVector(&cameradir);
-    cameraPos=_lookAtPos+ cameradir*length;
+    cameraPos=_lookAtPos+ cameradir*length+point;
     lookAt(cameraPos,_up,_lookAtPos);
 }
 void Camera3D::scale(float scale)

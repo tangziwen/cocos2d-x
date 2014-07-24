@@ -114,7 +114,13 @@ public:
     * rotate camera
     */
     void rotate(const Vec3& axis, float angle);
-    void rotateAlong(const Vec3& axis, float angle);
+    /**
+     * Rotate along a specific line
+     * @param point a point at the line
+     * @param axis direction of the line
+     * @param angle angle to rotate
+     */
+    void rotateAlong(const Vec3& point,const Vec3& axis, float angle);
     /**
     * translate camera
     */
