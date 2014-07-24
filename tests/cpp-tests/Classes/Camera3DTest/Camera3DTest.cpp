@@ -85,12 +85,11 @@ Camera3DTestDemo::~Camera3DTestDemo(void)
 
 void Camera3DTestDemo::addNewParticleSystemWithCoords(Vec3 p)
 {
-    auto particleSystem3D = ParticleSystem3D::create("CameraTest\\particle3Dtest.particle");
+    auto particleSystem3D = ParticleSystem3D::create("CameraTest/particle3Dtest.particle");
     particleSystem3D->setPosition3D(p);
     particleSystem3D->setScale(0.5);
     particleSystem3D->start();
     _layer3D->addChild(particleSystem3D,0);
-    //particleSystem3D->save("E:\\liuliangWork\\cocos2d-x\\tests\\cpp-tests\\Resources\\Particle3D\\particle3Dtest.particle");
 }
 std::string Camera3DTestDemo::title() const
 {

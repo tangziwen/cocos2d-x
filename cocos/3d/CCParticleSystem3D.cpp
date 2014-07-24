@@ -88,7 +88,7 @@ void ParticleSystem3D::update(float dt)
     {
         if(_emitterConfig.billboardType	==BILLBOARD)
         {
-            Mat4& cameraViewMatrix = Camera3D::getActiveCamera()->getViewMatrix().getInversed();
+            const Mat4& cameraViewMatrix = Camera3D::getActiveCamera()->getViewMatrix().getInversed();
             cameraViewMatrix.getRightVector(&_cameraRight);
             cameraViewMatrix.getUpVector(&_cameraUp);
         }
@@ -699,7 +699,7 @@ bool ParticleSystem3D::load(tinyxml2::XMLElement* element)
         }
         else if(0==strcmp(curAttribute->Name(),"textureName"))
         {   
-            strcpy_s(_emitterConfig.textureName,curAttribute->Value());
+            strcpy(_emitterConfig.textureName,curAttribute->Value());
         }
         else if(0==strcmp(curAttribute->Name(),"blendType"))
         {
