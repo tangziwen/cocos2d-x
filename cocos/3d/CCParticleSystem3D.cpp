@@ -65,7 +65,6 @@ ParticleSystem3D::ParticleSystem3D():
     ,_particleCount(0)
     ,_emitCounter(0)
     ,_quads(nullptr)
-    ,_indices(nullptr)
     ,_texture(nullptr)
 {
     _started = false;
@@ -79,7 +78,6 @@ ParticleSystem3D::ParticleSystem3D():
 ParticleSystem3D::~ParticleSystem3D()
 {
     CC_SAFE_FREE(_quads);
-    CC_SAFE_FREE(_indices);
 }
 
 void ParticleSystem3D::update(float dt) 
@@ -259,27 +257,9 @@ void ParticleSystem3D::setTotalParticles(int tp)
 
     CC_SAFE_FREE(_particles);
     CC_SAFE_FREE(_quads);
-    CC_SAFE_FREE(_indices);
     _particles = (Particle3D*)calloc(tp, sizeof(Particle3D));
     _quads = (V3F_C4B_T2F_Quad*)malloc(tp * sizeof(V3F_C4B_T2F_Quad));
-    _indices = (GLushort*)malloc(tp * 6 * sizeof(GLushort));
-    initIndices();
     setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
-}
-void ParticleSystem3D::initIndices()
-{
-    for(int i = 0; i < _emitterConfig.totalParticles; ++i)
-    {
-        const unsigned int i6 = i*6;
-        const unsigned int i4 = i*4;
-        _indices[i6+0] = (GLushort) i4+0;
-        _indices[i6+1] = (GLushort) i4+1;
-        _indices[i6+2] = (GLushort) i4+2;
-
-        _indices[i6+5] = (GLushort) i4+1;
-        _indices[i6+4] = (GLushort) i4+2;
-        _indices[i6+3] = (GLushort) i4+3;
-    }
 }
 void ParticleSystem3D::updateBillboardParticle(Particle3D* particle,const Vec3& newPosition)
 { 
