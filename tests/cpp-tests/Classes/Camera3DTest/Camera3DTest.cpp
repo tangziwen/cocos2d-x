@@ -109,7 +109,7 @@ void Camera3DTestDemo::rotateCameraCallback(Ref* sender,float value)
 {
     if(_ViewType==0)
     {
-        Camera3D::getActiveCamera()->rotateAlong(Vec3(0,1,0),value); 
+        Camera3D::getActiveCamera()->rotateAlong(Vec3(0,0,0),Vec3(0,1,0),value); 
     }
     if( _ViewType==2)
     {
