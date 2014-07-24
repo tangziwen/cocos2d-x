@@ -158,7 +158,6 @@ public:
     bool load(const std::string& fileName);
     bool save(const std::string& szFile);
 private:
-    void   initIndices();
     void   updateBillboardParticle(Particle3D* particle,const Vec3& newPosition);
     void   emitterParticle(float dt);
     void   updateParticle(float dt);
@@ -186,7 +185,6 @@ protected:
     Vec3                _cameraRight;
     Vec3                _cameraUp;
     V3F_C4B_T2F_Quad   *_quads;        // quads to be rendered
-    GLushort           *_indices;      // indices
     QuadCommand        _quadCommand;
     Texture2D*         _texture;
     BlendFunc          _blend;
