@@ -27,6 +27,7 @@
 
 #include "../testBasic.h"
 #include "../BaseTest.h"
+#include "3d/CCOBB.h"
 #include <string>
 
 namespace cocos2d {
@@ -204,8 +205,8 @@ protected:
     
     MoveTo* _moveAction;
     
-    DrawNode3D* _drawAABB;
-    OBB* _obb;
+    DrawNode3D* _drawDebug;
+    OBB _obb;
 };
 
 
