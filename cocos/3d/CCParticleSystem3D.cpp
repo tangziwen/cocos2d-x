@@ -127,7 +127,7 @@ bool ParticleSystem3D::isStarted() const
 {
     return _started;
 }
-//Ôö¼ÓÁ£×Ó
+//add particle
 bool  ParticleSystem3D::addParticle()
 {
     if (this->isFull())
