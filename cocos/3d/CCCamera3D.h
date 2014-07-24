@@ -25,6 +25,7 @@
 #define _CCCAMERA3D_H__
 #include "2d/CCNode.h"
 NS_CC_BEGIN
+class Ray;
 /**
  * Defines a camera .
  */
@@ -120,6 +121,14 @@ public:
 	void translate(const Vec3& vector);
 	void scale(float scale);
 	virtual const Mat4& getNodeToParentTransform() const;
+	 /**
+     * Convert the specified point of viewport from screenspace coordinate into the worldspace coordinate.
+     */
+	void unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst);
+	/**
+     * Ray from camera to the screen position
+     */
+	void calculateRayByLocationInView(Ray* ray, const Vec2& location);
 private:
     Mat4 _projection;
     Mat4 _view;

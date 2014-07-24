@@ -23,6 +23,7 @@ THE SOFTWARE.
 ****************************************************************************/
 #include "3d/CCCamera3D.h"
 #include "base/CCDirector.h"
+#include "3d/CCRay.h"
 NS_CC_BEGIN
 Camera3D* Camera3D::_activeCamera = nullptr;
 Camera3D* Camera3D::create()
@@ -236,12 +237,57 @@ Vec3& Camera3D::getLookPos()
  }
  void Camera3D::translate(const Vec3& vector)
  {
-	  _position.x+=vector.x;
-	  _position.y+=vector.y;
-	  _positionZ+= vector.z;
-	  _lookAtPos.x+=vector.x;
-	  _lookAtPos.y+=vector.y;
-	  _lookAtPos.z+=vector.z;
-	  lookAt(getPosition3D(),Vec3(0, 1, 0), _lookAtPos);
+
+	 Vec3  cameraPos=getPosition3D();
+	 Vec3  cameradir=_lookAtPos-cameraPos;
+	 Vec3  rightdir;
+	 Vec3::cross(Vec3(0,1,0),cameradir,&rightdir);
+
+	 float length=cameradir.length();
+	 cameradir.normalize();
+	 cameraPos.x+=cameradir.x*vector.z;
+	 cameraPos.z+=cameradir.z*vector.z;
+	 rightdir.normalize();
+	 cameraPos+=rightdir*vector.x;
+	  _lookAtPos=cameraPos+	cameradir*length;
+	  lookAt(cameraPos,Vec3(0, 1, 0), _lookAtPos);
  }
+ void Camera3D::unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst)
+{
+    assert(dst);
+    assert(viewport->width != 0.0f && viewport->height != 0.0f);
+    Vec4 screen(src->x / viewport->width, ((viewport->height - src->y)) / viewport->height, src->z, 1.0f);
+    screen.x = screen.x * 2.0f - 1.0f;
+    screen.y = screen.y * 2.0f - 1.0f;
+    screen.z = screen.z * 2.0f - 1.0f;
+    
+    viewProjection.getInversed().transformVector(screen, &screen);  
+    if (screen.w != 0.0f)
+    {
+        screen.x /= screen.w;
+        screen.y /= screen.w;
+        screen.z /= screen.w;
+    }
+    
+    dst->set(screen.x, screen.y, screen.z);
+}
+void Camera3D::calculateRayByLocationInView(Ray* ray, const Vec2& location)
+{
+    auto dir = Director::getInstance();
+    auto view = dir->getWinSize();
+    Mat4 mat = _projection*_view;
+    Vec3 src = Vec3(location.x, location.y, -1);
+    Vec3 nearPoint;
+    unproject(mat, &view, &src, &nearPoint);
+    
+    src = Vec3(location.x, location.y, 1);
+    Vec3 farPoint;
+    unproject(mat, &view, &src, &farPoint);
+    
+    Vec3 direction;
+    Vec3::subtract(farPoint, nearPoint, &direction);
+    direction.normalize();
+    ray->_origin = nearPoint;
+    ray->_direction = direction;
+}
 NS_CC_END
