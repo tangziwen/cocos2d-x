@@ -31,19 +31,14 @@ NS_CC_BEGIN
 class Camera3D :public Node
 {
 public:
-	/**
-     * create camera
-     */
-	static Camera3D*	create();
-	    /**
+    /**
      * The type of camera.
      */
-    enum Type
+    enum class Type
     {
         PERSPECTIVE = 1,
         ORTHOGRAPHIC = 2
     };
-	public:
     /**
      * Creates a perspective camera.
      *
@@ -53,7 +48,7 @@ public:
      * @param farPlane The far plane distance.
      */
     static Camera3D*    createPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
-	 /**
+    /**
      * Creates an orthographic camera.
      *
      * @param zoomX The zoom factor along the X-axis of the orthographic projection (the width of the ortho projection).
@@ -62,20 +57,15 @@ public:
      * @param nearPlane The near plane distance.
      * @param farPlane The far plane distance.
      */
-    static Camera3D*  createOrthographic(float zoomX, float zoomY, float aspectRatio, float nearPlane, float farPlane);
+    static Camera3D*  createOrthographic(float zoomX, float zoomY, float nearPlane, float farPlane);
 	static Camera3D*  getActiveCamera();
-	  /**
+    /**
      * Gets the type of camera.
      *
      * @return The camera type.
      */
     Camera3D::Type  getCameraType() const;
-private:
-    Camera3D(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
-    Camera3D(float zoomX, float zoomY, float aspectRatio, float nearPlane, float farPlane);
-    Camera3D();
-    ~Camera3D();
-public:
+
 	/**
 	 *
 	 *
@@ -93,19 +83,36 @@ public:
      * @return The camera view matrix.
      */
     Mat4& getViewMatrix();
-	 /**
+    
+    /**get view projection matrix*/
+    const Mat4& getViewProjectionMatrix();
+    
+    /**set additional matrix for the projection matrix, it multiplys mat to projection matrix when called, used by WP8*/
+    void setAdditionalProjection(const Mat4& mat);
+    
+    /**
      *  set the camera's projection View.
      */
     void applyProjection();
-	 /**
+    /**
      * Sets the position (X, Y, and Z) in its parent's coordinate system
      */
 	virtual void setPosition3D(const Vec3& position);
 	 //set active camera 
-    bool setActiveCamera();
-private:
+    static void setActiveCamera(Camera3D* camera);
+    
+    
+CC_CONSTRUCTOR_ACCESS:
+    Camera3D();
+    ~Camera3D();
+    
+protected:
+    
     Mat4 _projection;
     Mat4 _view;
+    Mat4 _viewProjection;
+    
+    
     Camera3D::Type _type;
     float _fieldOfView;
     float _zoom[2];

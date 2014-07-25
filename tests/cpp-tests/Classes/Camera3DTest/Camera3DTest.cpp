@@ -263,9 +263,9 @@ void Camera3DTestDemo::addNewSpriteWithCoords(Vec3 p,std::string fileName,bool p
 			camera->lookAt(Vec3(240,160,50),Vec3(0, 1, 0),Vec3(240,160,0));
 			_layer3D->addChild(camera);
 		}
-		camera->setActiveCamera();
+		//camera->setActiveCamera();
 		
-		
+        Camera3D::setActiveCamera(camera);
 	}
 	else
 	{
@@ -330,7 +330,8 @@ bool Layer3D::init()
 	 auto s = Director::getInstance()->getWinSize();
 	 auto camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 10, 1000);
 	 camera->lookAt(Vec3(240,160,50),Vec3(0, 1, 0),Vec3(240,160,0));
-	 camera->setActiveCamera();
+	 //camera->setActiveCamera();
+    Camera3D::setActiveCamera(camera);
      addChild(camera);
 	return true;
 }

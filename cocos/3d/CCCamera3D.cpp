@@ -25,22 +25,17 @@ THE SOFTWARE.
 #include "base/CCDirector.h"
 NS_CC_BEGIN
 Camera3D* Camera3D::_activeCamera = nullptr;
-Camera3D* Camera3D::create()
+
+Camera3D* Camera3D::createPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 {
 	auto ret = new Camera3D();
 	if (ret)
 	{
-		ret->autorelease();
-		return ret;
-	}
-	CC_SAFE_DELETE(ret);
-	return nullptr;
-}
-Camera3D* Camera3D::createPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
-{
-	auto ret = new Camera3D(fieldOfView, aspectRatio, nearPlane, farPlane);
-	if (ret)
-	{
+        ret->_fieldOfView = fieldOfView;
+        ret->_aspectRatio = aspectRatio;
+        ret->_nearPlane = nearPlane;
+        ret->_farPlane = farPlane;
+        Mat4::createPerspective(ret->_fieldOfView, ret->_aspectRatio, ret->_nearPlane, ret->_farPlane, &ret->_projection);
 		ret->autorelease();
 		return ret;
 	}
@@ -51,11 +46,16 @@ Camera3D*  Camera3D::getActiveCamera()
 {
 	return _activeCamera;
 }
-Camera3D* Camera3D::createOrthographic(float zoomX, float zoomY, float aspectRatio, float nearPlane, float farPlane)
+Camera3D* Camera3D::createOrthographic(float zoomX, float zoomY, float nearPlane, float farPlane)
 {
-	auto ret = new Camera3D(zoomX, zoomY, aspectRatio, nearPlane, farPlane);
+	auto ret = new Camera3D();
 	if (ret)
-	{  
+	{
+        ret->_zoom[0] = zoomX;
+        ret->_zoom[1] = zoomY;
+        ret->_nearPlane = nearPlane;
+        ret->_farPlane = farPlane;
+        Mat4::createOrthographic(ret->_zoom[0], ret->_zoom[1], ret->_nearPlane, ret->_farPlane, &ret->_projection);
 		ret->autorelease();
 		return ret;
 	}
@@ -66,25 +66,19 @@ Camera3D::Type Camera3D::getCameraType() const
 {
 	return _type;
 }
-Camera3D::Camera3D(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
-	:_type(PERSPECTIVE), _fieldOfView(fieldOfView), _aspectRatio(aspectRatio), _nearPlane(nearPlane), _farPlane(farPlane)
-{
 
-}
-
-Camera3D::Camera3D(float zoomX, float zoomY, float aspectRatio, float nearPlane, float farPlane)
-	:_type(ORTHOGRAPHIC), _aspectRatio(aspectRatio), _nearPlane(nearPlane), _farPlane(farPlane)
-{
-	// Orthographic camera.
-	_zoom[0] = zoomX;
-	_zoom[1] = zoomY;
-	_transform= Mat4::IDENTITY;
-}
 Camera3D::Camera3D()
 {
+    
 }
+
 Camera3D::~Camera3D()
 {
+    if (_activeCamera == this)
+    {
+        _activeCamera = nullptr;
+        CCLOG("release active camera");
+    }
 }
 
 void Camera3D::setPosition3D(const Vec3& position)
@@ -92,12 +86,17 @@ void Camera3D::setPosition3D(const Vec3& position)
 	Node::setPosition3D(position);
 	_transformUpdated = _transformDirty = _inverseDirty = true;
 }
-//set active camera 
-bool Camera3D::setActiveCamera()
+//set active camera
+void Camera3D::setActiveCamera(Camera3D* camera)
 {
-	_activeCamera=this;
-    return false;
+    if (_activeCamera != camera)
+    {
+        CC_SAFE_RETAIN(camera);
+        CC_SAFE_RELEASE(_activeCamera);
+        _activeCamera = camera;
+    }
 }
+
 void Camera3D::lookAt(const Vec3& position, const Vec3& up, const Vec3& target)
 {
 	//_center = center;
@@ -139,21 +138,29 @@ void Camera3D::lookAt(const Vec3& position, const Vec3& up, const Vec3& target)
 }
 Mat4& Camera3D::getProjectionMatrix() 
 {
-	if (_type == PERSPECTIVE)
-	{
-		Mat4::createPerspective(_fieldOfView, _aspectRatio, _nearPlane, _farPlane, &_projection);
-	}
-	else
-	{
-		Mat4::createOrthographic(_zoom[0], _zoom[1], _nearPlane, _farPlane, &_projection);
-	}
 	return _projection;
 }
 Mat4& Camera3D::getViewMatrix()
 {
+    //FIX ME
 	_view=getNodeToWorldTransform().getInversed();
 	return _view;
 }
+
+const Mat4& Camera3D::getViewProjectionMatrix()
+{
+    //FIX ME
+    getViewMatrix();
+    Mat4::multiply(_view, _projection, &_viewProjection);
+    return _viewProjection;
+}
+
+void Camera3D::setAdditionalProjection(const Mat4& mat)
+{
+    _projection = mat * _projection;
+    getViewProjectionMatrix();
+}
+
 void Camera3D::applyProjection()
 {
 	getProjectionMatrix();
