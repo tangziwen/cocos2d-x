@@ -167,6 +167,8 @@ bool Director::init(void)
 
 Director::~Director(void)
 {
+    Camera3D::setActiveCamera(nullptr);
+    
     CCLOGINFO("deallocing Director: %p", this);
 
     CC_SAFE_RELEASE(_FPSLabel);
@@ -285,7 +287,7 @@ void Director::drawScene()
 
     pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     auto camera = Camera3D::getActiveCamera();
-    //camera = nullptr;
+    camera = nullptr;
     if (camera)
     {
         pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
@@ -613,8 +615,11 @@ void Director::setProjection(Projection projection)
     {
         case Projection::_2D:
         {
-            auto camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
-            Camera3D::setActiveCamera(camera);
+            if (Camera3D::getActiveCamera() == nullptr)
+            {
+                auto camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
+                Camera3D::setActiveCamera(camera);
+            }
             
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
@@ -635,8 +640,12 @@ void Director::setProjection(Projection projection)
         {
             float zeye = this->getZEye();
             
-            auto camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
-            Camera3D::setActiveCamera(camera);
+            Camera3D* camera = nullptr;
+            if (Camera3D::getActiveCamera() == nullptr)
+            {
+                camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
+                Camera3D::setActiveCamera(camera);
+            }
 
             Mat4 matrixPerspective, matrixLookup;
 
@@ -664,6 +673,7 @@ void Director::setProjection(Projection projection)
             
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
             
+            if (camera)
             camera->lookAt(eye, up, center);
             break;
         }
