@@ -40,7 +40,7 @@ NS_CC_BEGIN
 struct Particle3D;
 class ParticleSystem3D;
 
-class ParticleAffector 
+class CC_DLL ParticleAffector
 {
 public:
     ParticleAffector(ParticleSystem3D* system);

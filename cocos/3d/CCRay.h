@@ -32,7 +32,7 @@
 
 NS_CC_BEGIN
 
-class Ray
+class CC_DLL Ray
 {
 public:
     /**

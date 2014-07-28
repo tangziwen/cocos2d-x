@@ -40,7 +40,7 @@ NS_CC_BEGIN
 /**
  * Defines a basic hierachial structure of transformation spaces.
  */
-class Bone3D : public Ref
+class CC_DLL Bone3D : public Ref
 {
     friend class MeshSkin;
 public:
@@ -182,7 +182,7 @@ protected:
  * MeshSkin, A class maintain a collection of bones that affect Mesh vertex.
  * And it is responsible for computing matrix palletes that used by skin mesh rendering.
  */
-class MeshSkin: public Ref
+class CC_DLL MeshSkin: public Ref
 {
 public:
     
