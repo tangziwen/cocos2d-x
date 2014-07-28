@@ -197,7 +197,6 @@ void ParticleSystem3D::stop()
     _started = false;
     if (_state != STOP)
     {
-        ParticleState old = _state;
         _state = STOP;
     }
     for(int i=0; i < _children.size(); i++ )

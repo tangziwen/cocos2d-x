@@ -30,7 +30,7 @@
 
 NS_CC_BEGIN
 
-class AABB
+class CC_DLL AABB
 {
 public:
     Vec3 _min;

@@ -29,7 +29,7 @@
 
 NS_CC_BEGIN
 
-class OBB
+class CC_DLL OBB
 {
 public:
     Vec3 _center;   // obb center

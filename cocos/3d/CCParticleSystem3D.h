@@ -107,7 +107,7 @@ struct Particle3D
     float   rotation;
     float   deltaRotation;
 };
-class ParticleSystem3D : public Node , public BlendProtocol
+class CC_DLL ParticleSystem3D : public Node , public BlendProtocol
 {
 public:	
     static ParticleSystem3D * create(const std::string& particleFile);

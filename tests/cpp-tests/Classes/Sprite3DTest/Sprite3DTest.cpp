@@ -51,6 +51,7 @@ static int sceneIdx = -1;
 static std::function<Layer*()> createFunctions[] =
 {
     CL(Sprite3DBasicTest),
+    CL(Sprite3DHitTest),
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WP8) && (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     // 3DEffect use custom shader which is not supported on WP8/WinRT yet. 
     CL(Sprite3DEffectTest),
@@ -222,6 +223,87 @@ std::string Sprite3DBasicTest::title() const
 std::string Sprite3DBasicTest::subtitle() const
 {
     return "Tap screen to add more sprites";
+}
+
+//------------------------------------------------------------------
+//
+// Sprite3DHitTest
+//
+//------------------------------------------------------------------
+
+
+Sprite3DHitTest::Sprite3DHitTest()
+{
+    auto s = Director::getInstance()->getWinSize();
+    
+    auto sprite1 = Sprite3D::create("Sprite3DTest/boss1.obj");
+
+    sprite1->setScale(4.f);
+    sprite1->setTexture("Sprite3DTest/boss.png");
+    sprite1->setPosition( Vec2(s.width/2, s.height/2) );
+    sprite1->setContentSize(Size(20, 20));
+    
+    //add to scene
+    addChild( sprite1 );
+    sprite1->runAction(RepeatForever::create(RotateBy::create(3, 360)));
+    
+    auto sprite2 = Sprite3D::create("Sprite3DTest/boss1.obj");
+    
+    sprite2->setScale(4.f);
+    sprite2->setTexture("Sprite3DTest/boss.png");
+    sprite2->setPosition( Vec2(s.width/2, s.height/2) );
+    sprite2->setContentSize(Size(20, 20));
+    sprite2->setAnchorPoint(Vec2(0.5, 0.5));
+
+    //add to scene
+    addChild( sprite2 );
+    sprite2->runAction(RepeatForever::create(RotateBy::create(3, -360)));
+    
+    
+    // Make sprite1 touchable
+    auto listener1 = EventListenerTouchOneByOne::create();
+    listener1->setSwallowTouches(true);
+    
+    listener1->onTouchBegan = [](Touch* touch, Event* event){
+        auto target = static_cast<Sprite3D*>(event->getCurrentTarget());
+
+        Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
+        Size s = target->getContentSize();
+        Rect rect = Rect(-s.width/2, -s.height/2, s.width, s.height);
+        
+        if (rect.containsPoint(locationInNode))
+        {
+            log("sprite3d began... x = %f, y = %f", locationInNode.x, locationInNode.y);
+            target->setOpacity(100);
+            return true;
+        }
+        return false;
+    };
+    
+    listener1->onTouchMoved = [](Touch* touch, Event* event){
+        auto target = static_cast<Sprite3D*>(event->getCurrentTarget());
+        target->setPosition(target->getPosition() + touch->getDelta());
+    };
+    
+    listener1->onTouchEnded = [=](Touch* touch, Event* event){
+        auto target = static_cast<Sprite3D*>(event->getCurrentTarget());
+        log("sprite3d onTouchesEnded.. ");
+        target->setOpacity(255);
+    };
+    
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, sprite1);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener1->clone(), sprite2);
+    
+}
+
+std::string Sprite3DHitTest::title() const
+{
+    return "Testing Sprite3D Touch in 2D";
+}
+
+std::string Sprite3DHitTest::subtitle() const
+{
+    return "Tap Sprite3D and Drag";
 }
 
 void Sprite3DTestScene::runThisTest()

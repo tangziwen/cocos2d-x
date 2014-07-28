@@ -71,6 +71,15 @@ public:
     void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
 };
 
+class Sprite3DHitTest : public Sprite3DTestDemo
+{
+public:
+    CREATE_FUNC(Sprite3DHitTest);
+    Sprite3DHitTest();
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;    
+};
+
 class EffectSprite3D;
 
 class Effect3D : public Ref
