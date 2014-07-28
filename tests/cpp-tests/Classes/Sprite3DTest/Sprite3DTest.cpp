@@ -301,7 +301,7 @@ std::string Sprite3DHitTest::title() const
 
 std::string Sprite3DHitTest::subtitle() const
 {
-    return "Tap and Move";
+    return "Tap Sprite3D and Drag";
 }
 
 void Sprite3DTestScene::runThisTest()
