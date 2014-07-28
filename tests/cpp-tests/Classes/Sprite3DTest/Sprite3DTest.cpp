@@ -794,12 +794,13 @@ void Animate3DTest::addSprite3D()
     seq->setTag(100);
     sprite->runAction(seq);
     
-	auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
+	//auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
 	// Generate OBB by AABB
-    //Vec3 extents = Vec3(60, 30, 20);
-    //AABB aabb(-extents, extents);
+    Vec3 extents = Vec3(100, 50, 50);
+    AABB aabb(-extents, extents);
+    _obb = OBB(aabb);
 
-	_obb = OBB(*testsp->getCllider());
+	//_obb = OBB(*testsp->getCllider());
     
     _drawDebug = DrawNode3D::create();
     addChild(_drawDebug);
@@ -1039,9 +1040,12 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
         sprite1->runAction(RepeatForever::create(animate1));
     }
 	goCallBack1();
-	auto collisonsp1 = Sprite3D::create("Sprite3DTest/test.c3p");
+	//auto collisonsp1 = Sprite3D::create("Sprite3DTest/test.c3p");
+    Vec3 extents1 = Vec3(50, 50, 50);
+    AABB aabb1(-extents1, extents1);
+
     CC_SAFE_DELETE(_obb1);
-	_obb1 = new OBB(*collisonsp1->getCllider());
+	_obb1 = new OBB(aabb1);
     _drawAABB1 = DrawNode3D::create();
     addChild(_drawAABB1);
 	std::string fileName2 = "Sprite3DTest/tortoise.c3b";
@@ -1058,9 +1062,11 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
         sprite2->runAction(RepeatForever::create(animate2));
     }
 	goCallBack2();
-	auto collisonsp2 = Sprite3D::create("Sprite3DTest/test.c3p");
+	//auto collisonsp2 = Sprite3D::create("Sprite3DTest/test.c3p");
+    Vec3 extents2 = Vec3(50, 50, 50);
+    AABB aabb2(-extents2, extents2);
     CC_SAFE_DELETE(_obb2);
-	_obb2 = new OBB(*collisonsp2->getCllider());
+	_obb2 = new OBB(aabb2);
     _drawAABB2 = DrawNode3D::create();
     addChild(_drawAABB2);
 }

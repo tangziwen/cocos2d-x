@@ -164,7 +164,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
         return false;
     
     bool ret;
-    if(ext == ".c3p")
+    /*if(ext == ".c3p")
 	{
 		CollisonData collisondata;
 		ret = bundle->loadCollisonData("", &collisondata);
@@ -176,7 +176,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
 		_cllidercube = _aabb;
 	}
 	else
-	{
+	{*/
     MeshData meshdata;
 		ret = bundle->loadMeshData("", &meshdata);
     if (!ret)
@@ -207,7 +207,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
     }
     
     genGLProgramState();
-	}
+	//}
     
     return true;
 }
