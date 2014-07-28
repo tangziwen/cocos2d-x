@@ -140,7 +140,6 @@ void Camera3DTestDemo::onEnter()
     BaseTest::onEnter();
     _sprite3D=NULL;
     auto s = Director::getInstance()->getWinSize();
-    auto visibleSize = Director::getInstance()->getVisibleSize();
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(Camera3DTestDemo::onTouchesBegan, this);
     listener->onTouchesMoved = CC_CALLBACK_2(Camera3DTestDemo::onTouchesMoved, this);

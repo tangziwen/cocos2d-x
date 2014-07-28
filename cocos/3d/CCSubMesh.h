@@ -39,7 +39,7 @@ NS_CC_BEGIN
 /** 
  * SubMesh: Defines the way the mesh's vertices how to be connected together.
  */
-class SubMesh : public Ref
+class CC_DLL SubMesh : public Ref
 {
     friend class Mesh;
 public:

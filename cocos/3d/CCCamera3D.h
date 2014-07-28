@@ -29,7 +29,7 @@ class Ray;
 /**
 * Defines a camera .
 */
-class Camera3D :public Node
+class CC_DLL Camera3D :public Node
 {
 public:
     /**

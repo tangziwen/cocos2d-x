@@ -45,7 +45,7 @@ class Bone3D;
  *        auto attachNode = sprite->getAttachNode("left hand");
  *        attachNode->addChild(weapon);
  */
-class AttachNode : public Node
+class CC_DLL AttachNode : public Node
 {
 public:
     /** 
