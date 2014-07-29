@@ -100,7 +100,7 @@ public:
     /**
      * update the _min and _max from the given point.
      */
-    void updateMinMax(Vec3* point);
+    void updateMinMax(const Vec3& point);
     
     /**
      * Transforms the bounding box by the given transformation matrix.

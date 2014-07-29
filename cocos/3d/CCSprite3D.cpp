@@ -389,4 +389,22 @@ const BlendFunc& Sprite3D::getBlendFunc() const
     return _blend;
 }
 
+AABB Sprite3D::getAABB()
+{
+    AABB aabb = _mesh->getOriginAABB();
+    Mat4 transform;
+    
+    if (getSkin() && getSkin()->getRootBone())
+    {
+        transform = getNodeToWorldTransform() * getSkin()->getRootBone()->getWorldMat();
+    }
+    else
+    {
+        transform = getNodeToWorldTransform();
+    }
+    
+    aabb.transform(transform);
+    return aabb;
+}
+
 NS_CC_END

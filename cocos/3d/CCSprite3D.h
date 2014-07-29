@@ -34,6 +34,8 @@
 #include "2d/CCNode.h"
 #include "renderer/CCMeshCommand.h"
 
+#include "CCAABB.h"
+
 NS_CC_BEGIN
 
 class GLProgramState;
@@ -78,6 +80,14 @@ public:
     // overrides
     virtual void setBlendFunc(const BlendFunc &blendFunc) override;
     virtual const BlendFunc &getBlendFunc() const override;
+    
+    /*
+     * Get AABB
+     * If the sprite has animation, it can't be calculated accuratly,
+     * because bone can drive the vertices, we just use the origin vertices
+     * to calculate the AABB.
+     */
+    AABB getAABB();
 
 CC_CONSTRUCTOR_ACCESS:
     

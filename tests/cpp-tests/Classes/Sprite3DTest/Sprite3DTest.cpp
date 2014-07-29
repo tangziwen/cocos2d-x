@@ -711,8 +711,7 @@ void Animate3DTest::addSprite3D()
     sprite->runAction(seq);
     
 	// Generate OBB by AABB
-    Vec3 extents = Vec3(30, 20, 20);
-    AABB aabb(-extents, extents);
+    AABB aabb = sprite->getAABB();
     _obb = OBB(aabb);
     
     _drawDebug = DrawNode3D::create();
