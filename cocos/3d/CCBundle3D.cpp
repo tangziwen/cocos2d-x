@@ -192,7 +192,7 @@ bool Bundle3D::load(const std::string& path)
         _isBinary = true;
         ret = loadBinary(path);
     }
-	else if (ext == ".c3p")
+    else if (ext == ".c3p")
     {
         _isBinary = false;
         ret = loadJson(path);

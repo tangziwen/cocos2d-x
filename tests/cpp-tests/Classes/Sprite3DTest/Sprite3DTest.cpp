@@ -689,6 +689,7 @@ Animate3DTest::Animate3DTest()
 , _transTime(0.1f)
 , _elapseTransTime(0.f)
 ,_drawDebug(nullptr)
+,_hasPick(false)
 {
     addSprite3D();
     
@@ -763,7 +764,7 @@ void Animate3DTest::update(float dt)
         
         Vec3 corners[8] = {};
         _obb.getCorners(corners);
-        _drawDebug->drawCube(corners, Color4F(1,0,0,1));
+        _drawDebug->drawCube(corners, _hasPick?Color4F(1,0,0,1):Color4F(0,1,0,1));
     }
 }
 
@@ -796,7 +797,7 @@ void Animate3DTest::addSprite3D()
     
     //auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
     // Generate OBB by AABB
-    Vec3 extents = Vec3(100, 50, 50);
+    Vec3 extents = Vec3(50, 25, 25);
     AABB aabb(-extents, extents);
     _obb = OBB(aabb);
 
@@ -1041,7 +1042,7 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
     }
 	goCallBack1();
 	//auto collisonsp1 = Sprite3D::create("Sprite3DTest/test.c3p");
-    Vec3 extents1 = Vec3(50, 50, 50);
+    Vec3 extents1 = Vec3(25, 25, 25);
     AABB aabb1(-extents1, extents1);
 
     CC_SAFE_DELETE(_obb1);
@@ -1063,7 +1064,7 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
     }
 	goCallBack2();
 	//auto collisonsp2 = Sprite3D::create("Sprite3DTest/test.c3p");
-    Vec3 extents2 = Vec3(50, 50, 50);
+    Vec3 extents2 = Vec3(25, 25, 25);
     AABB aabb2(-extents2, extents2);
     CC_SAFE_DELETE(_obb2);
 	_obb2 = new OBB(aabb2);

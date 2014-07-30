@@ -178,7 +178,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
 	else
 	{*/
     MeshData meshdata;
-	ret = bundle->loadMeshData("", &meshdata);
+    ret = bundle->loadMeshData("", &meshdata);
     if (!ret)
     {
         return false;
