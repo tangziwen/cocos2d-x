@@ -794,9 +794,8 @@ void Animate3DTest::addSprite3D()
     auto seq = Sequence::create(_moveAction, CallFunc::create(CC_CALLBACK_0(Animate3DTest::reachEndCallBack, this)), nullptr);
     seq->setTag(100);
     sprite->runAction(seq);
-    
     //auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
-    // Generate OBB by AABB
+    //Generate OBB by AABB
     Vec3 extents = Vec3(50, 25, 25);
     AABB aabb(-extents, extents);
     _obb = OBB(aabb);
