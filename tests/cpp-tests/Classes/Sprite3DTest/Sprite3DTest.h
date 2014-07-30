@@ -37,6 +37,7 @@ namespace cocos2d {
     class DrawNode3D;
     class OBB;
     class Ray;
+    class AABB;
 }
 
 class Sprite3DTestDemo : public BaseTest
@@ -216,6 +217,7 @@ protected:
     
     DrawNode3D* _drawDebug;
     OBB _obb;
+    bool _hasPick;
 };
 
 
@@ -242,4 +244,42 @@ public:
     virtual void runThisTest();
 };
 
+class Sprite3DWithSubMeshTest : public Sprite3DTestDemo
+{
+public:
+    CREATE_FUNC(Sprite3DWithSubMeshTest);
+    Sprite3DWithSubMeshTest();
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    void addNewSpriteWithCoords(Vec2 p);
+    void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
+};
+
+class Sprite3DWithCollisonTest : public Sprite3DTestDemo
+{
+public:
+    CREATE_FUNC(Sprite3DWithCollisonTest);
+    Sprite3DWithCollisonTest();
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    virtual void update(float dt) override;
+    void addNewSpriteWithCoords(Vec2 p);
+    void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
+protected:
+    void reachEndCallBack1();
+    void reachEndCallBack2();
+    void goCallBack1();
+    void goCallBack2();
+    cocos2d::Sprite3D*          _sprite1;
+    cocos2d::Sprite3D*          _sprite2;
+    MoveTo*                     _moveActionGo1;
+    MoveTo*                     _moveActionGo2;
+    MoveTo*                     _moveActionBack1;
+    MoveTo*                     _moveActionBack2;
+    DrawNode3D*                 _drawAABB1;
+    DrawNode3D*                 _drawAABB2;
+    OBB*                        _obb1;
+    OBB*                        _obb2;
+    bool                        _hasCollider;
+};
 #endif
