@@ -794,7 +794,7 @@ void Animate3DTest::addSprite3D()
     auto seq = Sequence::create(_moveAction, CallFunc::create(CC_CALLBACK_0(Animate3DTest::reachEndCallBack, this)), nullptr);
     seq->setTag(100);
     sprite->runAction(seq);
-    //auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
+
     //Generate OBB by AABB
     Vec3 extents = Vec3(50, 25, 25);
     AABB aabb(-extents, extents);
@@ -1040,7 +1040,7 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
         sprite1->runAction(RepeatForever::create(animate1));
     }
     goCallBack1();
-    //auto collisonsp1 = Sprite3D::create("Sprite3DTest/test.c3p");
+
     Vec3 extents1 = Vec3(25, 25, 25);
     AABB aabb1(-extents1, extents1);
 
@@ -1062,7 +1062,7 @@ void Sprite3DWithCollisonTest::addNewSpriteWithCoords(Vec2 p)
         sprite2->runAction(RepeatForever::create(animate2));
     }
     goCallBack2();
-    //auto collisonsp2 = Sprite3D::create("Sprite3DTest/test.c3p");
+
     Vec3 extents2 = Vec3(25, 25, 25);
     AABB aabb2(-extents2, extents2);
     CC_SAFE_DELETE(_obb2);
