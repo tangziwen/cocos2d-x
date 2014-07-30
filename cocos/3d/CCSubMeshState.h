@@ -41,7 +41,7 @@ class Texture2D;
 /** 
  * SubMeshState: visibility and apperence of submesh
  */
-class SubMeshState : public Ref
+class CC_DLL SubMeshState : public Ref
 {
 public:
 

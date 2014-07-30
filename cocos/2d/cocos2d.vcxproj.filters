@@ -403,6 +403,9 @@
     <ClCompile Include="..\base\CCUserDefault.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\CCUserDefaultAndroid.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
     <ClCompile Include="..\base\ccUTF8.cpp">
       <Filter>base</Filter>
     </ClCompile>
@@ -578,36 +581,6 @@
       <Filter>3d</Filter>
     </ClCompile>
     <ClCompile Include="..\3d\CCBundleReader.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="CCFastTMXLayer.cpp">
-      <Filter>2d</Filter>
-    </ClCompile>
-    <ClCompile Include="CCFastTMXTiledMap.cpp">
-      <Filter>2d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCAABB.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCAttachNode.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCDrawNode3D.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCOBB.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCSubMesh.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCSubMeshState.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCCamera3D.cpp">
-      <Filter>3d</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\CCRay.cpp">
       <Filter>3d</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1211,36 +1184,6 @@
       <Filter>3d</Filter>
     </ClInclude>
     <ClInclude Include="..\3d\CCBundleReader.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="CCFastTMXTiledMap.h">
-      <Filter>2d</Filter>
-    </ClInclude>
-    <ClInclude Include="CCFastTMXLayer.h">
-      <Filter>2d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCAABB.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCAttachNode.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCDrawNode3D.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCOBB.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCSubMesh.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCSubMeshState.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCCamera3D.h">
-      <Filter>3d</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\CCRay.h">
       <Filter>3d</Filter>
     </ClInclude>
   </ItemGroup>

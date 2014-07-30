@@ -44,7 +44,7 @@ class EventListenerCustom;
 class EventCustom;
 class SubMesh;
 
-class RenderMeshData
+class CC_DLL RenderMeshData
 {
     typedef std::vector<unsigned short> IndexArray;
     friend class Mesh;
@@ -71,7 +71,7 @@ protected:
  * Mesh: Geometry with a collection of vertex. 
  * Supporting various vertex formats.
  */
-class Mesh : public Ref
+class CC_DLL Mesh : public Ref
 {
     typedef std::vector<unsigned short> IndexArray;
 public:
