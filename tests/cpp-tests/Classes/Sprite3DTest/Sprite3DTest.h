@@ -37,7 +37,7 @@ namespace cocos2d {
     class DrawNode3D;
     class OBB;
     class Ray;
-	class AABB;
+    class AABB;
 }
 
 class Sprite3DTestDemo : public BaseTest

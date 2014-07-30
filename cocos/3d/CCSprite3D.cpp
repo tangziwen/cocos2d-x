@@ -153,7 +153,7 @@ bool Sprite3D::loadFromObj(const std::string& path)
 
 bool Sprite3D::loadFromC3x(const std::string& path)
 {
-	std::string ext = path.substr(path.length() - 4, 4);
+    std::string ext = path.substr(path.length() - 4, 4);
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(path);
     std::string key = fullPath + "#";
@@ -178,7 +178,7 @@ bool Sprite3D::loadFromC3x(const std::string& path)
 	else
 	{*/
     MeshData meshdata;
-		ret = bundle->loadMeshData("", &meshdata);
+	ret = bundle->loadMeshData("", &meshdata);
     if (!ret)
     {
         return false;
@@ -390,8 +390,8 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
         }
         //support tint and fade
         meshCommand.setDisplayColor(Vec4(color.r, color.g, color.b, color.a));
-		//Director::getInstance()->getRenderer()->addCommand(&meshCommand);
-		renderer->addCommand(&meshCommand);
+        //Director::getInstance()->getRenderer()->addCommand(&meshCommand);
+        renderer->addCommand(&meshCommand);
     }
 }
 

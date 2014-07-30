@@ -59,8 +59,8 @@ static std::function<Layer*()> createFunctions[] =
     CL(Sprite3DWithSkinTest),
     CL(Animate3DTest),
     CL(AttachmentTest),
-	CL(Sprite3DWithSubMeshTest),
-	CL(Sprite3DWithCollisonTest)
+    CL(Sprite3DWithSubMeshTest),
+    CL(Sprite3DWithCollisonTest)
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -794,13 +794,13 @@ void Animate3DTest::addSprite3D()
     seq->setTag(100);
     sprite->runAction(seq);
     
-	//auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
-	// Generate OBB by AABB
+    //auto testsp = Sprite3D::create("Sprite3DTest/test1.c3p");
+    // Generate OBB by AABB
     Vec3 extents = Vec3(100, 50, 50);
     AABB aabb(-extents, extents);
     _obb = OBB(aabb);
 
-	//_obb = OBB(*testsp->getCllider());
+    //_obb = OBB(*testsp->getCllider());
     
     _drawDebug = DrawNode3D::create();
     addChild(_drawDebug);
@@ -883,7 +883,7 @@ void Animate3DTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* ev
             calculateRayByLocationInView(&ray,location);
             if(ray.intersects(_obb))
             {
-				_hasPick = !_hasPick;
+                _hasPick = !_hasPick;
                 //hurt the tortoise
                 if (_state == State::SWIMMING)
                 {

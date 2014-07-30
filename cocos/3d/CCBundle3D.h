@@ -87,7 +87,7 @@ public:
      */
     bool loadAnimationData(const std::string& id, Animation3DData* animationdata);
 
-	bool loadCollisonData(const std::string& id, CollisonData* collisondata);
+    bool loadCollisonData(const std::string& id, CollisonData* collisondata);
 protected:
 
     bool loadJson(const std::string& path);
@@ -103,7 +103,7 @@ protected:
     bool loadMaterialDataJson_0_2(MaterialData* materialdata);
     
     bool loadAnimationDataJson(Animation3DData* animationdata);
-	bool loadCollisonDataJson(CollisonData* collisondata);
+    bool loadCollisonDataJson(CollisonData* collisondata);
 
     /**
      * load data in binary
