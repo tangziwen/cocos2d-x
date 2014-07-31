@@ -23,8 +23,12 @@ THE SOFTWARE.
 ****************************************************************************/
 #ifndef _CCCAMERA3D_H__
 #define _CCCAMERA3D_H__
+
+#include "base/CCVector.h"
 #include "2d/CCNode.h"
+
 NS_CC_BEGIN
+
 class Ray;
 /**
 * Defines a camera .
@@ -61,12 +65,27 @@ public:
      */
     static Camera3D*  createOrthographic(float zoomX, float zoomY, float nearPlane, float farPlane);
 	static Camera3D*  getActiveCamera();
+    
+    /**add camera to camera list*/
+    static void addCamera(Camera3D* camera);
+    /**remove camera*/
+    static void removeCamera(Camera3D* camera);
+    /**remove all cameras*/
+    static void removeAllCamera();
+    /**get camera count*/
+    static ssize_t getCameraCount() { return _cameras.size(); }
+    /**get camera by index*/
+    static Camera3D* getCamera(int index) { return _cameras.at(index); }
     /**
      * Gets the type of camera.
      *
      * @return The camera type.
      */
     Camera3D::Type  getCameraType() const;
+    
+    /**get & set Camera mask*/
+    unsigned short getCameraFlag() const { return _cameraFlag; }
+    void setCameraFlag(unsigned short mask) { _cameraFlag = mask; }
 
 	/**
 	 *
@@ -160,6 +179,10 @@ protected:
     float _fCameraYawAngle;
     float _fCameraPitchAngle;
     Mat4  _rotation;
+    
+    unsigned short _cameraFlag; // camera flag
+    
+    static Vector<Camera3D*> _cameras;
     static Camera3D* _activeCamera;
 };
 NS_CC_END

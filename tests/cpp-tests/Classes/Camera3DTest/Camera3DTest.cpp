@@ -145,7 +145,7 @@ void Camera3DTestDemo::onEnter()
     listener->onTouchesMoved = CC_CALLBACK_2(Camera3DTestDemo::onTouchesMoved, this);
     listener->onTouchesEnded = CC_CALLBACK_2(Camera3DTestDemo::onTouchesEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    auto layer3D=Layer3D::create();
+    auto layer3D=Layer::create();
     addChild(layer3D,0);
     _layer3D=layer3D;
     _ViewType = 0;	
@@ -195,7 +195,8 @@ void Camera3DTestDemo::onEnter()
     _camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 1, 1000);
     _camera->retain();
     _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
-    Camera3D::setActiveCamera(_camera);
+    //Camera3D::setActiveCamera(_camera);
+    _camera->setCameraFlag(2);
     DrawNode3D* line =DrawNode3D::create();
     _layer3D->addChild(_camera);
     //draw x
@@ -212,6 +213,7 @@ void Camera3DTestDemo::onEnter()
     line->drawLine(Vec3(0, -50, 0),Vec3(0,0,0),Color4F(0,0.5,0,1));
     line->drawLine(Vec3(0, 0, 0),Vec3(0,50,0),Color4F(0,1,0,1));
     _layer3D->addChild(line);
+    _layer3D->setCameraMask(2);
 }
 
 void Camera3DTestDemo::restartCallback(Ref* sender)
@@ -487,69 +489,22 @@ void Camera3DTestScene::runThisTest()
     Director::getInstance()->replaceScene(this);
 }
 
-bool Layer3D::init()
-{
-    auto s = Director::getInstance()->getWinSize();
-    return true;
-}
-void Layer3D::visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
-{
-    if (!_visible)
-    {
-        return;
-    }
-    _groupCommand.init(_globalZOrder);
-    renderer->addCommand(&_groupCommand);
-    renderer->pushGroup(_groupCommand.getRenderQueueID());
-    bool dirty = (parentFlags & FLAGS_TRANSFORM_DIRTY) || _transformUpdated;
-    if(dirty)
-        _modelViewTransform = this->transform(parentTransform);
-    _transformUpdated = false;
-    Director* director = Director::getInstance();
-    director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-    director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
-    Camera3D::getActiveCamera()->applyProjection();
-    //_BeginCommand.init(_globalZOrder);
-    _BeginCommand.func = CC_CALLBACK_0(Layer3D::onBeginDraw, this);
-    renderer->addCommand(&_BeginCommand);
-    int i = 0;
-    if(!_children.empty())
-    {
-        sortAllChildren();
-        // draw children zOrder < 0
-        /*for( ; i < _children.size(); i++ )
-        {
-        auto node = _children.at(i);
-
-        if ( node && node->getLocalZOrder() < 0 )
-        node->visit(renderer, _modelViewTransform, dirty);
-        else
-        break;
-        }*/
-        // self draw
-        this->draw(renderer, _modelViewTransform, dirty);
-
-        for(auto it=_children.cbegin()+i; it != _children.cend(); ++it)
-            (*it)->visit(renderer, _modelViewTransform, dirty);
-    }
-    else
-    {
-        this->draw(renderer, _modelViewTransform, dirty);
-    }
-    _orderOfArrival = 0;
-    //_EndCommand.init(_globalZOrder);
-    _EndCommand.func = CC_CALLBACK_0(Layer3D::onEndDraw, this);
-    renderer->addCommand(&_EndCommand);
-    renderer->popGroup();
-    director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-}
-void Layer3D::onBeginDraw()
-{
-    Director *director = Director::getInstance();
-    _directorProjection = director->getProjection();
-}
-void Layer3D::onEndDraw()
-{
-    Director *director = Director::getInstance();
-    director->setProjection(_directorProjection);
-}
+//bool Layer3D::init()
+//{
+//    auto s = Director::getInstance()->getWinSize();
+//    return true;
+//}
+//void Layer3D::visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
+//{
+//    Node::visit(renderer, parentTransform, parentFlags);
+//}
+//void Layer3D::onBeginDraw()
+//{
+//    Director *director = Director::getInstance();
+//    _directorProjection = director->getProjection();
+//}
+//void Layer3D::onEndDraw()
+//{
+//    Director *director = Director::getInstance();
+//    director->setProjection(_directorProjection);
+//}

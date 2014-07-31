@@ -167,7 +167,7 @@ bool Director::init(void)
 
 Director::~Director(void)
 {
-    Camera3D::setActiveCamera(nullptr);
+    Camera3D::removeAllCamera();
     
     CCLOGINFO("deallocing Director: %p", this);
 
@@ -286,18 +286,22 @@ void Director::drawScene()
     }
 
     pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-    auto camera = Camera3D::getActiveCamera();
-    camera = nullptr;
-    if (camera)
-    {
+    
+    for (ssize_t i = 0; i < Camera3D::getCameraCount(); i++) {
+        _currentCamera = Camera3D::getCamera(i);
         pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
-        loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, camera->getViewProjectionMatrix());
+        loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _currentCamera->getViewProjectionMatrix());
+        
+        //visit the scene using current camera
+        _runningScene->visit(_renderer, Mat4::IDENTITY, false);
+        
+        popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
     }
+    _currentCamera = nullptr; //it is only valid during visit the scene
 
     // draw the scene
     if (_runningScene)
     {
-        _runningScene->visit(_renderer, Mat4::IDENTITY, false);
         _eventDispatcher->dispatchEvent(_eventAfterVisit);
     }
 
@@ -314,11 +318,6 @@ void Director::drawScene()
 
     _renderer->render();
     _eventDispatcher->dispatchEvent(_eventAfterDraw);
-
-    if (camera)
-    {
-        popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
-    }
     
     popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 
@@ -615,10 +614,12 @@ void Director::setProjection(Projection projection)
     {
         case Projection::_2D:
         {
-            if (Camera3D::getActiveCamera() == nullptr)
+            Camera3D* camera = nullptr;
+            if (Camera3D::getCameraCount() == 0)
             {
-                auto camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
-                Camera3D::setActiveCamera(camera);
+                //create default camera
+                camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
+                Camera3D::addCamera(camera);
             }
             
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
@@ -626,7 +627,8 @@ void Director::setProjection(Projection projection)
             if(getOpenGLView() != nullptr)
             {
                 multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, getOpenGLView()->getOrientationMatrix());
-                camera->setAdditionalProjection(getOpenGLView()->getOrientationMatrix());
+                if (camera)
+                    camera->setAdditionalProjection(getOpenGLView()->getOrientationMatrix());
             }
 #endif
             Mat4 orthoMatrix;
@@ -641,10 +643,10 @@ void Director::setProjection(Projection projection)
             float zeye = this->getZEye();
             
             Camera3D* camera = nullptr;
-            if (Camera3D::getActiveCamera() == nullptr)
+            if (Camera3D::getCameraCount() == 0)
             {
                 camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
-                Camera3D::setActiveCamera(camera);
+                Camera3D::addCamera(camera);
             }
 
             Mat4 matrixPerspective, matrixLookup;
@@ -658,8 +660,8 @@ void Director::setProjection(Projection projection)
             if(getOpenGLView() != nullptr)
             {
                 multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, getOpenGLView()->getOrientationMatrix());
-                
-                camera->setAdditionalProjection(getOpenGLView()->getOrientationMatrix());
+                if (camera)
+                    camera->setAdditionalProjection(getOpenGLView()->getOrientationMatrix());
             }
 #endif
             // issue #1334
@@ -674,7 +676,7 @@ void Director::setProjection(Projection projection)
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
             
             if (camera)
-            camera->lookAt(eye, up, center);
+                camera->lookAt(eye, up, center);
             break;
         }
 

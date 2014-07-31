@@ -86,6 +86,10 @@ void ParticleSystem3D::update(float dt)
     {
         if(_emitterConfig.billboardType	==BILLBOARD)
         {
+//            Camera3D* camera = nullptr;
+//            for (<#initialization#>; <#condition#>; <#increment#>) {
+//                <#statements#>
+//            }
             const Mat4& cameraViewMatrix = Camera3D::getActiveCamera()->getViewMatrix().getInversed();
             cameraViewMatrix.getRightVector(&_cameraRight);
             cameraViewMatrix.getUpVector(&_cameraUp);

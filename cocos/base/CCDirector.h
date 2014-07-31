@@ -60,6 +60,7 @@ class EventCustom;
 class EventListenerCustom;
 class TextureCache;
 class Renderer;
+class Camera3D;
 
 #if  (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
 class Console;
@@ -404,6 +405,9 @@ public:
      *  get Frame Rate
      */
     float getFrameRate() const { return _frameRate; }
+    
+    /**get current camera, only valid during drawScene*/
+    Camera3D* getCurrentCamera() const { return _currentCamera; }
 
 protected:
     void purgeDirector();
@@ -503,6 +507,9 @@ protected:
 
     /* Renderer for the Director */
     Renderer *_renderer;
+    
+    /**current camera, only valid during drawScene*/
+    Camera3D* _currentCamera;
 
 #if  (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT)
     /* Console for the director */

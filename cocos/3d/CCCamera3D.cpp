@@ -27,6 +27,7 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 Camera3D* Camera3D::_activeCamera = nullptr;
+Vector<Camera3D*> Camera3D::_cameras;
 
 Camera3D* Camera3D::createPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 {
@@ -71,6 +72,7 @@ Camera3D::Type Camera3D::getCameraType() const
 }
 
 Camera3D::Camera3D()
+: _cameraFlag(1)
 {
     
 }
@@ -96,6 +98,28 @@ void Camera3D::setRotation3D(const Vec3& rotation)
     Node::setRotation3D(rotation);
     _transformUpdated = _transformDirty = _inverseDirty = true;	
 }
+
+void Camera3D::addCamera(Camera3D* camera)
+{
+    _cameras.pushBack(camera);
+}
+
+void Camera3D::removeCamera(Camera3D* camera)
+{
+    for (auto it = _cameras.begin(); it != _cameras.end(); it++) {
+        if (*it == camera)
+        {
+            _cameras.erase(it);
+            break;
+        }
+    }
+}
+
+void Camera3D::removeAllCamera()
+{
+    _cameras.clear();
+}
+
 //set active camera
 void Camera3D::setActiveCamera(Camera3D* camera)
 {

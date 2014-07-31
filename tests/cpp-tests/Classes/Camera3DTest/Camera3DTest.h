@@ -46,7 +46,7 @@ enum State
     State_RemoteAttack = 0x20,
     State_Attack = 0x40,
 };
-class Layer3D;
+
 class Camera3DTestDemo : public BaseTest
 {
 public:
@@ -76,7 +76,7 @@ public:
     bool isState(unsigned int state,unsigned int bit) const;
 protected:
     std::string    _title;
-    Layer3D*      _layer3D;
+    Layer*      _layer3D;
     Label*		  _labelRolePos;
     Label*		  _labelCameraPos;
     Sprite3D*     _sprite3D;
@@ -91,17 +91,17 @@ class Camera3DTestScene : public TestScene
 public:
     virtual void runThisTest();
 };
-class Layer3D : public cocos2d::Layer
-{
-public:
-    virtual bool init();  
-    virtual void visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags);
-    void onBeginDraw();
-    void onEndDraw();
-    CREATE_FUNC(Layer3D);
-    GroupCommand _groupCommand;
-    CustomCommand _BeginCommand;
-    CustomCommand _EndCommand;
-    Director::Projection _directorProjection;
-};
+//class Layer3D : public cocos2d::Layer
+//{
+//public:
+//    virtual bool init();  
+//    virtual void visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags);
+//    void onBeginDraw();
+//    void onEndDraw();
+//    CREATE_FUNC(Layer3D);
+//    GroupCommand _groupCommand;
+//    CustomCommand _BeginCommand;
+//    CustomCommand _EndCommand;
+//    Director::Projection _directorProjection;
+//};
 #endif
