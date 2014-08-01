@@ -28,6 +28,7 @@ NS_CC_BEGIN
 
 Camera3D* Camera3D::_activeCamera = nullptr;
 Vector<Camera3D*> Camera3D::_cameras;
+std::list<Camera3D*> Camera3D::_sortedCameras;
 
 Camera3D* Camera3D::createPerspective(float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 {
@@ -118,6 +119,14 @@ void Camera3D::removeCamera(Camera3D* camera)
 void Camera3D::removeAllCamera()
 {
     _cameras.clear();
+}
+
+const std::list<Camera3D*>& Camera3D::getSortedCameras()
+{
+    if (_sortedCameras.size() != _cameras.size())
+    {
+        
+    }
 }
 
 //set active camera

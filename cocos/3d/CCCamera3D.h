@@ -30,9 +30,6 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 class Ray;
-/**
-* Defines a camera .
-*/
 
 enum class CameraFlag
 {
@@ -47,6 +44,9 @@ enum class CameraFlag
     CAMERA_USER8 = 1 << 8,
 };
 
+/**
+ * Defines a camera .
+ */
 class CC_DLL Camera3D :public Node
 {
 public:
@@ -90,6 +90,8 @@ public:
     static ssize_t getCameraCount() { return _cameras.size(); }
     /**get camera by index*/
     static Camera3D* getCamera(int index) { return _cameras.at(index); }
+    /**get sorted cameras (by camera flag) used by drawScene*/
+    static const std::list<Camera3D*>& getSortedCameras();
     /**
      * Gets the type of camera.
      *
@@ -99,7 +101,7 @@ public:
     
     /**get & set Camera mask*/
     unsigned short getCameraFlag() const { return _cameraFlag; }
-    void setCameraFlag(unsigned short mask) { _cameraFlag = mask; }
+    void setCameraFlag(unsigned short mask) { _cameraFlag = mask; _sortedCameras.clear(); }
 
 	/**
 	 *
@@ -197,6 +199,7 @@ protected:
     unsigned short _cameraFlag; // camera flag
     
     static Vector<Camera3D*> _cameras;
+    static std::list<Camera3D*> _sortedCameras;
     static Camera3D* _activeCamera;
 };
 NS_CC_END
