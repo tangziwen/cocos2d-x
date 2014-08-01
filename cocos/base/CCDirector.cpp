@@ -288,7 +288,7 @@ void Director::drawScene()
     pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     
     for (ssize_t i = 0; i < Camera3D::getCameraCount(); i++) {
-        _currentCamera = Camera3D::getCamera(i);
+        _currentCamera = Camera3D::getCameraByIndex(i);
         pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
         loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _currentCamera->getViewProjectionMatrix());
         
@@ -610,6 +610,10 @@ void Director::setProjection(Projection projection)
 {
     Size size = _winSizeInPoints;
 
+    auto camera = Camera3D::getCameraByFlag(CameraFlag::CAMERA_DEFAULT);
+    if (camera)
+        Camera3D::removeCamera(camera);
+
     setViewport();
 
     switch (projection)
@@ -617,12 +621,9 @@ void Director::setProjection(Projection projection)
         case Projection::_2D:
         {
             Camera3D* camera = nullptr;
-            if (Camera3D::getCameraCount() == 0)
-            {
-                //create default camera
-                camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
-                Camera3D::addCamera(camera);
-            }
+            //create default camera
+            camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
+            Camera3D::addCamera(camera);
             
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
@@ -645,11 +646,8 @@ void Director::setProjection(Projection projection)
             float zeye = this->getZEye();
             
             Camera3D* camera = nullptr;
-            if (Camera3D::getCameraCount() == 0)
-            {
-                camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
-                Camera3D::addCamera(camera);
-            }
+            camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
+            Camera3D::addCamera(camera);
 
             Mat4 matrixPerspective, matrixLookup;
 

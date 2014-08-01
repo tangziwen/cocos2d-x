@@ -196,7 +196,7 @@ void Camera3DTestDemo::onEnter()
     Camera3D::addCamera(_camera);
     _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
     //Camera3D::setActiveCamera(_camera);
-    _camera->setCameraFlag(2);
+    _camera->setCameraFlag(CameraFlag::CAMERA_USER1);
     DrawNode3D* line =DrawNode3D::create();
     _layer3D->addChild(_camera);
     //draw x

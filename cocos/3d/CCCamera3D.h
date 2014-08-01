@@ -89,9 +89,11 @@ public:
     /**get camera count*/
     static ssize_t getCameraCount() { return _cameras.size(); }
     /**get camera by index*/
-    static Camera3D* getCamera(int index) { return _cameras.at(index); }
+    static Camera3D* getCameraByIndex(int index) { return _cameras.at(index); }
     /**get sorted cameras (by camera flag) used by drawScene*/
     static const std::list<Camera3D*>& getSortedCameras();
+    /**get camera by camera flag*/
+    static Camera3D* getCameraByFlag(CameraFlag flag);
     /**
      * Gets the type of camera.
      *
@@ -99,9 +101,9 @@ public:
      */
     Camera3D::Type  getCameraType() const;
     
-    /**get & set Camera mask*/
-    unsigned short getCameraFlag() const { return _cameraFlag; }
-    void setCameraFlag(unsigned short mask) { _cameraFlag = mask; _sortedCameras.clear(); }
+    /**get & set Camera flag*/
+    CameraFlag getCameraFlag() const { return (CameraFlag)_cameraFlag; }
+    void setCameraFlag(CameraFlag mask) { _cameraFlag = (unsigned short)mask; _sortedCameras.clear(); }
 
 	/**
 	 *

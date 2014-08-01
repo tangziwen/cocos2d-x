@@ -103,6 +103,7 @@ void Camera3D::setRotation3D(const Vec3& rotation)
 void Camera3D::addCamera(Camera3D* camera)
 {
     _cameras.pushBack(camera);
+    _sortedCameras.clear();
 }
 
 void Camera3D::removeCamera(Camera3D* camera)
@@ -110,6 +111,7 @@ void Camera3D::removeCamera(Camera3D* camera)
     for (auto it = _cameras.begin(); it != _cameras.end(); it++) {
         if (*it == camera)
         {
+            _sortedCameras.clear();
             _cameras.erase(it);
             break;
         }
@@ -118,15 +120,39 @@ void Camera3D::removeCamera(Camera3D* camera)
 
 void Camera3D::removeAllCamera()
 {
+    _sortedCameras.clear();
     _cameras.clear();
+}
+
+Camera3D* Camera3D::getCameraByFlag(CameraFlag flag)
+{
+    for (const auto& it : _cameras) {
+        if (it->getCameraFlag() == flag)
+            return it;
+    }
+    return nullptr;
 }
 
 const std::list<Camera3D*>& Camera3D::getSortedCameras()
 {
     if (_sortedCameras.size() != _cameras.size())
     {
-        
+        //sort cameras by camera flag
+        _sortedCameras.clear();
+        for (auto it = _cameras.begin(); it != _cameras.end(); it++)
+        {
+            auto flag = (*it)->getCameraFlag();
+            auto insertIt = _sortedCameras.begin();
+            for (auto it2 = _sortedCameras.begin(); it2 != _sortedCameras.end(); it2++)
+            {
+                if ((*it2)->getCameraFlag() > flag)
+                    break;
+                insertIt = it2;
+            }
+            _sortedCameras.insert(insertIt, *it);
+        }
     }
+    return _sortedCameras;
 }
 
 //set active camera

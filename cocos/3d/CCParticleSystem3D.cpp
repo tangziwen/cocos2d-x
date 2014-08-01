@@ -88,8 +88,8 @@ void ParticleSystem3D::update(float dt)
         {
             Camera3D* camera = nullptr;
             for (int i = 0; i < Camera3D::getCameraCount(); i++) {
-                camera = Camera3D::getCamera(i);
-                if (camera->getCameraFlag() & getCameraMask())
+                camera = Camera3D::getCameraByIndex(i);
+                if ((unsigned short)camera->getCameraFlag() & getCameraMask())
                 {
                     //calculate direction using this camera
                     break;
