@@ -295,6 +295,8 @@ void Director::drawScene()
         //visit the scene using current camera
         _runningScene->visit(_renderer, Mat4::IDENTITY, false);
         
+        _renderer->render();
+        
         popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
     }
     _currentCamera = nullptr; //it is only valid during visit the scene
@@ -316,7 +318,7 @@ void Director::drawScene()
         showStats();
     }
 
-    _renderer->render();
+    //_renderer->render();
     _eventDispatcher->dispatchEvent(_eventAfterDraw);
     
     popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);

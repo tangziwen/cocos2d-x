@@ -182,7 +182,7 @@ const Mat4& Camera3D::getViewProjectionMatrix()
 {
     //FIX ME
     getViewMatrix();
-    Mat4::multiply(_view, _projection, &_viewProjection);
+    Mat4::multiply(_projection, _view, &_viewProjection);
     return _viewProjection;
 }
 

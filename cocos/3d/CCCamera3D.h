@@ -33,6 +33,20 @@ class Ray;
 /**
 * Defines a camera .
 */
+
+enum class CameraFlag
+{
+    CAMERA_DEFAULT = 1,
+    CAMERA_USER1 = 1 << 1,
+    CAMERA_USER2 = 1 << 2,
+    CAMERA_USER3 = 1 << 3,
+    CAMERA_USER4 = 1 << 4,
+    CAMERA_USER5 = 1 << 5,
+    CAMERA_USER6 = 1 << 6,
+    CAMERA_USER7 = 1 << 7,
+    CAMERA_USER8 = 1 << 8,
+};
+
 class CC_DLL Camera3D :public Node
 {
 public:

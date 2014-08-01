@@ -102,17 +102,17 @@ std::string Camera3DTestDemo::subtitle() const
 }
 void Camera3DTestDemo::scaleCameraCallback(Ref* sender,float value)
 {
-    Camera3D::getActiveCamera()->scale(value); 	
+    _camera->scale(value);
 }	
 void Camera3DTestDemo::rotateCameraCallback(Ref* sender,float value)
 {
     if(_ViewType==0)
     {
-        Camera3D::getActiveCamera()->rotateAlong(Vec3(0,0,0),Vec3(0,1,0),value); 
+        _camera->rotateAlong(Vec3(0,0,0),Vec3(0,1,0),value);
     }
     if( _ViewType==2)
     {
-        Camera3D::getActiveCamera()->rotate(Vec3(0,1,0),value); 
+        _camera->rotate(Vec3(0,1,0),value);
     }
 }
 void Camera3DTestDemo::SwitchViewCallback(Ref* sender,int viewType)
@@ -128,11 +128,11 @@ void Camera3DTestDemo::SwitchViewCallback(Ref* sender,int viewType)
         Vec3 newFaceDir;
         _sprite3D->getWorldToNodeTransform().getForwardVector(&newFaceDir);
         newFaceDir.normalize();
-        Camera3D::getActiveCamera()->lookAt(_sprite3D->getPosition3D()+Vec3(0,20,0),Vec3(0, 1, 0),_sprite3D->getPosition3D()+newFaceDir*50);
+        _camera->lookAt(_sprite3D->getPosition3D()+Vec3(0,20,0),Vec3(0, 1, 0),_sprite3D->getPosition3D()+newFaceDir*50);
     }
     else if(_ViewType==1)
     {
-        Camera3D::getActiveCamera()->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
+        _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
     }
 }
 void Camera3DTestDemo::onEnter()
@@ -193,7 +193,7 @@ void Camera3DTestDemo::onEnter()
     addChild(_labelCameraPos, 0);
     schedule(schedule_selector(Camera3DTestDemo::updatelabel), 0.0f);  
     _camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 1, 1000);
-    _camera->retain();
+    Camera3D::addCamera(_camera);
     _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
     //Camera3D::setActiveCamera(_camera);
     _camera->setCameraFlag(2);
@@ -296,10 +296,10 @@ void Camera3DTestDemo::onTouchesMoved(const std::vector<Touch*>& touches, cocos2
         Point newPos = touch->getPreviousLocation()-location;
         if(_ViewType==0 ||_ViewType==2)
         {
-            Camera3D::getActiveCamera()->translate(Vec3(-newPos.x*0.1,0,newPos.y*0.1));
+            _camera->translate(Vec3(-newPos.x*0.1,0,newPos.y*0.1));
             if(_ViewType==2)
             {
-                _sprite3D->setPosition3D(Vec3(Camera3D::getActiveCamera()->getPositionX(),0,Camera3D::getActiveCamera()->getPositionZ()));
+                _sprite3D->setPosition3D(Vec3(_camera->getPositionX(),0,_camera->getPositionZ()));
                 _targetPos=_sprite3D->getPosition3D();
             }
         }
@@ -351,7 +351,7 @@ void Camera3DTestDemo::move3D(float elapsedTime)
         _sprite3D->setPosition3D(curPos);
         if(_camera)
         {
-            Camera3D::getActiveCamera()->translate(offset);
+            _camera->translate(offset);
 
         }
 
@@ -394,7 +394,7 @@ void Camera3DTestDemo::onTouchesEnded(const std::vector<Touch*>& touches, cocos2
         auto touch = item;
         auto location = touch->getLocationInView();
         Ray ray;
-        Camera3D::getActiveCamera()->calculateRayByLocationInView(&ray,location);
+        _camera->calculateRayByLocationInView(&ray,location);
         if(_sprite3D && _ViewType==1 )
         {
             float dist=0.0f;
@@ -422,8 +422,8 @@ void Camera3DTestDemo::updatelabel(float fDelta)
 
         _labelRolePos->setString(str);
 
-        auto  vPosition_Eye		= Camera3D::getActiveCamera()->getEyePos();
-        auto  vPosition_LookAt	= Camera3D::getActiveCamera()->getLookPos();
+        auto  vPosition_Eye		= _camera->getEyePos();
+        auto  vPosition_LookAt	= _camera->getLookPos();
         sprintf(szText,"Camera : Eye Position:  %.2f , %.2f , %.2f  , LookAt Position :  %.2f , %.2f , %.2f  ",vPosition_Eye.x,vPosition_Eye.y,vPosition_Eye.z,vPosition_LookAt.x,vPosition_LookAt.y,vPosition_LookAt.z);
         std::string str2 = szText;
         _labelCameraPos->setString(str2);

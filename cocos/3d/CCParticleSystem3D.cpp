@@ -86,13 +86,18 @@ void ParticleSystem3D::update(float dt)
     {
         if(_emitterConfig.billboardType	==BILLBOARD)
         {
-//            Camera3D* camera = nullptr;
-//            for (<#initialization#>; <#condition#>; <#increment#>) {
-//                <#statements#>
-//            }
-            const Mat4& cameraViewMatrix = Camera3D::getActiveCamera()->getViewMatrix().getInversed();
-            cameraViewMatrix.getRightVector(&_cameraRight);
-            cameraViewMatrix.getUpVector(&_cameraUp);
+            Camera3D* camera = nullptr;
+            for (int i = 0; i < Camera3D::getCameraCount(); i++) {
+                camera = Camera3D::getCamera(i);
+                if (camera->getCameraFlag() & getCameraMask())
+                {
+                    //calculate direction using this camera
+                    break;
+                }
+            }
+//            const Mat4& cameraViewMatrix = Camera3D::getActiveCamera()->getViewMatrix().getInversed();
+//            cameraViewMatrix.getRightVector(&_cameraRight);
+//            cameraViewMatrix.getUpVector(&_cameraUp);
         }
         if( _state == RUNNING)
         {
