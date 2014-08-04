@@ -58,7 +58,7 @@ public:
     void nextCallback(Ref* sender);
     void backCallback(Ref* sender);
     virtual void onEnter() override;
-
+    virtual void onExit() override;
     // overrides
     virtual std::string title() const override;
     virtual std::string subtitle() const override;

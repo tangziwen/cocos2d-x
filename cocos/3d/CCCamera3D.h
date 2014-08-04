@@ -134,14 +134,10 @@ public:
     void setAdditionalProjection(const Mat4& mat);
     
     /**
-     *  set the camera's projection View.
-     */
-    void applyProjection();
-    /**
      * Sets the position (X, Y, and Z) in its parent's coordinate system
      */
-	virtual void setPosition3D(const Vec3& position);
-    virtual void setRotation3D(const Vec3& rotation);
+	virtual void setPosition3D(const Vec3& position) override;
+    virtual void setRotation3D(const Vec3& rotation) override;
     
     /**
      * rotate camera
@@ -159,7 +155,7 @@ public:
      */
     void translate(const Vec3& vector);
     void scale(float scale);
-    virtual const Mat4& getNodeToParentTransform() const;
+    virtual const Mat4& getNodeToParentTransform() const override;
     /**
      * Convert the specified point of viewport from screenspace coordinate into the worldspace coordinate.
      */

@@ -181,27 +181,6 @@ void Camera3D::setAdditionalProjection(const Mat4& mat)
     getViewProjectionMatrix();
 }
 
-void Camera3D::applyProjection()
-{
-    getProjectionMatrix();
-    getViewMatrix();
-    Director* director = Director::getInstance();
-    director->loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
-    //if needed, we need to add a rotation for Landscape orientations on Windows Phone 8 since it is always in Portrait Mode
-    GLView* view = getOpenGLView();
-    if(getOpenGLView() != nullptr)
-    {
-        multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, getOpenGLView()->getOrientationMatrix());
-    }
-#endif
-    // issue #1334
-    //Mat4::createPerspective(60, (GLfloat)size.width/size.height, 10, 1000, &matrixPerspective);
-    director->multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _projection);
-    director->multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _view);
-    director->loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-    GL::setProjectionMatrixDirty();
-}
 /* returns the Eye value of the Camera */
 Vec3& Camera3D::getEyePos() 
 {

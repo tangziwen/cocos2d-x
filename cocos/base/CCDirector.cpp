@@ -332,6 +332,7 @@ void Director::drawScene()
     if (_displayStats)
     {
         showStats();
+        _renderer->render();
     }
 
     //_renderer->render();

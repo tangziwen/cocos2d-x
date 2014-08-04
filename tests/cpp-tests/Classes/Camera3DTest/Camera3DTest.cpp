@@ -220,6 +220,16 @@ void Camera3DTestDemo::onEnter()
     _layer3D->setCameraMask(2);
 }
 
+void Camera3DTestDemo::onExit()
+{
+    BaseTest::onExit();
+    if (_camera)
+    {
+        Camera3D::removeCamera(_camera);
+        _camera = nullptr;
+    }
+}
+
 void Camera3DTestDemo::restartCallback(Ref* sender)
 {
     auto s = new Camera3DTestScene();
