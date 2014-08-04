@@ -845,6 +845,7 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Camera3DTest\Camera3DTest.cpp">
       <Filter>Classes\Camera3DTest</Filter>
+    </ClCompile>
     <ClCompile Include="..\Classes\UITest\CocoStudioGUITest\CustomWidget\CustomImageView.cpp">
       <Filter>Classes\UITest\CocostudioGUISceneTest\CustomWidget</Filter>
     </ClCompile>
@@ -1572,6 +1573,7 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Camera3DTest\Camera3DTest.h">
       <Filter>Classes\Camera3DTest</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\UITest\CocoStudioGUITest\CustomWidget\CustomImageView.h">
       <Filter>Classes\UITest\CocostudioGUISceneTest\CustomWidget</Filter>
     </ClInclude>

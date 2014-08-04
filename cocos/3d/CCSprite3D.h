@@ -65,7 +65,7 @@ public:
     
     /**get skin*/
     MeshSkin* getSkin() const { return _skin; }
-    
+
     /**get AttachNode by bone name, return nullptr if not exist*/
     AttachNode* getAttachNode(const std::string& boneName);
     
