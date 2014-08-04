@@ -60,7 +60,9 @@ static std::function<Layer*()> createFunctions[] =
     CL(Animate3DTest),
     CL(AttachmentTest),
     CL(Sprite3DWithSubMeshTest),
-    CL(Sprite3DWithCollisonTest)
+    CL(Sprite3DWithCollisonTest),
+    CL(Sprite3DWithOBBPerfromanceTest),
+    CL(Sprite3DWithAABBPerfromanceTest)
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -1186,4 +1188,277 @@ void Sprite3DWithCollisonTest::reachEndCallBack()
     auto seq = Sequence::create(_moveActionGo1, CallFunc::create(CC_CALLBACK_0(Sprite3DWithCollisonTest::reachEndCallBack, this)), nullptr);
     seq->setTag(101);
     _sprite1->runAction(seq);
+}
+
+Sprite3DWithOBBPerfromanceTest::Sprite3DWithOBBPerfromanceTest()
+{
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesEnded = CC_CALLBACK_2(Sprite3DWithOBBPerfromanceTest::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    auto s = Director::getInstance()->getWinSize();
+    initDrawBox();
+    //addNewOBBWithCoords( Vec2(s.width/2, s.height/2) );
+    addNewSpriteWithCoords(Vec2(s.width/2, s.height/2));
+    TTFConfig ttfCount("fonts/arial.ttf", 20);
+    auto label1 = Label::createWithTTF(ttfCount,"add OBB");
+    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Sprite3DWithOBBPerfromanceTest::addOBBCallback,this,10));
+    auto menu = Menu::create(menuItem1,NULL);
+    menu->setPosition(Vec2::ZERO);
+    menuItem1->setPosition( Vec2( s.width-50, 230 ) );
+    addChild(menu);
+    _labelCubeCount = Label::createWithTTF(ttfCount,"cube count:0");
+    Vec2 tAnchor(0,0);
+    _labelCubeCount->setAnchorPoint(tAnchor);
+    _labelCubeCount->setPosition(10,230);
+    addChild(_labelCubeCount);
+    _hasCollider = false;
+    scheduleUpdate();
+}
+std::string Sprite3DWithOBBPerfromanceTest::title() const
+{
+    return "OBB Collison Perfromance Test";
+}
+std::string Sprite3DWithOBBPerfromanceTest::subtitle() const
+{
+    return "Tap screen to add more OBB";
+}
+void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCoords(Vec2 p)
+{
+     Vec3 extents = Vec3(10, 10, 10);
+     AABB aabb(-extents, extents);
+     auto obb = OBB(aabb);
+     obb._center = Vec3(p.x,p.y,0);
+     _obb.push_back(obb);
+}
+void Sprite3DWithOBBPerfromanceTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
+{
+    for (auto touch: touches)
+    {
+        auto location = touch->getLocation();
+        //addNewOBBWithCoords( location );
+    }
+}
+
+void Sprite3DWithOBBPerfromanceTest::update(float dt)
+{
+    char szText[100];
+    sprintf(szText,"cube count:%d",_obb.size());
+    std::string str = szText;
+    _labelCubeCount->setString(str);
+
+    if (_drawDebug)
+    {
+        _drawDebug->clear();
+        
+        Mat4 mat = _sprite->getNodeToWorldTransform();
+        mat.getRightVector(&_obbt._xAxis);
+        _obbt._xAxis.normalize();
+        
+        mat.getUpVector(&_obbt._yAxis);
+        _obbt._yAxis.normalize();
+        
+        mat.getForwardVector(&_obbt._zAxis);
+        _obbt._zAxis.normalize();
+        
+        _obbt._center = _sprite->getPosition3D();
+        
+        Vec3 corners[8] = {};
+        _obbt.getCorners(corners);
+        _drawDebug->drawCube(corners, Color4F(0,0,1,1));
+    }
+    if(_obb.size() > 0)
+    {
+        _drawOBB->clear();
+        for(int i =0; i < _obb.size(); i++)
+        {           
+            Vec3 corners[8] = {};
+            _obb[i].getCorners(corners);
+            _drawOBB->drawCube(corners, _obbt.intersects(_obb[i])?Color4F(1,0,0,1):Color4F(0,1,0,1));
+        }
+    }
+}
+
+void Sprite3DWithOBBPerfromanceTest::initDrawBox()
+{
+    _drawOBB = DrawNode3D::create();
+    addChild(_drawOBB);
+}
+
+void Sprite3DWithOBBPerfromanceTest::addNewSpriteWithCoords(Vec2 p)
+{
+    std::string fileName = "Sprite3DTest/tortoise.c3b";
+    auto sprite = Sprite3D::create(fileName);
+    sprite->setScale(0.1f);
+    auto s = Director::getInstance()->getWinSize();
+    sprite->setPosition(Vec2(s.width * 4.f / 5.f, s.height / 2.f));
+    addChild(sprite);
+    _sprite = sprite;
+    auto animation = Animation3D::create(fileName);
+    if (animation)
+    {
+        auto animate = Animate3D::create(animation, 0.f, 1.933f);
+        sprite->runAction(RepeatForever::create(animate));
+    }
+    
+    _moveAction = MoveTo::create(4.f, Vec2(s.width / 5.f, s.height / 2.f));
+    _moveAction->retain();
+    auto seq = Sequence::create(_moveAction, CallFunc::create(CC_CALLBACK_0(Sprite3DWithOBBPerfromanceTest::reachEndCallBack, this)), nullptr);
+    seq->setTag(100);
+    sprite->runAction(seq);
+
+    //Generate OBB by AABB
+    Vec3 extents = Vec3(50, 25, 25);
+    AABB aabb(-extents, extents);
+    _obbt = OBB(aabb);
+    
+    _drawDebug = DrawNode3D::create();
+    addChild(_drawDebug);
+}
+
+void Sprite3DWithOBBPerfromanceTest::reachEndCallBack()
+{
+    _sprite->stopActionByTag(100);
+    auto inverse = (MoveTo*)_moveAction->reverse();
+    inverse->retain();
+    _moveAction->release();
+    _moveAction = inverse;
+    auto rot = RotateBy::create(1.0f, Vec3(0.f, 180.f, 0.f));
+    auto seq = Sequence::create(rot, _moveAction, CallFunc::create(CC_CALLBACK_0(Sprite3DWithOBBPerfromanceTest::reachEndCallBack, this)), nullptr);
+    seq->setTag(100);
+    _sprite->runAction(seq);
+}
+
+void Sprite3DWithOBBPerfromanceTest::addOBBCallback(Ref* sender,float value)
+{
+    addNewOBBWithCount(value);
+}
+
+void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCount(float value)
+{
+    for(int i = 0; i < value; i++)
+    {
+        Vec2 randompos = Vec2(CCRANDOM_0_1() * Director::getInstance()->getWinSize().width,CCRANDOM_0_1() * Director::getInstance()->getWinSize().height);
+        Vec3 extents = Vec3(10, 10, 10);
+        AABB aabb(-extents, extents);
+        auto obb = OBB(aabb);
+        obb._center = Vec3(randompos.x,randompos.y,0);
+        _obb.push_back(obb);
+    }
+}
+
+Sprite3DWithAABBPerfromanceTest::Sprite3DWithAABBPerfromanceTest()
+{
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesEnded = CC_CALLBACK_2(Sprite3DWithAABBPerfromanceTest::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    auto s = Director::getInstance()->getWinSize();
+    initDrawBox();
+
+    TTFConfig ttfCount("fonts/arial.ttf", 20);
+    auto label1 = Label::createWithTTF(ttfCount,"add AABB");
+    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Sprite3DWithAABBPerfromanceTest::addAABBCallback,this,10));
+    auto menu = Menu::create(menuItem1,NULL);
+    menu->setPosition(Vec2::ZERO);
+    menuItem1->setPosition( Vec2( s.width-50, 230 ) );
+    addChild(menu);
+    _labelCubeCount = Label::createWithTTF(ttfCount,"cube count:0");
+    Vec2 tAnchor(0,0);
+    _labelCubeCount->setAnchorPoint(tAnchor);
+    _labelCubeCount->setPosition(10,230);
+    addChild(_labelCubeCount);
+    scheduleUpdate();
+}
+
+std::string Sprite3DWithAABBPerfromanceTest::title() const
+{
+    return "AABB Collison Perfromance Test";
+}
+
+std::string Sprite3DWithAABBPerfromanceTest::subtitle() const
+{
+    return "Tap screen to add more AABB";
+}
+
+void Sprite3DWithAABBPerfromanceTest::initDrawBox()
+{
+    _drawAABB = DrawNode3D::create();
+    addChild(_drawAABB);
+}
+
+void Sprite3DWithAABBPerfromanceTest::addNewAABBWithCoords(Vec2 p)
+{
+     Vec3 extents = Vec3(10, 10, 10);
+     AABB aabb(-extents, extents);
+     aabb._min = Vec3(p.x - extents.x, p.y - extents.y, -extents.z);
+     aabb._max = Vec3(p.x + extents.x, p.y + extents.y, extents.z);
+     _aabb.push_back(aabb);
+}
+void Sprite3DWithAABBPerfromanceTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
+{
+    for (auto touch: touches)
+    {
+        auto location = touch->getLocation();
+        //addNewAABBWithCoords( location );
+    }
+}
+
+void Sprite3DWithAABBPerfromanceTest::update(float dt)
+{
+    char szText[100];
+    sprintf(szText,"cube count:%d",_aabb.size());
+    std::string str = szText;
+    _labelCubeCount->setString(str);
+    std::set<int> intersetList;
+
+    if(_aabb.size() > 0)
+    {
+        _drawAABB->clear();
+        for(int i = 0; i < _aabb.size(); i++)
+        {
+            auto aabb = _aabb[i];
+            for(int j = 0; j < _aabb.size(); j++)
+            {
+                if(i != j)
+                {
+                    if(aabb.intersects(_aabb[j]))
+                    {
+                        intersetList.insert(i);
+                        intersetList.insert(j);
+                    }
+                }                          
+            }
+        }
+
+        for(int i = 0; i < _aabb.size(); i++)
+        {
+            Vec3 corners[8] = {};
+            _aabb[i].getCorners(corners);
+            if(intersetList.find(i) != intersetList.end())
+            {
+                _drawAABB->drawCube(corners, Color4F(1,0,0,1));
+            }
+            else
+            {
+                _drawAABB->drawCube(corners, Color4F(0,1,0,1));
+            }
+        }
+    }
+}
+
+void Sprite3DWithAABBPerfromanceTest::addAABBCallback(Ref* sender,float value)
+{
+    addNewAABBWithCount(value);
+}
+
+void Sprite3DWithAABBPerfromanceTest::addNewAABBWithCount(float value)
+{
+    for(int i = 0; i < value; i++)
+    {
+        Vec2 randompos = Vec2(CCRANDOM_0_1() * Director::getInstance()->getWinSize().width,CCRANDOM_0_1() * Director::getInstance()->getWinSize().height);
+        Vec3 extents = Vec3(10, 10, 10);
+        AABB aabb(-extents, extents);
+        aabb._min = Vec3(randompos.x - extents.x, randompos.y - extents.y, -extents.z);
+        aabb._max = Vec3(randompos.x + extents.x, randompos.y + extents.y, extents.z);
+        _aabb.push_back(aabb);
+    }
 }
