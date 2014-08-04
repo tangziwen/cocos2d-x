@@ -102,11 +102,11 @@ public:
     CameraFlag getCameraFlag() const { return (CameraFlag)_cameraFlag; }
     void setCameraFlag(CameraFlag mask) { _cameraFlag = (unsigned short)mask; }
 
-	/**
-	 *
-	 *
-	 */
-	void lookAt(const Vec3& position, const Vec3& up, const Vec3& target);
+    /**
+     *
+     *
+     */
+    void lookAt(const Vec3& position, const Vec3& up, const Vec3& target);
 	
     /* returns the Eye value of the Camera */
     Vec3& getEyePos();
@@ -136,7 +136,7 @@ public:
     /**
      * Sets the position (X, Y, and Z) in its parent's coordinate system
      */
-	virtual void setPosition3D(const Vec3& position) override;
+    virtual void setPosition3D(const Vec3& position) override;
     virtual void setRotation3D(const Vec3& rotation) override;
     
     /**
