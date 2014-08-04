@@ -91,17 +91,5 @@ class Camera3DTestScene : public TestScene
 public:
     virtual void runThisTest();
 };
-//class Layer3D : public cocos2d::Layer
-//{
-//public:
-//    virtual bool init();  
-//    virtual void visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags);
-//    void onBeginDraw();
-//    void onEndDraw();
-//    CREATE_FUNC(Layer3D);
-//    GroupCommand _groupCommand;
-//    CustomCommand _BeginCommand;
-//    CustomCommand _EndCommand;
-//    Director::Projection _directorProjection;
-//};
+
 #endif

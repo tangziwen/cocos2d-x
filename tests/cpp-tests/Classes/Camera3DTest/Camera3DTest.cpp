@@ -75,7 +75,8 @@ static Layer* restartSpriteTestAction()
 //------------------------------------------------------------------
 
 Camera3DTestDemo::Camera3DTestDemo(void)
-    : BaseTest()
+: BaseTest()
+, _camera(nullptr)
 {
 
 }
@@ -191,11 +192,14 @@ void Camera3DTestDemo::onEnter()
     _labelCameraPos->setPosition(10,220);
     addChild(_labelRolePos, 0);
     addChild(_labelCameraPos, 0);
-    schedule(schedule_selector(Camera3DTestDemo::updatelabel), 0.0f);  
-    _camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 1, 1000);
-    Camera3D::addCamera(_camera);
+    schedule(schedule_selector(Camera3DTestDemo::updatelabel), 0.0f);
+    if (_camera == nullptr)
+    {
+        _camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 1, 1000);
+        Camera3D::addCamera(_camera);
+    }
     _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
-    //Camera3D::setActiveCamera(_camera);
+
     _camera->setCameraFlag(CameraFlag::CAMERA_USER1);
     DrawNode3D* line =DrawNode3D::create();
     _layer3D->addChild(_camera);
@@ -488,23 +492,3 @@ void Camera3DTestScene::runThisTest()
     addChild(layer);
     Director::getInstance()->replaceScene(this);
 }
-
-//bool Layer3D::init()
-//{
-//    auto s = Director::getInstance()->getWinSize();
-//    return true;
-//}
-//void Layer3D::visit(Renderer *renderer, const Mat4& parentTransform, uint32_t parentFlags)
-//{
-//    Node::visit(renderer, parentTransform, parentFlags);
-//}
-//void Layer3D::onBeginDraw()
-//{
-//    Director *director = Director::getInstance();
-//    _directorProjection = director->getProjection();
-//}
-//void Layer3D::onEndDraw()
-//{
-//    Director *director = Director::getInstance();
-//    director->setProjection(_directorProjection);
-//}

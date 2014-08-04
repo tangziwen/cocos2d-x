@@ -288,7 +288,23 @@ void Director::drawScene()
     pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     
     for (ssize_t i = 0; i < Camera3D::getCameraCount(); i++) {
-        _currentCamera = Camera3D::getCameraByIndex(i);
+        _currentCamera = Camera3D::getCameraByIndex((int)i);
+        if (_currentCamera->getCameraFlag() == CameraFlag::CAMERA_DEFAULT)
+            continue;
+        
+        pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+        loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _currentCamera->getViewProjectionMatrix());
+        
+        //visit the scene using current camera
+        _runningScene->visit(_renderer, Mat4::IDENTITY, false);
+        
+        _renderer->render();
+        
+        popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+    }
+    _currentCamera = Camera3D::getCameraByFlag(CameraFlag::CAMERA_DEFAULT);
+    if (_currentCamera) //draw default camera
+    {
         pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
         loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, _currentCamera->getViewProjectionMatrix());
         
@@ -620,7 +636,6 @@ void Director::setProjection(Projection projection)
     {
         case Projection::_2D:
         {
-            Camera3D* camera = nullptr;
             //create default camera
             camera = Camera3D::createOrthographic(size.width, size.height, -1024, 1024);
             Camera3D::addCamera(camera);
@@ -645,7 +660,6 @@ void Director::setProjection(Projection projection)
         {
             float zeye = this->getZEye();
             
-            Camera3D* camera = nullptr;
             camera = Camera3D::createPerspective(60, (GLfloat)size.width/size.height, 10, zeye+size.height/2);
             Camera3D::addCamera(camera);
 
