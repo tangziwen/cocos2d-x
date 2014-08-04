@@ -78,7 +78,6 @@ public:
      * @param farPlane The far plane distance.
      */
     static Camera3D*  createOrthographic(float zoomX, float zoomY, float nearPlane, float farPlane);
-	static Camera3D*  getActiveCamera();
     
     /**add camera to camera list*/
     static void addCamera(Camera3D* camera);
@@ -145,8 +144,6 @@ public:
      */
 	virtual void setPosition3D(const Vec3& position);
     virtual void setRotation3D(const Vec3& rotation);
-	 //set active camera 
-    static void setActiveCamera(Camera3D* camera);
     
     /**
      * rotate camera
@@ -202,7 +199,6 @@ protected:
     
     static Vector<Camera3D*> _cameras;
     static std::list<Camera3D*> _sortedCameras;
-    static Camera3D* _activeCamera;
 };
 NS_CC_END
 #endif// __CCCAMERA3D_H_

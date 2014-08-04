@@ -26,7 +26,6 @@ THE SOFTWARE.
 #include "3d/CCRay.h"
 NS_CC_BEGIN
 
-Camera3D* Camera3D::_activeCamera = nullptr;
 Vector<Camera3D*> Camera3D::_cameras;
 std::list<Camera3D*> Camera3D::_sortedCameras;
 
@@ -47,10 +46,6 @@ Camera3D* Camera3D::createPerspective(float fieldOfView, float aspectRatio, floa
 	return nullptr;
 }
 
-Camera3D*  Camera3D::getActiveCamera()
-{
-    return _activeCamera;
-}
 Camera3D* Camera3D::createOrthographic(float zoomX, float zoomY, float nearPlane, float farPlane)
 {
 	auto ret = new Camera3D();
@@ -80,11 +75,7 @@ Camera3D::Camera3D()
 
 Camera3D::~Camera3D()
 {
-    if (_activeCamera == this)
-    {
-        _activeCamera = nullptr;
-        CCLOG("release active camera");
-    }
+    
 }
 
 void Camera3D::setPosition3D(const Vec3& position)
@@ -153,17 +144,6 @@ const std::list<Camera3D*>& Camera3D::getSortedCameras()
         }
     }
     return _sortedCameras;
-}
-
-//set active camera
-void Camera3D::setActiveCamera(Camera3D* camera)
-{
-    if (_activeCamera != camera)
-    {
-        CC_SAFE_RETAIN(camera);
-        CC_SAFE_RELEASE(_activeCamera);
-        _activeCamera = camera;
-    }
 }
 
 const Mat4& Camera3D::getProjectionMatrix()
