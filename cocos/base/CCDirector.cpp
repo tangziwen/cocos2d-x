@@ -691,7 +691,10 @@ void Director::setProjection(Projection projection)
             loadIdentityMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
             
             if (camera)
-                camera->lookAt(eye, up, center);
+            {
+                camera->setPosition3D(eye);
+                camera->lookAt(center, up);
+            }
             break;
         }
 

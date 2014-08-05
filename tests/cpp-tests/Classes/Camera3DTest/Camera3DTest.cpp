@@ -24,12 +24,13 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include "Camera3DTest.h"
-#include "3d/CCCamera3D.h"
 #include <algorithm>
 #include "../testResource.h"
 #include "3d/CCParticleSystem3D.h"
 #include "3d/CCDrawNode3D.h"
 #include "3d/CCRay.h"
+#include "3d/CCAttachNode.h"
+
 enum
 {
     IDC_NEXT = 100,
@@ -41,13 +42,15 @@ static int sceneIdx = -1;
 
 static std::function<Layer*()> createFunctions[] =
 {
-    CL(Camera3DTestDemo)
+    CL(Camera3DTestDemo),
 };
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
 
 static Layer* nextSpriteTestAction()
 {
-    auto layer = (createFunctions[0])();
+    sceneIdx++;
+    sceneIdx = sceneIdx % MAX_LAYER;
+    auto layer = (createFunctions[sceneIdx])();
     return layer;
 }
 
@@ -58,13 +61,13 @@ static Layer* backSpriteTestAction()
     if( sceneIdx < 0 )
         sceneIdx += total;
 
-    auto layer = (createFunctions[0])();
+    auto layer = (createFunctions[sceneIdx])();
     return layer;
 }
 
 static Layer* restartSpriteTestAction()
 {
-    auto layer = (createFunctions[0])();
+    auto layer = (createFunctions[sceneIdx])();
     return layer;
 }
 
@@ -78,19 +81,12 @@ Camera3DTestDemo::Camera3DTestDemo(void)
 : BaseTest()
 , _camera(nullptr)
 {
-
 }
 Camera3DTestDemo::~Camera3DTestDemo(void)
 {
 }
-
-void Camera3DTestDemo::addNewParticleSystemWithCoords(Vec3 p)
+void Camera3DTestDemo::reachEndCallBack()
 {
-    auto particleSystem3D = ParticleSystem3D::create("CameraTest/particle3Dtest.particle");
-    particleSystem3D->setPosition3D(p);
-    particleSystem3D->setScale(0.5);
-    particleSystem3D->start();
-    _layer3D->addChild(particleSystem3D,0);
 }
 std::string Camera3DTestDemo::title() const
 {
@@ -103,37 +99,46 @@ std::string Camera3DTestDemo::subtitle() const
 }
 void Camera3DTestDemo::scaleCameraCallback(Ref* sender,float value)
 {
-    _camera->scale(value);
+    if(_camera&& _cameraType!=CameraType::FirstCamera)
+    {
+        Vec3 cameraPos=  _camera->getPosition3D();
+        cameraPos+= cameraPos.getNormalized()*value;
+        _camera->setPosition3D(cameraPos);
+    }
 }	
 void Camera3DTestDemo::rotateCameraCallback(Ref* sender,float value)
 {
-    if(_ViewType==0)
+    if(_cameraType==CameraType::FreeCamera || _cameraType==CameraType::FirstCamera)
     {
-        _camera->rotateAlong(Vec3(0,0,0),Vec3(0,1,0),value);
-    }
-    if( _ViewType==2)
-    {
-        _camera->rotate(Vec3(0,1,0),value);
+        Vec3  rotation3D= _camera->getRotation3D();
+        rotation3D.y+= value;
+        _camera->setRotation3D(rotation3D);
     }
 }
-void Camera3DTestDemo::SwitchViewCallback(Ref* sender,int viewType)
+void Camera3DTestDemo::SwitchViewCallback(Ref* sender, CameraType cameraType)
 {
-    if(_ViewType==viewType)
+    if(_cameraType==cameraType)
     {
         return ;
     }
-    _ViewType = viewType;
-    // first person camera
-    if(_ViewType==2)
+    _cameraType = cameraType;
+    if(_cameraType==CameraType::FreeCamera)
     {
-        Vec3 newFaceDir;
-        _sprite3D->getWorldToNodeTransform().getForwardVector(&newFaceDir);
-        newFaceDir.normalize();
-        _camera->lookAt(_sprite3D->getPosition3D()+Vec3(0,20,0),Vec3(0, 1, 0),_sprite3D->getPosition3D()+newFaceDir*50);
+         _camera->setPosition3D(Vec3(0, 130, 130) + _sprite3D->getPosition3D());
+         _camera->lookAt(_sprite3D->getPosition3D(), Vec3(0,1,0));
     }
-    else if(_ViewType==1)
+    else if(_cameraType==CameraType::FirstCamera)
     {
-        _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
+           Vec3 newFaceDir;
+           _sprite3D->getWorldToNodeTransform().getForwardVector(&newFaceDir);
+           newFaceDir.normalize();
+           _camera->setPosition3D(Vec3(0,20,0) + _sprite3D->getPosition3D());
+           _camera->lookAt(_sprite3D->getPosition3D() + newFaceDir*50, Vec3(0, 1, 0));
+    }
+    else if(_cameraType==CameraType::ThirdCamera)
+    {
+           _camera->setPosition3D(Vec3(0, 130, 130) + _sprite3D->getPosition3D());
+           _camera->lookAt(_sprite3D->getPosition3D(), Vec3(0,1,0));
     }
 }
 void Camera3DTestDemo::onEnter()
@@ -149,58 +154,42 @@ void Camera3DTestDemo::onEnter()
     auto layer3D=Layer::create();
     addChild(layer3D,0);
     _layer3D=layer3D;
-    _ViewType = 0;	
     _curState=State_None;
-    addNewSpriteWithCoords( Vec3(0,0,0),"CameraTest/girl.c3b",true,true);
-    addNewParticleSystemWithCoords(Vec3(0, 0,0));
+    addNewSpriteWithCoords( Vec3(0,0,0),"CameraTest/girl.c3b",true,0.2,true);
     TTFConfig ttfConfig("fonts/arial.ttf", 20);
     auto label1 = Label::createWithTTF(ttfConfig,"zoom out");
-    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Camera3DTestDemo::scaleCameraCallback,this,-2));
+    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Camera3DTestDemo::scaleCameraCallback,this,-1));
     auto label2 = Label::createWithTTF(ttfConfig,"zoom in");
-    auto menuItem2 = MenuItemLabel::create(label2, CC_CALLBACK_1(Camera3DTestDemo::scaleCameraCallback,this,2));
+    auto menuItem2 = MenuItemLabel::create(label2, CC_CALLBACK_1(Camera3DTestDemo::scaleCameraCallback,this,1));
     auto label3 = Label::createWithTTF(ttfConfig,"rotate+");
     auto menuItem3 = MenuItemLabel::create(label3, CC_CALLBACK_1(Camera3DTestDemo::rotateCameraCallback,this,10));
     auto label4 = Label::createWithTTF(ttfConfig,"rotate-");
     auto menuItem4 = MenuItemLabel::create(label4, CC_CALLBACK_1(Camera3DTestDemo::rotateCameraCallback,this,-10));
     auto label5 = Label::createWithTTF(ttfConfig,"free ");
-    auto menuItem5 = MenuItemLabel::create(label5, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,0));
+    auto menuItem5 = MenuItemLabel::create(label5, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,CameraType::FreeCamera));
     auto label6 = Label::createWithTTF(ttfConfig,"third person");
-    auto menuItem6 = MenuItemLabel::create(label6, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,1));
+    auto menuItem6 = MenuItemLabel::create(label6, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,CameraType::ThirdCamera));
     auto label7 = Label::createWithTTF(ttfConfig,"first person");
-    auto menuItem7 = MenuItemLabel::create(label7, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,2));
+    auto menuItem7 = MenuItemLabel::create(label7, CC_CALLBACK_1(Camera3DTestDemo::SwitchViewCallback,this,CameraType::FirstCamera));
     auto menu = Menu::create(menuItem1,menuItem2,menuItem3,menuItem4,menuItem5,menuItem6,menuItem7,NULL);
 
     menu->setPosition(Vec2::ZERO);
-    menuItem1->setPosition( Vec2( s.width-50, 280 ) );
-    menuItem2->setPosition( Vec2( s.width-50, 240) );
-    menuItem3->setPosition( Vec2( s.width-50, 200) );
-    menuItem4->setPosition( Vec2( s.width-50, 160) );
-    menuItem5->setPosition( Vec2( s.width/2-200, 260) );
-    menuItem6->setPosition( Vec2( s.width/2-50, 260) );
-    menuItem7->setPosition( Vec2( s.width/2+100, 260) );
+    menuItem1->setPosition( Vec2( s.width-50, VisibleRect::top().y-50 ) );
+    menuItem2->setPosition( Vec2( s.width-50, VisibleRect::top().y-100) );
+    menuItem3->setPosition( Vec2( s.width-50, VisibleRect::top().y-150) );
+    menuItem4->setPosition( Vec2( s.width-50, VisibleRect::top().y-200) );
+    menuItem5->setPosition( Vec2(VisibleRect::left().x+100, VisibleRect::top().y-50) );
+    menuItem6->setPosition( Vec2(VisibleRect::left().x+100, VisibleRect::top().y -100));
+    menuItem7->setPosition( Vec2(VisibleRect::left().x+100, VisibleRect::top().y -150));
     addChild(menu, 0);
-
-
-    TTFConfig ttfCamera("fonts/arial.ttf", 10);
-    _labelRolePos = Label::createWithTTF(ttfCamera,"Role :Position: 0 , 0 , 0 ");
-    Vec2 tAnchor(0,0);
-    _labelRolePos->setAnchorPoint(tAnchor);
-    _labelRolePos->setPosition(10,200);
-
-    _labelCameraPos = Label::createWithTTF(ttfCamera,"Camera : Eye Position: 0 , 0 , 0 , LookAt Position : 0 , 0 , 0 ");
-    _labelCameraPos->setAnchorPoint(tAnchor);
-    _labelCameraPos->setPosition(10,220);
-    addChild(_labelRolePos, 0);
-    addChild(_labelCameraPos, 0);
-    schedule(schedule_selector(Camera3DTestDemo::updatelabel), 0.0f);
+    schedule(schedule_selector(Camera3DTestDemo::updateCamera), 0.0f);
     if (_camera == nullptr)
     {
         _camera=Camera3D::createPerspective(60, (GLfloat)s.width/s.height, 1, 1000);
+        _camera->setCameraFlag(CameraFlag::CAMERA_USER1);
         Camera3D::addCamera(_camera);
     }
-    _camera->lookAt(Vec3(0, 50, -50)+_sprite3D->getPosition3D(),Vec3(0, 1, 0),_sprite3D->getPosition3D());
-
-    _camera->setCameraFlag(CameraFlag::CAMERA_USER1);
+    SwitchViewCallback(this,CameraType::ThirdCamera);
     DrawNode3D* line =DrawNode3D::create();
     _layer3D->addChild(_camera);
     //draw x
@@ -219,7 +208,6 @@ void Camera3DTestDemo::onEnter()
     _layer3D->addChild(line);
     _layer3D->setCameraMask(2);
 }
-
 void Camera3DTestDemo::onExit()
 {
     BaseTest::onExit();
@@ -253,7 +241,7 @@ void Camera3DTestDemo::backCallback(Ref* sender)
     Director::getInstance()->replaceScene(s);
     s->release();
 }
-void Camera3DTestDemo::addNewSpriteWithCoords(Vec3 p,std::string fileName,bool playAnimation,bool bindCamera)
+void Camera3DTestDemo::addNewSpriteWithCoords(Vec3 p,std::string fileName,bool playAnimation,float scale,bool bindCamera)
 {
 
     auto sprite = Sprite3D::create(fileName);
@@ -282,15 +270,23 @@ void Camera3DTestDemo::addNewSpriteWithCoords(Vec3 p,std::string fileName,bool p
             }
             animate->setSpeed(inverse ? -speed : speed);
             sprite->runAction(RepeatForever::create(animate));
+            //auto sp = Sprite3D::create("Sprite3DTest/axe.c3b");
+            // sprite->getAttachNode("Bip001 R Hand")->addChild(sp);
         }
     }
     if(bindCamera)
     {
         _sprite3D=sprite;
-        sprite->setScale(0.2);
-        sprite->setRotation3D(Vec3(0,0,0));
+       // auto sp = Sprite3D::create("Sprite3DTest/axe.c3b");
+      //  sp->setScale(3);
+        //sprite->getAttachNode("Bip001 R Hand")->addChild(sp);
+        //ParticleSystem3D* particleSystem3D = ParticleSystem3D::create("CameraTest/particle3Dtest1.particle");
+        //particleSystem3D->start();
+        //sprite->getAttachNode("Bip001 R Hand")->addChild(particleSystem3D);
 
     }
+    sprite->setScale(scale);
+
 }
 void Camera3DTestDemo::onTouchesBegan(const std::vector<Touch*>& touches, cocos2d::Event  *event)
 {
@@ -308,49 +304,27 @@ void Camera3DTestDemo::onTouchesMoved(const std::vector<Touch*>& touches, cocos2
         auto touch = touches[0];
         auto location = touch->getLocation();
         Point newPos = touch->getPreviousLocation()-location;
-        if(_ViewType==0 ||_ViewType==2)
+        if(_cameraType==CameraType::FreeCamera || _cameraType==CameraType::FirstCamera)
         {
-            _camera->translate(Vec3(-newPos.x*0.1,0,newPos.y*0.1));
-            if(_ViewType==2)
+             Vec3 cameraDir;
+             Vec3 cameraRightDir;
+             _camera->getNodeToWorldTransform().getForwardVector(&cameraDir);
+              cameraDir.normalize();
+             cameraDir.y=0;
+             _camera->getNodeToWorldTransform().getRightVector(&cameraRightDir);
+             cameraRightDir.normalize();
+             cameraRightDir.y=0;
+             Vec3 cameraPos=  _camera->getPosition3D();
+             cameraPos+=cameraDir*newPos.y*0.1;
+             cameraPos+=cameraRightDir*newPos.x*0.1;
+            _camera->setPosition3D(cameraPos);
+             if(_sprite3D &&  _cameraType==CameraType::FirstCamera)
             {
                 _sprite3D->setPosition3D(Vec3(_camera->getPositionX(),0,_camera->getPositionZ()));
                 _targetPos=_sprite3D->getPosition3D();
             }
         }
     }
-    //else if(touches.size()==2)
-    //{
-    //	auto lastDistance = (touches[0]->getPreviousLocation()-touches[1]->getPreviousLocation()).length();
-    //	auto newDistance = (touches[0]->getLocation()-touches[1]->getLocation()).length();
-    //	if(lastDistance!=newDistance)
-    //	{
-    //		float scale = newDistance/lastDistance;  
-    //		Camera3D::getActiveCamera()->scale(scale);
-    //	}
-    //	else
-    //	{
-    //		 float angleY=0;
-    //		if(touches[0]->getLocation()!=touches[0]->getPreviousLocation())
-    //		{
-    //			auto off =touches[0]->getLocation()- touches[0]->getPreviousLocation();
-    //			angleY=off.y*0.4;
-    //		}
-    //		else  if(touches[1]->getLocation()!=touches[1]->getPreviousLocation())
-    //		{
-    //			auto off =touches[0]->getLocation()- touches[0]->getPreviousLocation();
-    //			angleY=off.y*0.4;
-    //		}
-    //		if(!_ViewType)
-    //		{
-    //			Camera3D::getActiveCamera()->rotate(Vec3(0,1,0),angleY); 
-    //		}
-    //		else
-    //		{
-    //			_sprite3D->setRotation3D( _sprite3D->getRotation3D()+Vec3(0,angleY,0));
-
-    //		}	
-    //	}
-    //}
 }
 void Camera3DTestDemo::move3D(float elapsedTime)
 {
@@ -363,12 +337,15 @@ void Camera3DTestDemo::move3D(float elapsedTime)
         Vec3 offset = newFaceDir * 25.0f * elapsedTime;
         curPos+=offset;
         _sprite3D->setPosition3D(curPos);
-        if(_camera)
+        offset.x=offset.x;
+        offset.z=offset.z;
+        if(_cameraType==CameraType::ThirdCamera)
         {
-            _camera->translate(offset);
-
+            Vec3 cameraPos= _camera->getPosition3D();
+            cameraPos.x+=offset.x;
+            cameraPos.z+=offset.z;
+            _camera->setPosition3D(cameraPos);
         }
-
     }
 }
 void Camera3DTestDemo::updateState(float elapsedTime)
@@ -407,41 +384,32 @@ void Camera3DTestDemo::onTouchesEnded(const std::vector<Touch*>& touches, cocos2
     {
         auto touch = item;
         auto location = touch->getLocationInView();
-        Ray ray;
-        _camera->calculateRayByLocationInView(&ray,location);
-        if(_sprite3D && _ViewType==1 )
+        if(_camera)
         {
-            float dist=0.0f;
-            float ndd = Vec3::dot(Vec3(0,1,0),ray._direction);
-            if(ndd == 0)
-                dist=0.0f;
-            float ndo = Vec3::dot(Vec3(0,1,0),ray._origin);
-            dist= (0 - ndo) / ndd;
-            Vec3 p =   ray._origin + dist *  ray._direction;;
-            _targetPos=p;
+            Ray ray;
+            _camera->calculateRayByLocationInView(&ray,location);
+            if(_sprite3D && _cameraType==CameraType::ThirdCamera)
+            {
+                float dist=0.0f;
+                float ndd = Vec3::dot(Vec3(0,1,0),ray._direction);
+                if(ndd == 0)
+                    dist=0.0f;
+                float ndo = Vec3::dot(Vec3(0,1,0),ray._origin);
+                dist= (0 - ndo) / ndd;
+                Vec3 p =   ray._origin + dist *  ray._direction;;
+                _targetPos=p;
+            }
         }
     }
 }
 void onTouchesCancelled(const std::vector<Touch*>& touches, cocos2d::Event  *event)
 {
 }
-void Camera3DTestDemo::updatelabel(float fDelta)
+void Camera3DTestDemo::updateCamera(float fDelta)
 {
     if(_sprite3D)
     {
-        auto  vPosition_sprite =_sprite3D->getPosition3D();
-        char   szText[100];
-        sprintf(szText,"Role :Position: %.2f , %.2f , %.2f ",vPosition_sprite.x,vPosition_sprite.y,vPosition_sprite.z);
-        std::string str = szText;
-
-        _labelRolePos->setString(str);
-
-        auto  vPosition_Eye		= _camera->getEyePos();
-        auto  vPosition_LookAt	= _camera->getLookPos();
-        sprintf(szText,"Camera : Eye Position:  %.2f , %.2f , %.2f  , LookAt Position :  %.2f , %.2f , %.2f  ",vPosition_Eye.x,vPosition_Eye.y,vPosition_Eye.z,vPosition_LookAt.x,vPosition_LookAt.y,vPosition_LookAt.z);
-        std::string str2 = szText;
-        _labelCameraPos->setString(str2);
-        if( _ViewType==1)
+        if( _cameraType==CameraType::ThirdCamera)
         {
             updateState(fDelta);
             if(isState(_curState,State_Move))
@@ -482,12 +450,7 @@ void Camera3DTestDemo::updatelabel(float fDelta)
                     mat.m[14] = pos.z;
                     mat.m[15] = 1.0f;
                     _sprite3D->setAdditionalTransform(&mat);
-                    //rotate(elapsedTime);
                 }
-            }
-            else if(isState(_curState,State_Rotate))
-            {
-                //rotate(elapsedTime);
             }
         }
     }
