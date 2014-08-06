@@ -257,7 +257,7 @@ void Mesh::calcuOriginAABB(const std::vector<float>& vertices, unsigned int stri
     for(unsigned int i = 0; i < vertexNum; i++)
     {
         Vec3 point = Vec3(vertices[i * stride], vertices[i * stride + 1], vertices[i * stride + 2]);
-        _originAABB.updateMinMax(point);
+        _originAABB.updateMinMax(&point, 1);
     }
 }
 
