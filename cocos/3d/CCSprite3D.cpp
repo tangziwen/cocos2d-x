@@ -389,7 +389,7 @@ const BlendFunc& Sprite3D::getBlendFunc() const
     return _blend;
 }
 
-AABB Sprite3D::getAABB()
+AABB Sprite3D::getAABB() const
 {
     AABB aabb = _mesh->getOriginAABB();
     Mat4 transform;
@@ -405,6 +405,13 @@ AABB Sprite3D::getAABB()
     
     aabb.transform(transform);
     return aabb;
+}
+
+Rect Sprite3D::getBoundingBox() const
+{
+    AABB aabb = getAABB();
+    Rect ret = Rect(aabb._min.x, aabb._min.y, (aabb._max.x - aabb._min.x), (aabb._max.y - aabb._min.y));
+    return ret;
 }
 
 NS_CC_END

@@ -87,7 +87,12 @@ public:
      * because bone can drive the vertices, we just use the origin vertices
      * to calculate the AABB.
      */
-    AABB getAABB();
+    AABB getAABB() const;
+    
+    /**
+     * Returns 2d bounding-box
+     */
+    virtual Rect getBoundingBox() const override;
 
 CC_CONSTRUCTOR_ACCESS:
     
