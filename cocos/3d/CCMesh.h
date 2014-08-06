@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "3d/CCBundle3DData.h"
+#include "3d/CCSubMesh.h"
 
 #include "base/CCRef.h"
 #include "base/ccTypes.h"
