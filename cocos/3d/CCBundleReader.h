@@ -112,9 +112,9 @@ public:
     bool readMatrix(float* m);
 
 private:
-    ssize_t m_position;
-    ssize_t  m_length;
-    char* m_buffer;
+    ssize_t _position;
+    ssize_t  _length;
+    char* _buffer;
 };
 
 /**

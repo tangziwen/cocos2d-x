@@ -119,42 +119,33 @@ void AABB::reset()
 	_max.set(-99999.0f, -99999.0f, -99999.0f);
 }
 
-void AABB::updateMinMax(Vec3* point)
+void AABB::updateMinMax(const Vec3* point, ssize_t num)
 {
-    // Leftmost point.
-    if (point->x < _min.x)
+    for (ssize_t i = 0; i < num; i++)
     {
-        _min.x = point->x;
-    }
-
-    // Lowest point.
-    if (point->y < _min.y)
-    {
-        _min.y = point->y;
-    }
-
-    // Farthest point.
-    if (point->z < _min.z)
-    {
-        _min.z = point->z;
-    }
-
-    // Rightmost point.
-    if (point->x > _max.x)
-    {
-        _max.x = point->x;
-    }
-
-    // Highest point.
-    if (point->y > _max.y)
-    {
-        _max.y = point->y;
-    }
-
-    // Nearest point.
-    if (point->z > _max.z)
-    {
-        _max.z = point->z;
+        // Leftmost point.
+        if (point[i].x < _min.x)
+            _min.x = point[i].x;
+        
+        // Lowest point.
+        if (point[i].y < _min.y)
+            _min.y = point[i].y;
+        
+        // Farthest point.
+        if (point[i].z < _min.z)
+            _min.z = point[i].z;
+        
+        // Rightmost point.
+        if (point[i].x > _max.x)
+            _max.x = point[i].x;
+        
+        // Highest point.
+        if (point[i].y > _max.y)
+            _max.y = point[i].y;
+        
+        // Nearest point.
+        if (point[i].z > _max.z)
+            _max.z = point[i].z;
     }
 }
 
@@ -189,8 +180,7 @@ void AABB::transform(const Mat4& matrix)
     
     reset();
     
-    for (int i = 0; i < 8; i++)
-        updateMinMax(&corners[i]);
+    updateMinMax(corners, 8);
 }
 
 

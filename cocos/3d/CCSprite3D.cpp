@@ -225,16 +225,26 @@ bool Sprite3D::initWithFile(const std::string &path)
     std::string ext = path.substr(path.length() - 4, 4);
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
     
+    bool ret = false;
+    
     if (ext == ".obj")
     {
-        return loadFromObj(path);
+        ret = loadFromObj(path);
     }
     else if (ext == ".c3b" || ext == ".c3t")
     {
-        return loadFromC3x(path);
+        ret = loadFromC3x(path);
     }
     
-    return false;
+    // if load successful, set content size by AABB.
+    if (ret)
+    {
+        AABB aabb = getAABB();
+        Size size((aabb._max.x - aabb._min.x), (aabb._max.y - aabb._min.y));
+        setContentSize(size);
+    }
+    
+    return ret;
 }
 
 void Sprite3D::genGLProgramState()
@@ -391,6 +401,31 @@ void Sprite3D::setBlendFunc(const BlendFunc &blendFunc)
 const BlendFunc& Sprite3D::getBlendFunc() const
 {
     return _blend;
+}
+
+AABB Sprite3D::getAABB() const
+{
+    AABB aabb = _mesh->getOriginAABB();
+    Mat4 transform;
+    
+    if (getSkin() && getSkin()->getRootBone())
+    {
+        transform = getNodeToWorldTransform() * getSkin()->getRootBone()->getWorldMat();
+    }
+    else
+    {
+        transform = getNodeToWorldTransform();
+    }
+    
+    aabb.transform(transform);
+    return aabb;
+}
+
+Rect Sprite3D::getBoundingBox() const
+{
+    AABB aabb = getAABB();
+    Rect ret(aabb._min.x, aabb._min.y, (aabb._max.x - aabb._min.x), (aabb._max.y - aabb._min.y));
+    return ret;
 }
 
 NS_CC_END

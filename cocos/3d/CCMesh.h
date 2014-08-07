@@ -37,6 +37,8 @@
 #include "math/CCMath.h"
 #include "renderer/CCGLProgram.h"
 
+#include "CCAABB.h"
+
 NS_CC_BEGIN
 
 class EventListenerCustom;
@@ -139,6 +141,8 @@ public:
     /**build vertex buffer from renderdata*/
     void restore();
 
+    const AABB& getOriginAABB() const;
+    
 CC_CONSTRUCTOR_ACCESS:
     
     Mesh();
@@ -155,12 +159,21 @@ CC_CONSTRUCTOR_ACCESS:
     void buildBuffer();
     /**free buffer*/
     void cleanAndFreeBuffers();
+    
+    /*
+     * calculate AABB by origin vertices
+     * @param the vertices list
+     * @param stride the stride between two vertex's position data.
+     */
+    void calcuOriginAABB(const std::vector<float>& vertices, unsigned int stride);
 
 protected:
     GLuint _vertexBuffer;
     Vector<SubMesh*> _subMeshes;
 
     RenderMeshData _renderdata;
+    
+    AABB _originAABB;
 };
 
 /**
