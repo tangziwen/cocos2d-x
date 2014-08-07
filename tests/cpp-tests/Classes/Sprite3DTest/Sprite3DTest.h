@@ -293,9 +293,13 @@ public:
     virtual void update(float dt) override;
     void addNewOBBWithCoords(Vec2 p);
     void addNewSpriteWithCoords(Vec2 p);
+    void onTouchesBegan(const std::vector<Touch*>& touches, Event* event);
     void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
-    void addOBBCallback(Ref* sender,float value);
-    void addNewOBBWithCount(float value);
+    void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
+    void addOBBCallback(Ref* sender);
+    void delOBBCallback(Ref* sender);
+    void addOBBWithCount(float value);
+    void delOBBWithCount(float value);
 protected:
     cocos2d::Sprite3D*        _sprite;
     std::vector<OBB>          _obb;
@@ -305,8 +309,12 @@ protected:
     OBB                       _obbt;
     DrawNode3D*               _drawDebug;
     bool                      _hasCollider;
+    std::set<int>             _intersetList;
     void initDrawBox();
     void reachEndCallBack();
+
+    void unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst);
+    void calculateRayByLocationInView(Ray* ray, const Vec2& location);
 };
 
 class Sprite3DWithAABBPerfromanceTest : public Sprite3DTestDemo
@@ -319,8 +327,10 @@ public:
     virtual void update(float dt) override;
     void addNewAABBWithCoords(Vec2 p);
     void onTouchesEnded(const std::vector<Touch*>& touches, Event* event);
-    void addAABBCallback(Ref* sender,float value);
-    void addNewAABBWithCount(float value);
+    void addAABBCallback(Ref* sender);
+    void delAABBCallback(Ref* sender);
+    void addAABBWithCount(float value);
+    void delAABBWithCount(float value);
 protected:
     std::vector<AABB>          _aabb;
     DrawNode3D*               _drawAABB;

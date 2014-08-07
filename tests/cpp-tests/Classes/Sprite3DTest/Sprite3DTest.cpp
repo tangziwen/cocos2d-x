@@ -1193,23 +1193,30 @@ void Sprite3DWithCollisonTest::reachEndCallBack()
 Sprite3DWithOBBPerfromanceTest::Sprite3DWithOBBPerfromanceTest()
 {
     auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesBegan = CC_CALLBACK_2(Sprite3DWithOBBPerfromanceTest::onTouchesBegan, this);
     listener->onTouchesEnded = CC_CALLBACK_2(Sprite3DWithOBBPerfromanceTest::onTouchesEnded, this);
+    listener->onTouchesMoved = CC_CALLBACK_2(Sprite3DWithOBBPerfromanceTest::onTouchesMoved, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     auto s = Director::getInstance()->getWinSize();
     initDrawBox();
-    //addNewOBBWithCoords( Vec2(s.width/2, s.height/2) );
+
     addNewSpriteWithCoords(Vec2(s.width/2, s.height/2));
-    TTFConfig ttfCount("fonts/arial.ttf", 20);
-    auto label1 = Label::createWithTTF(ttfCount,"add OBB");
-    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Sprite3DWithOBBPerfromanceTest::addOBBCallback,this,10));
-    auto menu = Menu::create(menuItem1,NULL);
-    menu->setPosition(Vec2::ZERO);
-    menuItem1->setPosition( Vec2( s.width-50, 230 ) );
-    addChild(menu);
-    _labelCubeCount = Label::createWithTTF(ttfCount,"cube count:0");
-    Vec2 tAnchor(0,0);
-    _labelCubeCount->setAnchorPoint(tAnchor);
-    _labelCubeCount->setPosition(10,230);
+    MenuItemFont::setFontName("fonts/arial.ttf");
+    MenuItemFont::setFontSize(65);
+    auto decrease = MenuItemFont::create(" - ", CC_CALLBACK_1(Sprite3DWithOBBPerfromanceTest::delOBBCallback, this));
+    decrease->setColor(Color3B(0,200,20));
+    auto increase = MenuItemFont::create(" + ", CC_CALLBACK_1(Sprite3DWithOBBPerfromanceTest::addOBBCallback, this));
+    increase->setColor(Color3B(0,200,20));
+
+    auto menu = Menu::create(decrease, increase, nullptr);
+    menu->alignItemsHorizontally();
+    menu->setPosition(Vec2(s.width/2, s.height-65));
+    addChild(menu, 1);
+
+    TTFConfig ttfCount("fonts/Marker Felt.ttf", 30);
+    _labelCubeCount = Label::createWithTTF(ttfCount,"0 cubes");
+    _labelCubeCount->setColor(Color3B(0,200,20));
+    _labelCubeCount->setPosition(Vec2(s.width/2, s.height-90));
     addChild(_labelCubeCount);
     _hasCollider = false;
     scheduleUpdate();
@@ -1220,7 +1227,7 @@ std::string Sprite3DWithOBBPerfromanceTest::title() const
 }
 std::string Sprite3DWithOBBPerfromanceTest::subtitle() const
 {
-    return "Tap screen to add more OBB";
+    return "";
 }
 void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCoords(Vec2 p)
 {
@@ -1230,21 +1237,54 @@ void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCoords(Vec2 p)
      obb._center = Vec3(p.x,p.y,0);
      _obb.push_back(obb);
 }
+
+void Sprite3DWithOBBPerfromanceTest::onTouchesBegan(const std::vector<Touch*>& touches, Event* event)
+{
+    for (auto touch: touches)
+    {
+        auto location = touch->getLocationInView();
+
+        if(_obb.size() > 0)
+        {
+            _intersetList.clear();
+            Ray ray;
+            calculateRayByLocationInView(&ray,location);
+            for(int i = 0; i < _obb.size(); i++)
+            {
+                if(ray.intersects(_obb[i]))
+                {
+                   _intersetList.insert(i);
+                   return;
+                }
+            }
+        }
+    }
+}
+
 void Sprite3DWithOBBPerfromanceTest::onTouchesEnded(const std::vector<Touch*>& touches, Event* event)
+{
+
+}
+
+void Sprite3DWithOBBPerfromanceTest::onTouchesMoved(const std::vector<Touch*>& touches, Event* event)
 {
     for (auto touch: touches)
     {
         auto location = touch->getLocation();
-        //addNewOBBWithCoords( location );
+
+        for(int i = 0; i < _obb.size(); i++)
+        {
+            if(_intersetList.find(i) != _intersetList.end())
+                _obb[i]._center = Vec3(location.x,location.y,0);
+        }
     }
 }
 
 void Sprite3DWithOBBPerfromanceTest::update(float dt)
 {
-    char szText[100];
-    sprintf(szText,"cube count:%d",_obb.size());
-    std::string str = szText;
-    _labelCubeCount->setString(str);
+    char szText[16];
+    sprintf(szText,"%u cubes",_obb.size());
+    _labelCubeCount->setString(szText);
 
     if (_drawDebug)
     {
@@ -1271,9 +1311,9 @@ void Sprite3DWithOBBPerfromanceTest::update(float dt)
         _drawOBB->clear();
         for(int i =0; i < _obb.size(); i++)
         {           
-            Vec3 corners[8] = {};
-            _obb[i].getCorners(corners);
-            _drawOBB->drawCube(corners, _obbt.intersects(_obb[i])?Color4F(1,0,0,1):Color4F(0,1,0,1));
+           Vec3 corners[8] = {};
+           _obb[i].getCorners(corners);
+           _drawOBB->drawCube(corners, _obbt.intersects(_obb[i])?Color4F(1,0,0,1):Color4F(0,1,0,1));
         }
     }
 }
@@ -1328,12 +1368,12 @@ void Sprite3DWithOBBPerfromanceTest::reachEndCallBack()
     _sprite->runAction(seq);
 }
 
-void Sprite3DWithOBBPerfromanceTest::addOBBCallback(Ref* sender,float value)
+void Sprite3DWithOBBPerfromanceTest::addOBBCallback(Ref* sender)
 {
-    addNewOBBWithCount(value);
+    addOBBWithCount(10);
 }
 
-void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCount(float value)
+void Sprite3DWithOBBPerfromanceTest::addOBBWithCount(float value)
 {
     for(int i = 0; i < value; i++)
     {
@@ -1346,6 +1386,67 @@ void Sprite3DWithOBBPerfromanceTest::addNewOBBWithCount(float value)
     }
 }
 
+void Sprite3DWithOBBPerfromanceTest::delOBBCallback(Ref* sender)
+{
+    delOBBWithCount(10);
+}
+
+void Sprite3DWithOBBPerfromanceTest::delOBBWithCount(float value)
+{
+    if(_obb.size() >= 10)
+    {
+        _obb.erase(_obb.begin(),_obb.begin() + value);
+        _drawOBB->clear();
+    }
+    else
+        return;
+}
+void Sprite3DWithOBBPerfromanceTest::unproject(const Mat4& viewProjection, const Size* viewport, Vec3* src, Vec3* dst)
+{
+    assert(dst);
+    
+    assert(viewport->width != 0.0f && viewport->height != 0.0f);
+    Vec4 screen(src->x / viewport->width, ((viewport->height - src->y)) / viewport->height, src->z, 1.0f);
+    
+    screen.x = screen.x * 2.0f - 1.0f;
+    screen.y = screen.y * 2.0f - 1.0f;
+    screen.z = screen.z * 2.0f - 1.0f;
+    
+    viewProjection.getInversed().transformVector(screen, &screen);
+    
+    if (screen.w != 0.0f)
+    {
+        screen.x /= screen.w;
+        screen.y /= screen.w;
+        screen.z /= screen.w;
+    }
+    
+    dst->set(screen.x, screen.y, screen.z);
+}
+
+void Sprite3DWithOBBPerfromanceTest::calculateRayByLocationInView(Ray* ray, const Vec2& location)
+{
+    auto dir = Director::getInstance();
+    auto view = dir->getWinSize();
+    Mat4 mat = dir->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    mat = dir->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+    
+    Vec3 src = Vec3(location.x, location.y, -1);
+    Vec3 nearPoint;
+    unproject(mat, &view, &src, &nearPoint);
+    
+    src = Vec3(location.x, location.y, 1);
+    Vec3 farPoint;
+    unproject(mat, &view, &src, &farPoint);
+    
+    Vec3 direction;
+    Vec3::subtract(farPoint, nearPoint, &direction);
+    direction.normalize();
+    
+    ray->_origin = nearPoint;
+    ray->_direction = direction;
+}
+
 Sprite3DWithAABBPerfromanceTest::Sprite3DWithAABBPerfromanceTest()
 {
     auto listener = EventListenerTouchAllAtOnce::create();
@@ -1354,17 +1455,22 @@ Sprite3DWithAABBPerfromanceTest::Sprite3DWithAABBPerfromanceTest()
     auto s = Director::getInstance()->getWinSize();
     initDrawBox();
 
-    TTFConfig ttfCount("fonts/arial.ttf", 20);
-    auto label1 = Label::createWithTTF(ttfCount,"add AABB");
-    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Sprite3DWithAABBPerfromanceTest::addAABBCallback,this,10));
-    auto menu = Menu::create(menuItem1,NULL);
-    menu->setPosition(Vec2::ZERO);
-    menuItem1->setPosition( Vec2( s.width-50, 230 ) );
-    addChild(menu);
-    _labelCubeCount = Label::createWithTTF(ttfCount,"cube count:0");
-    Vec2 tAnchor(0,0);
-    _labelCubeCount->setAnchorPoint(tAnchor);
-    _labelCubeCount->setPosition(10,230);
+    MenuItemFont::setFontName("fonts/arial.ttf");
+    MenuItemFont::setFontSize(65);
+    auto decrease = MenuItemFont::create(" - ", CC_CALLBACK_1(Sprite3DWithAABBPerfromanceTest::delAABBCallback, this));
+    decrease->setColor(Color3B(0,200,20));
+    auto increase = MenuItemFont::create(" + ", CC_CALLBACK_1(Sprite3DWithAABBPerfromanceTest::addAABBCallback, this));
+    increase->setColor(Color3B(0,200,20));
+
+    auto menu = Menu::create(decrease, increase, nullptr);
+    menu->alignItemsHorizontally();
+    menu->setPosition(Vec2(s.width/2, s.height-65));
+    addChild(menu, 1);
+
+    TTFConfig ttfCount("fonts/Marker Felt.ttf", 30);
+    _labelCubeCount = Label::createWithTTF(ttfCount,"0 cubes");
+    _labelCubeCount->setColor(Color3B(0,200,20));
+    _labelCubeCount->setPosition(Vec2(s.width/2, s.height-90));
     addChild(_labelCubeCount);
     scheduleUpdate();
 }
@@ -1376,7 +1482,7 @@ std::string Sprite3DWithAABBPerfromanceTest::title() const
 
 std::string Sprite3DWithAABBPerfromanceTest::subtitle() const
 {
-    return "Tap screen to add more AABB";
+    return "";
 }
 
 void Sprite3DWithAABBPerfromanceTest::initDrawBox()
@@ -1398,16 +1504,14 @@ void Sprite3DWithAABBPerfromanceTest::onTouchesEnded(const std::vector<Touch*>& 
     for (auto touch: touches)
     {
         auto location = touch->getLocation();
-        //addNewAABBWithCoords( location );
     }
 }
 
 void Sprite3DWithAABBPerfromanceTest::update(float dt)
 {
-    char szText[100];
-    sprintf(szText,"cube count:%d",_aabb.size());
-    std::string str = szText;
-    _labelCubeCount->setString(str);
+    char szText[16];
+    sprintf(szText,"%u cubes",_aabb.size());
+    _labelCubeCount->setString(szText);
     std::set<int> intersetList;
 
     if(_aabb.size() > 0)
@@ -1445,12 +1549,12 @@ void Sprite3DWithAABBPerfromanceTest::update(float dt)
     }
 }
 
-void Sprite3DWithAABBPerfromanceTest::addAABBCallback(Ref* sender,float value)
+void Sprite3DWithAABBPerfromanceTest::addAABBCallback(Ref* sender)
 {
-    addNewAABBWithCount(value);
+    addAABBWithCount(10);
 }
 
-void Sprite3DWithAABBPerfromanceTest::addNewAABBWithCount(float value)
+void Sprite3DWithAABBPerfromanceTest::addAABBWithCount(float value)
 {
     for(int i = 0; i < value; i++)
     {
@@ -1461,4 +1565,20 @@ void Sprite3DWithAABBPerfromanceTest::addNewAABBWithCount(float value)
         aabb._max = Vec3(randompos.x + extents.x, randompos.y + extents.y, extents.z);
         _aabb.push_back(aabb);
     }
+}
+
+void Sprite3DWithAABBPerfromanceTest::delAABBCallback(Ref* sender)
+{
+    delAABBWithCount(10);
+}
+
+void Sprite3DWithAABBPerfromanceTest::delAABBWithCount(float value)
+{
+   if(_aabb.size() >= 10)
+    {
+        _aabb.erase(_aabb.begin(),_aabb.begin() + value);
+        _drawAABB->clear();
+    }
+    else
+        return;
 }
