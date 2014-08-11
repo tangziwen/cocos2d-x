@@ -32,34 +32,34 @@
 class Runner3DTestDemo : public BaseTest
 {
 public:
-	CREATE_FUNC(Runner3DTestDemo);
-	Runner3DTestDemo();
-	virtual ~Runner3DTestDemo();
+    CREATE_FUNC(Runner3DTestDemo);
+    Runner3DTestDemo();
+    virtual ~Runner3DTestDemo();
 
-	virtual std::string title() const;
+    virtual std::string title() const;
 
-	virtual void restartCallback(Ref* sender);
-	virtual void nextCallback(Ref* sender);
-	virtual void backCallback(Ref* sender);
-	virtual void onEnter() override;
+    virtual void restartCallback(Ref* sender);
+    virtual void nextCallback(Ref* sender);
+    virtual void backCallback(Ref* sender);
+    virtual void onEnter() override;
 
 private:
 
-	void initDemo();
+    void initDemo();
 	void initCamera(cocos2d::Node *parent);
-	void init3DScene(cocos2d::Node *parent);
+    void init3DScene(cocos2d::Node *parent);
 
 private:
 
-	cocos2d::Layer *_layer3D;
-	cocos2d::Camera *_camera;
-	cocos2d::Sprite3D *_sprite;
+    cocos2d::Layer *_layer3D;
+    cocos2d::Camera *_camera;
+    cocos2d::Sprite3D *_sprite;
 };
 
 class Runner3DTestScene : public TestScene
 {
 public:
-	virtual void runThisTest();
+    virtual void runThisTest();
 };
 
 #endif
