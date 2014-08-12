@@ -28,6 +28,7 @@
 #include "../testBasic.h"
 #include "../BaseTest.h"
 #include <string>
+#include <list>
 
 class Runner3DTestDemo : public BaseTest
 {
@@ -42,18 +43,40 @@ public:
     virtual void nextCallback(Ref* sender);
     virtual void backCallback(Ref* sender);
     virtual void onEnter() override;
+    virtual void onExit() override;
+
+    virtual void update(float dt) override;
+
+    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
 private:
 
     void initDemo();
-	void initCamera(cocos2d::Node *parent);
+    void initEvent();
+    void initCamera(cocos2d::Node *parent);
     void init3DScene(cocos2d::Node *parent);
 
+    bool checkCollectedCoin(cocos2d::Sprite3D *coin);
+    void updateScore();
+
 private:
+
+    typedef std::list<Sprite3D *> CoinList;
 
     cocos2d::Layer *_layer3D;
     cocos2d::Camera *_camera;
     cocos2d::Sprite3D *_sprite;
+    cocos2d::Label *_scoreLabel;
+    cocos2d::Action *_spriteAnim;
+    cocos2d::EventKeyboard::KeyCode _keyCode;
+    float _moveSpeed;
+    float _coinRotSpeed;
+    float _modelOffsetRot;
+
+    CoinList _createdCoinList;
+    CoinList _removedCoinList;
+    unsigned int _collectedCoinNum;
 };
 
 class Runner3DTestScene : public TestScene
