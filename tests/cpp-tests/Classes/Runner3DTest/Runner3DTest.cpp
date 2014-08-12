@@ -1,6 +1,6 @@
 #include "Runner3DTest.h"
 
-#define MAX_COIN_NUM 50
+#define MAX_COIN_NUM 10
 #define MAX_COIN_SPACE 20
 #define MIN_COLLISION_SQUAREDIS 9.0
 static const float coinInitOffset = 20.0f;
@@ -156,9 +156,7 @@ void Runner3DTestDemo::init3DScene(cocos2d::Node *parent)
     auto coinLayer = Layer::create();
     for (unsigned int i = 0; i < MAX_COIN_NUM; ++i)
     {
-        auto coin = cocos2d::Sprite3D::create("Sprite3DTest/coin.obj");
-        coin->setPositionX(MAX_COIN_SPACE * i + 10.0f);
-        coin->setPositionY(coinInitOffset);
+        auto coin = CreateIcon(cocos2d::Vec3(MAX_COIN_SPACE * i + 10.0f, 0.0, 0.0));
         _createdCoinList.push_back(coin);
         coinLayer->addChild(coin);
     }
@@ -176,7 +174,6 @@ void Runner3DTestDemo::init3DScene(cocos2d::Node *parent)
 
     ttfConfig.fontSize = 6;
     auto lab = cocos2d::Label::createWithTTF(ttfConfig,"UP - 'W'\nDOWN - 'S'\nLEFT - 'A'\nRIGHT - 'D'",TextHAlignment::CENTER, sz.width);
-    lab->retain();
     lab->setAnchorPoint(cocos2d::Vec2::ANCHOR_TOP_LEFT);
     lab->setPosition(cocos2d::Vec2(0.0f, sz.height - 10.0f));
     lab->setColor(cocos2d::Color3B::WHITE);
@@ -244,35 +241,9 @@ void Runner3DTestDemo::update( float dt )
         }
     }
 
-    for (CoinList::iterator iter = _createdCoinList.begin(); iter != _createdCoinList.end();)
-    {
-        auto coin = *iter;
-        //if (sprite->isVisible())
-        {
-            cocos2d::Vec3 rot = coin->getRotation3D();
-            rot.y += dt * _coinRotSpeed;
-            if (360.0f < rot.y) 
-                rot.y -= 360.0f;
-
-            coin->setRotation3D(rot);
-        }
-
-        if (checkCollectedCoin(coin))
-        {
-            coin->setVisible(false);
-            updateScore();
-            _removedCoinList.push_back(coin);
-            iter = _createdCoinList.erase(iter);
-        }
-        else
-            ++iter;
-    }
-
-    if (_camera && needUpdateCam)
-    {
-        _camera->lookAt(_sprite->getPosition3D(), cocos2d::Vec3(0.0f, 1.0f, 0.0f));
-        _camera->setPosition3D(_sprite->getPosition3D() + cocos2d::Vec3(0.0f, 50.0f, 100.0f));
-    }
+	updateCoins(dt);
+	if (needUpdateCam)
+		updateCamera();
 }
 
 bool Runner3DTestDemo::checkCollectedCoin(cocos2d::Sprite3D *coin)
@@ -293,6 +264,86 @@ void Runner3DTestDemo::updateScore()
     char string[32] = {0};
     sprintf(string, "%d : Score", _collectedCoinNum);
     _scoreLabel->setString(string);
+}
+
+cocos2d::Sprite3D* Runner3DTestDemo::CreateIcon(const cocos2d::Vec3 &pos)
+{
+	auto coin = cocos2d::Sprite3D::create("Sprite3DTest/coin.obj");
+	coin->setPosition3D(pos);
+	coin->setPositionY(coinInitOffset);
+	return coin;
+}
+
+void Runner3DTestDemo::updateCoins(float dt)
+{
+	if (!_createdCoinList.empty())
+	{
+		if (checkCoinOutOfBound(_createdCoinList.front()))
+		{
+			_needRemovCoinList.push_back(_createdCoinList.front());
+			_createdCoinList.pop_front();
+		}
+
+		for (CoinList::iterator iter = _createdCoinList.begin(); iter != _createdCoinList.end(); )
+		{
+			auto coin = *iter;
+			//if (sprite->isVisible())
+			{
+				cocos2d::Vec3 rot = coin->getRotation3D();
+				rot.y += dt * _coinRotSpeed;
+				if (360.0f < rot.y) 
+					rot.y -= 360.0f;
+
+				coin->setRotation3D(rot);
+			}
+
+			if (checkCollectedCoin(coin))
+			{
+				//coin->setVisible(false);
+				updateScore();
+				_needRemovCoinList.push_back(coin);
+				iter = _createdCoinList.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+
+	}
+
+	if (!_needRemovCoinList.empty())
+	{
+		cocos2d::Vec3 initPos;
+		if (!_createdCoinList.empty())
+			initPos = _createdCoinList.back()->getPosition3D() + cocos2d::Vec3(MAX_COIN_SPACE, 0.0f, 0.0f);
+
+		unsigned int idx = 0;
+		for (CoinList::iterator iter = _needRemovCoinList.begin(); iter != _needRemovCoinList.end(); ++iter)
+		{
+			auto coin = *iter;
+			coin->setPosition3D(initPos + cocos2d::Vec3(idx * MAX_COIN_SPACE, 0.0f, 0.0f));
+			//coin->setVisible(true);
+			_createdCoinList.push_back(coin);
+			++idx;
+		}
+
+		_needRemovCoinList.clear();
+	}
+}
+
+void Runner3DTestDemo::updateCamera()
+{
+	if (_camera)
+	{
+		_camera->lookAt(_sprite->getPosition3D(), cocos2d::Vec3(0.0f, 1.0f, 0.0f));
+		_camera->setPosition3D(_sprite->getPosition3D() + cocos2d::Vec3(0.0f, 50.0f, 100.0f));
+	}
+}
+
+bool Runner3DTestDemo::checkCoinOutOfBound( cocos2d::Sprite3D *coin )
+{
+	return false;
 }
 
 void Runner3DTestScene::runThisTest()

@@ -57,7 +57,11 @@ private:
     void initCamera(cocos2d::Node *parent);
     void init3DScene(cocos2d::Node *parent);
 
+	cocos2d::Sprite3D* CreateIcon(const cocos2d::Vec3 &pos);
+	bool checkCoinOutOfBound(cocos2d::Sprite3D *coin);
     bool checkCollectedCoin(cocos2d::Sprite3D *coin);
+	void updateCamera();
+	void updateCoins(float dt);
     void updateScore();
 
 private:
@@ -75,7 +79,7 @@ private:
     float _modelOffsetRot;
 
     CoinList _createdCoinList;
-    CoinList _removedCoinList;
+    CoinList _needRemovCoinList;
     unsigned int _collectedCoinNum;
 };
 
