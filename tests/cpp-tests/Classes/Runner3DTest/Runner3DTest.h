@@ -57,16 +57,14 @@ private:
     void initCamera(cocos2d::Node *parent);
     void init3DScene(cocos2d::Node *parent);
 
-	cocos2d::Sprite3D* CreateIcon(const cocos2d::Vec3 &pos);
-	bool checkCoinOutOfBound(cocos2d::Sprite3D *coin);
-    bool checkCollectedCoin(cocos2d::Sprite3D *coin);
+	cocos2d::Sprite3D* CreateCoin(const cocos2d::Vec3 &pos);
+	bool checkCoinOutOfBound(cocos2d::Node *coin);
+    bool checkCollectedCoin(cocos2d::Node *coin);
 	void updateCamera();
 	void updateCoins(float dt);
     void updateScore();
 
 private:
-
-    typedef std::list<Sprite3D *> CoinList;
 
     cocos2d::Layer *_layer3D;
     cocos2d::Camera *_camera;
@@ -78,9 +76,9 @@ private:
     float _coinRotSpeed;
     float _modelOffsetRot;
 
-    CoinList _createdCoinList;
-    CoinList _needRemovCoinList;
+	cocos2d::Layer *_coinLayer;
     unsigned int _collectedCoinNum;
+	cocos2d::Vec3 _newIconPos;
 };
 
 class Runner3DTestScene : public TestScene
