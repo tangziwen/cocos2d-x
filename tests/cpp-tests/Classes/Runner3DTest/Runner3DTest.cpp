@@ -57,7 +57,7 @@ Runner3DTestDemo::Runner3DTestDemo()
     , _coinLayer(nullptr)
     , _collectedCoinNum(0)
     , _newIconPos(cocos2d::Vec3(10.0f, 0.0f, 0.0f))
-	, _isRunningAction(false)
+    , _isRunningAction(false)
 {
     scheduleUpdate();
 }
@@ -132,20 +132,20 @@ void Runner3DTestDemo::initDemo()
 
 void Runner3DTestDemo::initEvent()
 {
-	{
-		auto keyListener = cocos2d::EventListenerKeyboard::create();
-		keyListener->onKeyPressed = CC_CALLBACK_2(Runner3DTestDemo::onKeyPressedEvent, this);
-		keyListener->onKeyReleased = CC_CALLBACK_2(Runner3DTestDemo::onKeyReleasedEvent, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
-	}
+    {
+        auto keyListener = cocos2d::EventListenerKeyboard::create();
+        keyListener->onKeyPressed = CC_CALLBACK_2(Runner3DTestDemo::onKeyPressedEvent, this);
+        keyListener->onKeyReleased = CC_CALLBACK_2(Runner3DTestDemo::onKeyReleasedEvent, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
+    }
 
-	{
-		auto keyListener = cocos2d::EventListenerTouchOneByOne::create();
-		keyListener->onTouchBegan = CC_CALLBACK_2(Runner3DTestDemo::onTouchBeganEvent, this);
-		keyListener->onTouchMoved = CC_CALLBACK_2(Runner3DTestDemo::onTouchMovedEvent, this);
-		keyListener->onTouchEnded = CC_CALLBACK_2(Runner3DTestDemo::onTouchEndedEvent, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
-	}
+    {
+        auto keyListener = cocos2d::EventListenerTouchOneByOne::create();
+        keyListener->onTouchBegan = CC_CALLBACK_2(Runner3DTestDemo::onTouchBeganEvent, this);
+        keyListener->onTouchMoved = CC_CALLBACK_2(Runner3DTestDemo::onTouchMovedEvent, this);
+        keyListener->onTouchEnded = CC_CALLBACK_2(Runner3DTestDemo::onTouchEndedEvent, this);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
+    }
 
 }
 
@@ -193,7 +193,7 @@ void Runner3DTestDemo::init3DScene(cocos2d::Node *parent)
     parent->addChild(_scoreLabel);
 
     ttfConfig.fontSize = 6;
-    auto lab = cocos2d::Label::createWithTTF(ttfConfig,"PC : UP - 'W'\nDOWN - 'S'\nRIGHT - 'D'",TextHAlignment::CENTER, sz.width);
+    auto lab = cocos2d::Label::createWithTTF(ttfConfig,"PC : UP - 'W'\nDOWN - 'S'\nLEFT - 'A'\nRIGHT - 'D'",TextHAlignment::CENTER, sz.width);
     lab->setAnchorPoint(cocos2d::Vec2::ANCHOR_TOP_LEFT);
     lab->setPosition(cocos2d::Vec2(0.0f, sz.height));
     lab->setColor(cocos2d::Color3B::WHITE);
@@ -205,28 +205,28 @@ void Runner3DTestDemo::onKeyPressedEvent( cocos2d::EventKeyboard::KeyCode keyCod
     if (_keyCode == cocos2d::EventKeyboard::KeyCode::KEY_NONE)
     {
         _keyCode = keyCode;
-		if (!_isRunningAction)
-		{
-			if (_sprite)
-			{
-				_sprite->runAction(_spriteAnim);
-				_isRunningAction = true;
-			}
-		}
+        if (!_isRunningAction)
+        {
+            if (_sprite)
+            {
+                _sprite->runAction(_spriteAnim);
+                _isRunningAction = true;
+            }
+        }
     }
 }
 
 void Runner3DTestDemo::onKeyReleasedEvent( cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event )
 {
     _keyCode = cocos2d::EventKeyboard::KeyCode::KEY_NONE;
-	if (_isRunningAction)
-	{
-		if (_sprite)
-		{
-			_sprite->stopAction(_spriteAnim);
-			_isRunningAction = false;
-		}
-	}
+    if (_isRunningAction)
+    {
+        if (_sprite)
+        {
+            _sprite->stopAction(_spriteAnim);
+            _isRunningAction = false;
+        }
+    }
 }
 
 void Runner3DTestDemo::update( float dt )
@@ -239,7 +239,7 @@ void Runner3DTestDemo::update( float dt )
             {
                 _sprite->setPositionZ(_sprite->getPositionZ() - _moveSpeed * dt);
                 _sprite->setRotation3D(Vec3(0.0f, 180.0f + _modelOffsetRot, 0.0f));
-				_touchPos = _sprite->getPosition3D();
+                _touchPos = _sprite->getPosition3D();
             }
             break;
 
@@ -247,7 +247,15 @@ void Runner3DTestDemo::update( float dt )
             {
                 _sprite->setPositionZ(_sprite->getPositionZ() + _moveSpeed * dt);
                 _sprite->setRotation3D(Vec3(0.0f, 0.0f + _modelOffsetRot, 0.0f));
-				_touchPos = _sprite->getPosition3D();
+                _touchPos = _sprite->getPosition3D();
+            }
+            break;
+
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            {
+                _sprite->setPositionX(_sprite->getPositionX() - _moveSpeed * dt);
+                _sprite->setRotation3D(Vec3(0.0f, -90.0f + _modelOffsetRot, 0.0f));
+                _touchPos = _sprite->getPosition3D();
             }
             break;
 
@@ -255,7 +263,7 @@ void Runner3DTestDemo::update( float dt )
             {
                 _sprite->setPositionX(_sprite->getPositionX() + _moveSpeed * dt);
                 _sprite->setRotation3D(Vec3(0.0f, 90.0f + _modelOffsetRot, 0.0f));
-				_touchPos = _sprite->getPosition3D();
+                _touchPos = _sprite->getPosition3D();
             }
             break;
 
@@ -263,25 +271,25 @@ void Runner3DTestDemo::update( float dt )
             break;
         }
 
-		if (!vec3equals(_touchPos, _sprite->getPosition3D()))
-		{
-			cocos2d::Vec3 dir = _touchPos - _sprite->getPosition3D();
-			dir.normalize();
-			cocos2d::Vec3 dp = dir * _moveSpeed * dt;
-			cocos2d::Vec3 endPos = _sprite->getPosition3D() + dp;
-			if ((endPos - _touchPos).lengthSquared() <= dp.lengthSquared())
-			{
-				endPos = _touchPos;
-				_sprite->stopAction(_spriteAnim);
-				_isRunningAction = false;
-			}
-			_sprite->setPosition3D(endPos);
+        if (!vec3equals(_touchPos, _sprite->getPosition3D()))
+        {
+            cocos2d::Vec3 dir = _touchPos - _sprite->getPosition3D();
+            dir.normalize();
+            cocos2d::Vec3 dp = dir * _moveSpeed * dt;
+            cocos2d::Vec3 endPos = _sprite->getPosition3D() + dp;
+            if ((endPos - _touchPos).lengthSquared() <= dp.lengthSquared())
+            {
+                endPos = _touchPos;
+                _sprite->stopAction(_spriteAnim);
+                _isRunningAction = false;
+            }
+            _sprite->setPosition3D(endPos);
 
-			float aspect = dir.dot(cocos2d::Vec3(0.0, 0.0, 1.0));
-			aspect = acosf(aspect);
-			if (dir.x < 0.0f) aspect = -aspect;
-			_sprite->setRotation3D(cocos2d::Vec3(0.0f, RADIUS_TO_DEGREE(aspect) + _modelOffsetRot, 0.0f));
-		}
+            float aspect = dir.dot(cocos2d::Vec3(0.0, 0.0, 1.0));
+            aspect = acosf(aspect);
+            if (dir.x < 0.0f) aspect = -aspect;
+            _sprite->setRotation3D(cocos2d::Vec3(0.0f, RADIUS_TO_DEGREE(aspect) + _modelOffsetRot, 0.0f));
+        }
     }
 
     updateCoins(dt);
@@ -355,7 +363,10 @@ void Runner3DTestDemo::updateCamera()
     if (_camera)
     {
         _camera->lookAt(_sprite->getPosition3D(), cocos2d::Vec3(0.0f, 1.0f, 0.0f));
-        _camera->setPosition3D(_sprite->getPosition3D() + cocos2d::Vec3(0.0f, 50.0f, 100.0f));
+        _camera->setPositionX(_sprite->getPositionX());
+        _camera->setPositionY(_sprite->getPositionY() + 50.0f);
+        _camera->setPositionZ(_sprite->getPositionZ() + 100.0f);
+       // _camera->setPosition3D(_sprite->getPosition3D() + cocos2d::Vec3(0.0f, 50.0f, 100.0f));
     }
 }
 
@@ -373,53 +384,53 @@ bool Runner3DTestDemo::checkCoinOutOfBound( cocos2d::Node *coin )
 
 bool Runner3DTestDemo::onTouchBeganEvent( cocos2d::Touch *touch, cocos2d::Event *event )
 {
-	if (touch)
-	{
-		if (!_isRunningAction)
-		{
-			if (_sprite)
-			{
-				_sprite->runAction(_spriteAnim);
-				_isRunningAction = true;
-			}
-		}
-	}
+    if (touch)
+    {
+        if (!_isRunningAction)
+        {
+            if (_sprite)
+            {
+                _sprite->runAction(_spriteAnim);
+                _isRunningAction = true;
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 void Runner3DTestDemo::onTouchMovedEvent( cocos2d::Touch *touch, cocos2d::Event *event )
 {
-	if (touch)
-	{
-	}
+    if (touch)
+    {
+    }
 }
 
 void Runner3DTestDemo::onTouchEndedEvent( cocos2d::Touch *touch, cocos2d::Event *event )
 {
-	if (touch)
-	{
-		auto location = touch->getLocationInView();
-		cocos2d::Vec3 nearP(location.x, location.y, -1.0f), farP(location.x, location.y, 1.0f);
-		auto size = cocos2d::Director::getInstance()->getWinSize();
-		_camera->unproject(size, &nearP, &nearP);
-		_camera->unproject(size, &farP, &farP);
-		cocos2d::Vec3 dir(farP - nearP);
-		float dist=0.0f;
-		float ndd = cocos2d::Vec3::dot(cocos2d::Vec3(0,1,0),dir);
-		if(ndd == 0)
-			dist=0.0f;
-		float ndo = cocos2d::Vec3::dot(cocos2d::Vec3(0,1,0),nearP);
-		dist= (0 - ndo) / ndd;
-		_touchPos =   nearP + dist *  dir;
-	}
+    if (touch)
+    {
+        auto location = touch->getLocationInView();
+        cocos2d::Vec3 nearP(location.x, location.y, -1.0f), farP(location.x, location.y, 1.0f);
+        auto size = cocos2d::Director::getInstance()->getWinSize();
+        _camera->unproject(size, &nearP, &nearP);
+        _camera->unproject(size, &farP, &farP);
+        cocos2d::Vec3 dir(farP - nearP);
+        float dist=0.0f;
+        float ndd = cocos2d::Vec3::dot(cocos2d::Vec3(0,1,0),dir);
+        if(ndd == 0)
+            dist=0.0f;
+        float ndo = cocos2d::Vec3::dot(cocos2d::Vec3(0,1,0),nearP);
+        dist= (0 - ndo) / ndd;
+        _touchPos =   nearP + dist *  dir;
+    }
 }
 
 bool Runner3DTestDemo::vec3equals( const cocos2d::Vec3 &lvec3, const cocos2d::Vec3 &rvec3 )
 {
-	return (fabs(lvec3.x - rvec3.x) < FLT_EPSILON)
-		&& (fabs(lvec3.y - rvec3.y) < FLT_EPSILON)
-		&& (fabs(lvec3.z - rvec3.z) < FLT_EPSILON);
+    return (fabs(lvec3.x - rvec3.x) < FLT_EPSILON)
+        && (fabs(lvec3.y - rvec3.y) < FLT_EPSILON)
+        && (fabs(lvec3.z - rvec3.z) < FLT_EPSILON);
 }
 
 void Runner3DTestScene::runThisTest()
