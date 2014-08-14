@@ -279,9 +279,12 @@ void Runner3DTestDemo::update( float dt )
             cocos2d::Vec3 endPos = _sprite->getPosition3D() + dp;
             if ((endPos - _touchPos).lengthSquared() <= dp.lengthSquared())
             {
-                endPos = _touchPos;
-                _sprite->stopAction(_spriteAnim);
-                _isRunningAction = false;
+				if (0.0f < (endPos - _touchPos).dot(dir))
+				{
+					endPos = _touchPos;
+					_sprite->stopAction(_spriteAnim);
+					_isRunningAction = false;
+				}
             }
             _sprite->setPosition3D(endPos);
 
