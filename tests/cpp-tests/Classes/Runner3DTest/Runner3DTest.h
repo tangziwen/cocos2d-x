@@ -47,8 +47,12 @@ public:
 
     virtual void update(float dt) override;
 
-    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onKeyPressedEvent(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onKeyReleasedEvent(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+	bool onTouchBeganEvent(cocos2d::Touch *touch, cocos2d::Event  *event);
+	void onTouchMovedEvent(cocos2d::Touch *touch, cocos2d::Event  *event);
+	void onTouchEndedEvent(cocos2d::Touch *touch, cocos2d::Event  *event);
 
 private:
 
@@ -63,6 +67,7 @@ private:
     void updateCamera();
     void updateCoins(float dt);
     void updateScore();
+	bool vec3equals(const cocos2d::Vec3 &lvec3, const cocos2d::Vec3 &rvec3);
 
 private:
 
@@ -79,6 +84,8 @@ private:
     cocos2d::Layer *_coinLayer;
     unsigned int _collectedCoinNum;
     cocos2d::Vec3 _newIconPos;
+	cocos2d::Vec3 _touchPos;
+	bool _isRunningAction;
 };
 
 class Runner3DTestScene : public TestScene
