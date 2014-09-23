@@ -120,6 +120,7 @@ base/ccRandom.cpp \
 base/CCRef.cpp \
 base/CCScheduler.cpp \
 base/CCScriptSupport.cpp \
+base/CCThreadPool.cpp \
 base/CCTouch.cpp \
 base/CCUserDefault.cpp \
 base/CCUserDefault-android.cpp \
