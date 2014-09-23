@@ -26,6 +26,7 @@
 #define __CCSPRITE3D_H__
 
 #include <unordered_map>
+#include <future>
 
 #include "base/CCVector.h"
 #include "base/ccTypes.h"
@@ -93,6 +94,9 @@ public:
     virtual void setGLProgramState(GLProgramState *glProgramState) override;
     /** just rember bind attributes */
     virtual void setGLProgram(GLProgram *glprogram) override;
+    
+    /** override update */
+    virtual void update(float delta) override;
     
     /*
      * Get AABB
@@ -162,6 +166,7 @@ protected:
     mutable AABB                 _aabb;                 // cache current aabb
     mutable Mat4                 _nodeToWorldTransform; // cache the matrix
     bool                         _aabbDirty;
+    std::future<void>            _future; // for skeleton compute
 };
 
 ///////////////////////////////////////////////////////

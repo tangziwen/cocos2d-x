@@ -1275,6 +1275,10 @@
 		3E2BDAE919C0329B0055CDCD /* AudioPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E2BDAE319C0329B0055CDCD /* AudioPlayer.h */; };
 		3E2BDAEA19C0329B0055CDCD /* AudioPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDAE419C0329B0055CDCD /* AudioPlayer.mm */; };
 		3E2BDAEC19C0436F0055CDCD /* AudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E2BDAEB19C0436F0055CDCD /* AudioEngine.cpp */; };
+		3E5166F119D0244500766A51 /* CCThreadPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E5166F019D0244500766A51 /* CCThreadPool.h */; };
+		3E5166F219D0244500766A51 /* CCThreadPool.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E5166F019D0244500766A51 /* CCThreadPool.h */; };
+		3E5166F419D1259B00766A51 /* CCThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E5166F319D1259B00766A51 /* CCThreadPool.cpp */; };
+		3E5166F519D1259B00766A51 /* CCThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E5166F319D1259B00766A51 /* CCThreadPool.cpp */; };
 		3E6176681960F89B00DE83F5 /* CCController-iOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3E6176551960F89B00DE83F5 /* CCController-iOS.mm */; };
 		3E6176691960F89B00DE83F5 /* CCController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E6176561960F89B00DE83F5 /* CCController.h */; };
 		3E6176741960F89B00DE83F5 /* CCEventController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E6176611960F89B00DE83F5 /* CCEventController.cpp */; };
@@ -2298,6 +2302,8 @@
 		3E2BDAE319C0329B0055CDCD /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
 		3E2BDAE419C0329B0055CDCD /* AudioPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioPlayer.mm; sourceTree = "<group>"; };
 		3E2BDAEB19C0436F0055CDCD /* AudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioEngine.cpp; sourceTree = "<group>"; };
+		3E5166F019D0244500766A51 /* CCThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCThreadPool.h; path = ../base/CCThreadPool.h; sourceTree = "<group>"; };
+		3E5166F319D1259B00766A51 /* CCThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCThreadPool.cpp; path = ../base/CCThreadPool.cpp; sourceTree = "<group>"; };
 		3E6176551960F89B00DE83F5 /* CCController-iOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "CCController-iOS.mm"; path = "../base/CCController-iOS.mm"; sourceTree = "<group>"; };
 		3E6176561960F89B00DE83F5 /* CCController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCController.h; path = ../base/CCController.h; sourceTree = "<group>"; };
 		3E6176611960F89B00DE83F5 /* CCEventController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCEventController.cpp; path = ../base/CCEventController.cpp; sourceTree = "<group>"; };
@@ -2992,6 +2998,8 @@
 		1A5700A2180BC5E60088DEC7 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				3E5166F319D1259B00766A51 /* CCThreadPool.cpp */,
+				3E5166F019D0244500766A51 /* CCThreadPool.h */,
 				299CF1F919A434BC00C378C1 /* ccRandom.cpp */,
 				299CF1FA19A434BC00C378C1 /* ccRandom.h */,
 				3EA3EDBA1991CDFA00645534 /* CCCamera.cpp */,
@@ -4906,6 +4914,7 @@
 				1AC0269C1914068200FA920D /* ConvertUTF.h in Headers */,
 				15AE1A7119AAD40300C27E9E /* b2Contact.h in Headers */,
 				50ABBED11925AB6F00A911A9 /* TGAlib.h in Headers */,
+				3E5166F119D0244500766A51 /* CCThreadPool.h in Headers */,
 				15AE19D319AAD3A700C27E9E /* Bone.h in Headers */,
 				1A57019F180BCB590088DEC7 /* CCFont.h in Headers */,
 				1A5701A3180BCB590088DEC7 /* CCFontAtlas.h in Headers */,
@@ -5512,6 +5521,7 @@
 				15AE18B419AAD33D00C27E9E /* CCBSelectorResolver.h in Headers */,
 				B24AA988195A675C007B4522 /* CCFastTMXLayer.h in Headers */,
 				15AE1AB919AAD40300C27E9E /* b2EdgeAndCircleContact.h in Headers */,
+				3E5166F219D0244500766A51 /* CCThreadPool.h in Headers */,
 				15AE1B7319AADA9A00C27E9E /* UIListView.h in Headers */,
 				15AE192A19AAD35100C27E9E /* TriggerMng.h in Headers */,
 				5034CA2C191D591100CE6051 /* ccShader_PositionTextureA8Color.vert in Headers */,
@@ -6062,6 +6072,7 @@
 				50ABBE691925AB6F00A911A9 /* CCEventListenerFocus.cpp in Sources */,
 				15AE18EA19AAD35000C27E9E /* CCActionNode.cpp in Sources */,
 				15AE1A7819AAD40300C27E9E /* b2PolygonAndCircleContact.cpp in Sources */,
+				3E5166F419D1259B00766A51 /* CCThreadPool.cpp in Sources */,
 				15AE1A3419AAD3D500C27E9E /* b2EdgeShape.cpp in Sources */,
 				15AE1BA319AADFDF00C27E9E /* UILayoutManager.cpp in Sources */,
 				B230ED7119B417AE00364AA8 /* CCTrianglesCommand.cpp in Sources */,
@@ -6594,6 +6605,7 @@
 				15AE197919AAD35700C27E9E /* CCActionTimelineCache.cpp in Sources */,
 				1AAF5850180E40B9000584C8 /* LocalStorage.cpp in Sources */,
 				50ED2BE519BEAF7900A0AB90 /* UIEditBoxImpl-win32.cpp in Sources */,
+				3E5166F519D1259B00766A51 /* CCThreadPool.cpp in Sources */,
 				15AE192E19AAD35100C27E9E /* CCActionFrameEasing.cpp in Sources */,
 				15AE195519AAD35100C27E9E /* CCDisplayManager.cpp in Sources */,
 				15AE1BA719AADFDF00C27E9E /* UIRelativeBox.cpp in Sources */,

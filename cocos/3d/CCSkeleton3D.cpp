@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "3d/CCSkeleton3D.h"
-
+#include "base/CCThreadPool.h"
 
 NS_CC_BEGIN
 
@@ -59,9 +59,9 @@ void Bone3D::resetPose()
 void Bone3D::setWorldMatDirty(bool dirty)
 {
     _worldDirty = dirty;
-    for (auto it : _children) {
-        it->setWorldMatDirty(dirty);
-    }
+//    for (auto it : _children) {
+//        it->setWorldMatDirty(dirty);
+//    }
 }
 
 //update own world matrix and children's
@@ -315,9 +315,22 @@ int Skeleton3D::getBoneIndex(Bone3D* bone) const
 //refresh bone world matrix
 void Skeleton3D::updateBoneMatrix()
 {
-    for (const auto& it : _rootBones) {
+//    std::vector< std::future<void > > results;
+//    results.reserve(_bones.size());
+//    for (const auto& it : _bones) {
+//        it->setWorldMatDirty(true);
+//        results.push_back(ThreadPool::getInstance()->enqueue([it] {
+//            it->updateLocalMat();
+//        }));
+//    }
+//    for (ssize_t i = 0; i < _bones.size(); i++) {
+//        results[i].get();
+//        _bones.at(i)->getWorldMat();
+//    }
+    
+    for (const auto& it : _bones) {
         it->setWorldMatDirty(true);
-        it->updateWorldMat();
+        it->getWorldMat();
     }
 }
 

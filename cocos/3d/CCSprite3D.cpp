@@ -31,8 +31,9 @@
 #include "3d/CCMesh.h"
 
 #include "base/CCDirector.h"
-#include "platform/CCPlatformMacros.h"
 #include "base/ccMacros.h"
+#include "base/CCThreadPool.h"
+#include "platform/CCPlatformMacros.h"
 #include "platform/CCFileUtils.h"
 #include "renderer/CCTextureCache.h"
 #include "renderer/CCRenderer.h"
@@ -79,8 +80,11 @@ bool Sprite3D::loadFromCache(const std::string& path)
         for (auto it : spritedata->meshVertexDatas) {
             _meshVertexDatas.pushBack(it);
         }
-        _skeleton = Skeleton3D::create(spritedata->nodedatas->skeleton);
-        CC_SAFE_RETAIN(_skeleton);
+        if (spritedata->nodedatas->skeleton.size())
+        {
+            _skeleton = Skeleton3D::create(spritedata->nodedatas->skeleton);
+            CC_SAFE_RETAIN(_skeleton);
+        }
         
         for(const auto& it : spritedata->nodedatas->nodes)
         {
@@ -167,6 +171,7 @@ Sprite3D::Sprite3D()
 , _blend(BlendFunc::ALPHA_NON_PREMULTIPLIED)
 , _aabbDirty(true)
 {
+    scheduleUpdate();
 }
 
 Sprite3D::~Sprite3D()
@@ -175,6 +180,7 @@ Sprite3D::~Sprite3D()
     _meshVertexDatas.clear();
     CC_SAFE_RELEASE_NULL(_skeleton);
     removeAllAttachNode();
+    unscheduleUpdate();
 }
 
 bool Sprite3D::initWithFile(const std::string &path)
@@ -215,8 +221,11 @@ bool Sprite3D::initFrom(const NodeDatas& nodeDatas, const MeshDatas& meshdatas, 
             _meshVertexDatas.pushBack(meshvertex);
         }
     }
-    _skeleton = Skeleton3D::create(nodeDatas.skeleton);
-    CC_SAFE_RETAIN(_skeleton);
+    if (nodeDatas.skeleton.size())
+    {
+        _skeleton = Skeleton3D::create(nodeDatas.skeleton);
+        CC_SAFE_RETAIN(_skeleton);
+    }
     
     for(const auto& it : nodeDatas.nodes)
     {
@@ -491,11 +500,16 @@ void Sprite3D::removeAllAttachNode()
     _attachments.clear();
 }
 
-void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+void Sprite3D::update(float delta)
 {
     if (_skeleton)
-        _skeleton->updateBoneMatrix();
-    
+    {
+        _future = ThreadPool::getInstance()->enqueue([](Skeleton3D* skel){skel->updateBoneMatrix();}, _skeleton);
+    }
+}
+
+void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
     Color4F color(getDisplayedColor());
     color.a = getDisplayedOpacity() / 255.0f;
     
@@ -516,6 +530,8 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
         auto skin = mesh->getSkin();
         if (skin)
         {
+            if (_future.valid())
+                _future.get();
             meshCommand.setMatrixPaletteSize((int)skin->getMatrixPaletteSize());
             meshCommand.setMatrixPalette(skin->getMatrixPalette());
         }
