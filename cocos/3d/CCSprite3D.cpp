@@ -505,6 +505,7 @@ void Sprite3D::update(float delta)
     if (_skeleton)
     {
         _future = ThreadPool::getInstance()->enqueue([](Skeleton3D* skel){skel->updateBoneMatrix();}, _skeleton);
+        //_skeleton->updateBoneMatrix();
     }
 }
 
@@ -537,7 +538,7 @@ void Sprite3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
         }
         //support tint and fade
         meshCommand.setDisplayColor(Vec4(color.r, color.g, color.b, color.a));
-        meshCommand.setTransparent(mesh->_isTransparent);
+        meshCommand.setTransparent(mesh->_isTransparent || color.a < 1.0f);
         renderer->addCommand(&meshCommand);
     }
 }

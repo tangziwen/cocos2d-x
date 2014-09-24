@@ -24,7 +24,7 @@ public:
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type>;
-    static ThreadPool* getInstance() { return &s_ThreadPool; }
+    static ThreadPool* getInstance();
     ~ThreadPool();
 private:
     // need to keep track of threads so we can join them
@@ -36,7 +36,6 @@ private:
     std::mutex _queue_mutex;
     std::condition_variable _condition;
     bool _stop;
-    static ThreadPool s_ThreadPool;
 };
 
 // the constructor just launches some amount of workers
