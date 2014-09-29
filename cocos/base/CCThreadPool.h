@@ -126,10 +126,12 @@ private:
     // the task queue
     std::queue< std::function<void()> > _tasks;
     
-    // synchronization
-    std::mutex _queue_mutex;
-    std::condition_variable _condition;
+//    // synchronization
+//    std::mutex _queue_mutex;
+//    std::condition_variable _condition;
     bool _stop;
+    
+    memory_sequential_consistent::CircularFifo<std::function<void()>, 128 > _taskQueue;
 };
 
 // the constructor just launches some amount of workers
@@ -142,15 +144,15 @@ inline ThreadPool::ThreadPool(size_t threads)
                              {
                                  for(;;)
                                  {
-                                     std::unique_lock<std::mutex> lock(this->_queue_mutex);
-                                     while(!this->_stop && this->_tasks.empty())
-                                         this->_condition.wait(lock);
-                                     if(this->_stop && this->_tasks.empty())
+                                     std::function<void()> task;
+                                     while(_taskQueue.pop(task) == false && !_stop)
+                                         std::this_thread::yield();
+                                     
+                                     if (_stop)
                                          return;
-                                     std::function<void()> task(this->_tasks.front());
-                                     this->_tasks.pop();
-                                     lock.unlock();
+                                     
                                      task();
+                                     
                                  }
                              }
                              );
@@ -172,21 +174,20 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
     
     std::future<return_type> res = task->get_future();
     {
-        std::unique_lock<std::mutex> lock(_queue_mutex);
-        _tasks.push([task](){ (*task)(); });
+        while(_taskQueue.push([task](){ (*task)(); }) == false)
+        {
+            std::this_thread::yield();
+        }
     }
-    _condition.notify_one();
+
     return res;
 }
 
 // the destructor joins all threads
 inline ThreadPool::~ThreadPool()
 {
-    {
-        std::unique_lock<std::mutex> lock(_queue_mutex);
-        _stop = true;
-    }
-    _condition.notify_all();
+    _stop = true;
+    
     for(size_t i = 0;i<_workers.size();++i)
         _workers[i].join();
 }
