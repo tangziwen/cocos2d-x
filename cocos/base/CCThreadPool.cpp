@@ -29,7 +29,7 @@ ThreadPool* ThreadPool::getInstance()
 //        threadcnt = MAX(threadcnt, 1);
 //    }
 
-    static ThreadPool s_ThreadPool(1);
+    static ThreadPool s_ThreadPool;
     return &s_ThreadPool;
 }
 
