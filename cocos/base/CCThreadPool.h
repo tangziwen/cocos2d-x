@@ -184,7 +184,6 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
         }
         if (wasEmpty)
         {
-            std::unique_lock<std::mutex> lock(_queue_mutex);
             _condition.notify_one();
         }
     }
