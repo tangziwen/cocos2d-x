@@ -88,15 +88,15 @@ public:
     Mode getMode() const;
 
     //override
-    /** draw BillBoard object */
-    virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
-
+    virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
 
 CC_CONSTRUCTOR_ACCESS:
     BillBoard();
     virtual ~BillBoard();
 
 protected:
+
+    void calculateBillbaordTransform();
 
     Mat4 _camWorldMat;
     Mat4 _mvTransform;

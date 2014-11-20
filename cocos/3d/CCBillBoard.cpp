@@ -96,15 +96,73 @@ BillBoard* BillBoard::create(Mode mode)
     return nullptr;
 }
 
-void BillBoard::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+void BillBoard::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t parentFlags)
+{
+    // quick return if not visible. children won't be drawn.
+    if (!_visible)
+    {
+        return;
+    }
+
+    uint32_t flags = processParentFlags(parentTransform, parentFlags);
+    calculateBillbaordTransform();
+
+//    Mat4 transform = _modelViewTransform;
+    Mat4 transform = _billboardTransform;
+
+    // IMPORTANT:
+    // To ease the migration to v3.0, we still support the Mat4 stack,
+    // but it is deprecated and your code should not rely on it
+    Director* director = Director::getInstance();
+    director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
+
+    bool visibleByCamera = isVisitableByVisitingCamera();
+
+    int i = 0;
+
+    if(!_children.empty())
+    {
+        sortAllChildren();
+        // draw children zOrder < 0
+        for( ; i < _children.size(); i++ )
+        {
+            auto node = _children.at(i);
+
+            if ( node && node->getLocalZOrder() < 0 )
+                node->visit(renderer, transform, flags);
+            else
+                break;
+        }
+        // self draw
+        if (visibleByCamera)
+            this->draw(renderer, transform, flags);
+
+        for(auto it=_children.cbegin()+i; it != _children.cend(); ++it)
+            (*it)->visit(renderer, transform, flags);
+    }
+    else if (visibleByCamera)
+    {
+        this->draw(renderer, transform, flags);
+    }
+
+    director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
+    // FIX ME: Why need to set _orderOfArrival to 0??
+    // Please refer to https://github.com/cocos2d/cocos2d-x/pull/6920
+    // reset for next frame
+    // _orderOfArrival = 0;
+}
+
+void BillBoard::calculateBillbaordTransform()
 {
     auto camera = Camera::getVisitingCamera();
     
     const Mat4& camWorldMat = camera->getNodeToWorldTransform();
-    if (memcmp(_camWorldMat.m, camWorldMat.m, sizeof(float) * 16) != 0 || memcmp(_mvTransform.m, transform.m, sizeof(float) * 16) != 0 || _modeDirty)
+    if (memcmp(_camWorldMat.m, camWorldMat.m, sizeof(float) * 16) != 0 || memcmp(_mvTransform.m, _modelViewTransform.m, sizeof(float) * 16) != 0 || _modeDirty)
     {
         Vec3 anchorPoint(_anchorPointInPoints.x , _anchorPointInPoints.y , 0.0f);
-        Mat4 localToWorld = transform;
+        Mat4 localToWorld = _modelViewTransform;
         localToWorld.translate(anchorPoint);
 
         Vec3 camDir;
@@ -149,15 +207,8 @@ void BillBoard::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 
         const Mat4 &viewMat = camWorldMat.getInversed();
         _zDepthInView = -(viewMat.m[2] * _billboardTransform.m[12] + viewMat.m[6] * _billboardTransform.m[13] + viewMat.m[10] * _billboardTransform.m[14] + viewMat.m[14]);
-        _mvTransform = transform;
+        _mvTransform = _modelViewTransform;
         _camWorldMat = camWorldMat;
-    }
-
-    //FIXME: frustum culling here
-    {
-        _quadCommand.init(_zDepthInView, _texture->getName(), getGLProgramState(), _blendFunc, &_quad, 1, _billboardTransform);
-        _quadCommand.setTransparent(true);
-        renderer->addCommand(&_quadCommand);
     }
 }
 

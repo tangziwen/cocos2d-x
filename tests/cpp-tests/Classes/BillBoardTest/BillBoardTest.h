@@ -45,8 +45,8 @@ public:
     virtual std::string title() const override;
     virtual std::string subtitle() const override;
     virtual void update(float dt) override;
-    void addNewBillBoradWithCoords(Vec3 p);
-    void addNewAniBillBoradWithCoords(Vec3 p);
+    void addNewBillBoradWithCoords(const Vec3 &p);
+    void addNewAniBillBoradWithCoords(const Vec3 &p);
     void rotateCameraCallback(Ref* sender,float value);
     void onTouchesMoved(const std::vector<Touch*>& touches, Event* event);
     
