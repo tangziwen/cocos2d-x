@@ -121,7 +121,7 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         Vec3 halfheight = particle->heightInWorld * 0.5f * up;
         //transform.transformPoint(particle->position, &position);
         position = particle->positionInWorld;
-        Mat4::createRotation(Vec3(0.0f, 0.0f, 1.0f), particle->zRotation, &pRotMat);
+        Mat4::createRotation(Vec3(0.0f, 0.0f, 1.0f), -particle->zRotation, &pRotMat);
         Vec3 val;
         val = pRotMat * Vec3(particle->lb_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y, 0.0f);
         _posuvcolors[vertexindex].position = (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
