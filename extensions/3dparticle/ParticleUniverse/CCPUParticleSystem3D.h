@@ -250,6 +250,11 @@ public:
     void setMaterialName(const std::string &name) { _matName = name; };
     const std::string getMaterialName() const { return _matName; };
 
+	    /**
+     * add particle affector
+     */
+    void addEmitter(PUParticle3DEmitter* emitter);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticleSystem3D();
     virtual ~PUParticleSystem3D();
@@ -268,6 +273,9 @@ protected:
     bool initSystem(const std::string &filePath);
 
 protected:
+
+	std::vector<PUParticle3DEmitter*> _emitters;
+
     bool _prepared;
 
     float _particleSystemScaleVelocity;

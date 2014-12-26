@@ -33,6 +33,7 @@
 #include "renderer/CCVertexIndexBuffer.h"
 #include "base/CCDirector.h"
 #include "3d/CCSprite3D.h"
+#include "3d/CCMesh.h"
 #include "2d/CCCamera.h"
 
 NS_CC_BEGIN
@@ -100,6 +101,7 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         up.normalize();
         Vec3::cross(up, _commonDir, &right);
         right.normalize();
+        backward = _commonDir;
     }
 
     for (auto iter : activeParticleList)
@@ -334,6 +336,8 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
         mat.m[12] = particle->positionInWorld.x;
         mat.m[13] = particle->positionInWorld.y;
         mat.m[14] = particle->positionInWorld.z;
+        _spriteList[i]->setColor(Color3B(particle->color.x * 255, particle->color.y * 255, particle->color.z * 255));
+        _spriteList[i]->setOpacity(particle->color.w * 255);
         _spriteList[i]->draw(renderer, mat, 0);
     }
 }
