@@ -91,6 +91,7 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
     Vec3 backward(cameraMat.m[8], cameraMat.m[9], cameraMat.m[10]);
     
     Vec3 position; //particle position
+    Vec3 texOffset = Vec3(0.5f, 0.5f, 0.0f);
     int vertexindex = 0;
     int index = 0;
     int offsetX,offsetY;
@@ -120,22 +121,27 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         Vec3 halfheight = particle->heightInWorld * 0.5f * up;
         //transform.transformPoint(particle->position, &position);
         position = particle->positionInWorld;
-        Mat4::createRotation(backward, particle->zRotation, &pRotMat);
-        _posuvcolors[vertexindex].position = (position + pRotMat * (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
+        Mat4::createRotation(Vec3(0.0f, 0.0f, 1.0f), particle->zRotation, &pRotMat);
+        Vec3 val;
+        val = pRotMat * Vec3(particle->lb_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y, 0.0f);
+        _posuvcolors[vertexindex].position = (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
         _posuvcolors[vertexindex].color = particle->color;
-        _posuvcolors[vertexindex].uv = Vec2(particle->lb_uv);
+        _posuvcolors[vertexindex].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
 
-        _posuvcolors[vertexindex + 1].position = (position + pRotMat * (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
+        val = pRotMat * Vec3(particle->rt_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y, 0.0f);
+        _posuvcolors[vertexindex + 1].position = (position + (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
         _posuvcolors[vertexindex + 1].color = particle->color;
-        _posuvcolors[vertexindex + 1].uv = Vec2(particle->rt_uv.x, particle->lb_uv.y);
+        _posuvcolors[vertexindex + 1].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
         
-        _posuvcolors[vertexindex + 2].position = (position + pRotMat * (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
+        val = pRotMat * Vec3(particle->lb_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y, 0.0f);
+        _posuvcolors[vertexindex + 2].position = (position + (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
         _posuvcolors[vertexindex + 2].color = particle->color;
-        _posuvcolors[vertexindex + 2].uv = Vec2(particle->lb_uv.x, particle->rt_uv.y);
+        _posuvcolors[vertexindex + 2].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
         
-        _posuvcolors[vertexindex + 3].position = (position + pRotMat * (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
+        val = pRotMat * Vec3(particle->rt_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y, 0.0f);
+        _posuvcolors[vertexindex + 3].position = (position + (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
         _posuvcolors[vertexindex + 3].color = particle->color;
-        _posuvcolors[vertexindex + 3].uv = Vec2(particle->rt_uv);
+        _posuvcolors[vertexindex + 3].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
         
         
         _indexData[index] = vertexindex;
