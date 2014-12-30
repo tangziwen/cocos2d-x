@@ -89,6 +89,8 @@ void PUParticle3DPlaneCollider::calculateDirectionAfterCollision(PUParticle3D* p
             particle->position += timeElapsed * directionLength * _normal;
         }
         break;
+        default:
+        break;
     }
 }
 

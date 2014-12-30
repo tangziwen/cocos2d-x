@@ -374,7 +374,7 @@ void PUScriptCompiler::visit(PUConcreteNode *node)
             if(_current->type == ANT_PROPERTY)
             {
                 PUPropertyAbstractNode *impl = reinterpret_cast<PUPropertyAbstractNode*>(_current);
-                PUAtomAbstractNode* assd = dynamic_cast<PUAtomAbstractNode*>(asn);
+                //PUAtomAbstractNode* assd = dynamic_cast<PUAtomAbstractNode*>(asn);
                 impl->values.push_back(asn);
             }
             else

@@ -30,6 +30,7 @@ NS_CC_BEGIN
 PUParticle3DAffector::PUParticle3DAffector()
 : _affectorScale(Vec3::ONE)
 , _affectSpecialisation(AFSP_DEFAULT)
+, _mass(1.0f)
 {
     
 }
@@ -177,6 +178,16 @@ void PUParticle3DAffector::notifyRescaled(const Vec3& scale)
 void PUParticle3DAffector::firstParticleUpdate( PUParticle3D *particle, float deltaTime )
 {
 
+}
+
+void PUParticle3DAffector::setMass( float mass )
+{
+    _mass =  mass;
+}
+
+float PUParticle3DAffector::getMass() const
+{
+    return _mass;
 }
 
 NS_CC_END

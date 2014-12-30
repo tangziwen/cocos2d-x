@@ -65,8 +65,10 @@ public:
     virtual void firstParticleUpdate(PUParticle3D *particle, float deltaTime);
     virtual void initParticleForEmission(PUParticle3D* particle);
 
-	void setLocalPosition(const Vec3 &pos) { _position = pos; };
-	const Vec3 getLocalPosition() const { return _position; };
+    void setLocalPosition(const Vec3 &pos) { _position = pos; };
+    const Vec3 getLocalPosition() const { return _position; };
+    void setMass(float mass);
+    float getMass() const;
 
     /** Calculate the derived position of the affector.
     @remarks
@@ -121,6 +123,8 @@ protected:
 
     // Name of the affector (optional)
     std::string _name;
+
+    float _mass;
 };
 
 NS_CC_END

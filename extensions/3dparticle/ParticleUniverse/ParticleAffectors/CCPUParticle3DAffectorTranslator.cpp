@@ -116,14 +116,14 @@ void PUParticle3DAffectorTranslator::translate(PUScriptCompiler* compiler, PUAbs
             }
             else if (prop->name == token[TOKEN_AFFECTOR_MASS])
             {
-                //if (passValidateProperty(compiler, prop, token[TOKEN_AFFECTOR_MASS], VAL_REAL))
-                //{
-                //    Real val = 0.0f;
-                //    if(getReal(prop->values.front(), &val))
-                //    {
-                //        mAffector->mass = val;
-                //    }
-                //}
+                if (passValidateProperty(compiler, prop, token[TOKEN_AFFECTOR_MASS], VAL_REAL))
+                {
+                    float val = 0.0f;
+                    if(getFloat(*prop->values.front(), &val))
+                    {
+                        _affector->setMass(val);
+                    }
+                }
             }
             else if (prop->name == token[TOKEN_AFFECTOR_SPECIALISATION])
             {

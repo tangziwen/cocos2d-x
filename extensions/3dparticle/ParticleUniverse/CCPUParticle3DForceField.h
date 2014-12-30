@@ -235,7 +235,7 @@ class PUForceField
         };
 
         PUForceField();
-        ~PUForceField();
+        virtual ~PUForceField();
 
         /** Initialises a ForceField */
         virtual void initialise(ForceFieldType type,
