@@ -46,8 +46,6 @@ public:
     */
     float getGravity(void) const;
     void setGravity(float gravity);
-    void setMass(float mass);
-    float getMass() const;
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DGravityAffector(void);

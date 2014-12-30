@@ -111,6 +111,7 @@ void PUParticle3DMaterialCache::addMaterial( PUParticle3DMaterial *material )
     _materialMap[material->fileName].push_back(material);
 }
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 int iterPath(const char *fpath, const struct stat *sb, int typeflag)
 {
     if(typeflag == FTW_F)
@@ -121,6 +122,7 @@ int iterPath(const char *fpath, const struct stat *sb, int typeflag)
     }
     return 0;
 }
+#endif
 
 bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string &fileSpec )
 {
