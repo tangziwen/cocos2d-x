@@ -69,7 +69,7 @@ void PUParticle3DGravityAffector::updatePUAffector( PUParticle3D *particle, floa
         if (length > 0/* && mParentTechnique*/)
         {
             //Real force = (mGravity * particle->mass * mass) / length;
-            float force = (scaleVelocity * _gravity * particle->mass/* * mass*/) / length;
+            float force = (scaleVelocity * _gravity * particle->mass * _mass) / length;
             particle->direction += force * distance * deltaTime * calculateAffectSpecialisationFactor(particle);
         }
     }

@@ -70,10 +70,15 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
     {
          PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);
          PUParticle3DMaterial *material = PUParticle3DMaterialCache::Instance()->getMaterial(system->getMaterialName());
-
+         std::string texFolder = "../textures/";
+         if (material){
+             std::string::size_type pos = obj->file.find_last_of("/\\");
+             if (pos != std::string::npos)
+                 texFolder = obj->file.substr(0, pos + 1) + texFolder;
+         }
         if (type == "Billboard"){
             if (material)
-                _renderer = PUParticle3DQuadRender::create(material->textureFile);
+                _renderer = PUParticle3DQuadRender::create(texFolder + material->textureFile);
             else
                 _renderer = PUParticle3DQuadRender::create();
             for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
@@ -233,7 +238,7 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                             if(getString(*prop->values.front(), &val))
                             {
                                 if (material) 
-                                    _renderer = PUParticle3DModelRender::create(val, material->textureFile);
+                                    _renderer = PUParticle3DModelRender::create(val, texFolder + material->textureFile);
                                 else
                                     _renderer = PUParticle3DModelRender::create(val);
                             }
