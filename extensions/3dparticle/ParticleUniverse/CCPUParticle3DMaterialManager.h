@@ -63,7 +63,7 @@ public:
     static PUParticle3DMaterialCache* Instance();
 
     bool loadMaterials(const std::string &file);
-    bool loadMaterialsFromSearchPaths(const std::string &fileSpec);
+    bool loadMaterialsFromSearchPaths(const std::string &fileFolder);
     PUParticle3DMaterial* getMaterial(const std::string &name);
     void addMaterial(PUParticle3DMaterial *material);
 

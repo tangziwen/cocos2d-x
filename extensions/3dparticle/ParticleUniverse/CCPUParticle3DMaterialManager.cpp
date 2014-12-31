@@ -88,12 +88,11 @@ PUParticle3DMaterial* PUParticle3DMaterialCache::getMaterial( const std::string 
 bool PUParticle3DMaterialCache::loadMaterials( const std::string &file )
 {
     std::string data = FileUtils::getInstance()->getStringFromFile(file);
-    std::string fullPath = FileUtils::getInstance()->fullPathForFilename(file);
-    auto iter = _materialMap.find(fullPath);
+    auto iter = _materialMap.find(file);
     if (iter != _materialMap.end()) return true;
 
     PUScriptCompiler sc;
-    return sc.compile(data, fullPath);
+    return sc.compile(data, file);
 }
 
 void PUParticle3DMaterialCache::addMaterial( PUParticle3DMaterial *material )
@@ -107,6 +106,7 @@ void PUParticle3DMaterialCache::addMaterial( PUParticle3DMaterial *material )
             }
         }
     }
+
     material->retain();
     _materialMap[material->fileName].push_back(material);
 }
@@ -124,23 +124,23 @@ int iterPath(const char *fpath, const struct stat *sb, int typeflag)
 }
 #endif
 
-bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string &fileSpec )
+bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string &fileFolder )
 {
     bool state = false;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-    for (auto iter : FileUtils::getInstance()->getSearchPaths()){
-        std::string fullPath = iter + fileSpec;
+    //for (auto iter : FileUtils::getInstance()->getSearchPaths()){
+        std::string fullPath = fileFolder + std::string("*.material");
         _finddata_t data;
         intptr_t handle = _findfirst(fullPath.c_str(), &data);
         int done = 0;
         while ((handle != -1) && (done == 0))
         {
-            loadMaterials(data.name);
+            loadMaterials(fileFolder + std::string(data.name));
             done = _findnext(handle, &data);
             state = true;
         }
         _findclose(handle);
-    }
+   // }
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
     //TODO:
 //      for (auto iter : FileUtils::getInstance()->getSearchPaths()){

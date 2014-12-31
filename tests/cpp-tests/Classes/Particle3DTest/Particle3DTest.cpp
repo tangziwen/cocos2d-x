@@ -147,9 +147,9 @@ bool Particle3DTestDemo::init()
 {
     if (!BaseTest::init()) return false;
 
-    FileUtils::getInstance()->addSearchPath("Particle3D/materials");
+    //FileUtils::getInstance()->addSearchPath("Particle3D/materials");
     FileUtils::getInstance()->addSearchPath("Particle3D/scripts");
-    FileUtils::getInstance()->addSearchPath("Particle3D/textures");
+    //FileUtils::getInstance()->addSearchPath("Particle3D/textures");
 
     Size size = Director::getInstance()->getWinSize();
     _camera = Camera::createPerspective(30.0f, size.width / size.height, 1.0f, 1000.0f);
