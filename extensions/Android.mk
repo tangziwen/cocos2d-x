@@ -125,9 +125,8 @@ physics-nodes/CCPhysicsSprite.cpp \
 3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DSlaveEmitterTranslator.cpp \
 3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DSphereSurfaceEmitter.cpp \
 3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DSphereSurfaceEmitterTranslator.cpp \
-3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DVertexEmitter.cpp \ 
-3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DVertexEmitterTranslator.cpp \
-3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.cpp
+3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DVertexEmitter.cpp \
+3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.cpp \
 
 LOCAL_STATIC_LIBRARIES := cocos2dx_internal_static
 LOCAL_STATIC_LIBRARIES += cocos_curl_static
