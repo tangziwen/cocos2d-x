@@ -63,8 +63,8 @@ public:
     
     bool isVisible() const { return _isVisible; }
 
-    void setDepthTest(bool isDepthTest) { _depthTest = isDepthTest; }
-    void setDepthWrite(bool isDepthWrite) {_depthWrite = isDepthWrite; }
+    virtual void setDepthTest(bool isDepthTest) { _depthTest = isDepthTest; }
+    virtual void setDepthWrite(bool isDepthWrite) {_depthWrite = isDepthWrite; }
     
 CC_CONSTRUCTOR_ACCESS:
     Particle3DRender()
@@ -87,6 +87,9 @@ public:
     static Particle3DQuadRender* create(const std::string& texFile = "");
     
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+	virtual void setDepthTest(bool isDepthTest);
+	virtual void setDepthWrite(bool isDepthWrite);
     
 CC_CONSTRUCTOR_ACCESS:
     Particle3DQuadRender();

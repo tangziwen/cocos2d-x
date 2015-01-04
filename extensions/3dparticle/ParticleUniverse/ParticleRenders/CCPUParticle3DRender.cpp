@@ -25,6 +25,7 @@
 #include "3dparticle/CCParticleSystem3D.h"
 #include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.h"
 #include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DUtil.h"
 #include "renderer/CCMeshCommand.h"
 #include "renderer/CCRenderer.h"
 #include "renderer/CCTextureCache.h"
@@ -102,6 +103,11 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         Vec3::cross(up, _commonDir, &right);
         right.normalize();
         backward = _commonDir;
+    }else if (_type == ORIENTED_COMMON){
+        up = _commonDir;
+        up.normalize();
+        Vec3::cross(up, backward, &right);
+        right.normalize();
     }
 
     for (auto iter : activeParticleList)
@@ -110,11 +116,22 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         determineUVCoords(particle);
         if (_type == ORIENTED_SELF){
             Vec3 direction;
-            transform.transformVector(-particle->direction, &direction);
+            transform.transformVector(particle->direction, &direction);
             up = direction;
             up.normalize();
             Vec3::cross(direction, backward, &right);
             right.normalize();
+		}else if (_type == PERPENDICULAR_SELF){
+            Vec3 direction;
+            transform.transformVector(particle->direction, &direction);
+            direction.normalize();
+            //up = PUParticle3DUtil::perpendicular(direction);
+            //up.normalize();
+            Vec3::cross(_commonUp, direction, &right);
+            right.normalize();
+            Vec3::cross(direction, right, &up);
+            up.normalize();
+            backward = direction;
         }
         Vec3 halfwidth = particle->widthInWorld * 0.5f * right;
         Vec3 halfheight = particle->heightInWorld * 0.5f * up;

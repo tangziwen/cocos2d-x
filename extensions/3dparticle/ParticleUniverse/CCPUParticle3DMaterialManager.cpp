@@ -30,8 +30,10 @@
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <io.h>
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-//#include <io.h>
-//#include <dir.h>
+//#include <sys/io.h>
+//#include <sys/dir.h>
+#include <sys/types.h>
+#include <dirent.h>
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 #include <ftw.h>
 #endif
@@ -143,17 +145,37 @@ bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string 
    // }
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
     //TODO:
-//      for (auto iter : FileUtils::getInstance()->getSearchPaths()){
-//          std::string fullPath = iter + fileSpec;
-//          struct ffblk data;
-//          int done = findfirst(fullPath.c_str(), &data, 512);
-//          while (!done)
-//          {
-//              loadMaterials(data.name);
-//              done = findnext(&data);
-//              state = true;
-//          }
-//      }
+    //for (auto iter : FileUtils::getInstance()->getSearchPaths()){
+        //std::string fullPath = fileFolder + std::string("*.material");
+        //struct ffblk data;
+        //int done = findfirst(fullPath.c_str(), &data, 512);
+        //while (!done)
+        //{
+        //    loadMaterials(fileFolder + std::string(data.name));
+        //    done = findnext(&data);
+        //    state = true;
+        //}
+    //}
+
+    struct dirent* ent = NULL;
+    DIR* pDir;
+    pDir = opendir(fileFolder.c_str());
+    while(NULL != (ent = readdir(pDir)))
+    {
+        //std::string fullpath = fileFolder + "/" + ent->d_name;
+        //CCLOG("%s", fullpath.c_str());
+        //if(8 == ent->d_type)  //在nfs或xfs下，有的文件d_type也是0
+        //if(IsFile(fullpath))
+        //{
+        //    if(strstr(ent->d_name, "material")!=NULL)
+        //    {
+        //        loadMaterials(fullpath);
+        //        //files.push_back(ent->d_name);
+        //    }
+        //}
+    }
+    closedir(pDir);
+
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     for (auto iter : FileUtils::getInstance()->getSearchPaths())
     {

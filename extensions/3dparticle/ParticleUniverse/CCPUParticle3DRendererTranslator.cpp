@@ -102,11 +102,10 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_SELF);
                                 }
-                                //else if (val == token[TOKEN_BILLBOARD_ORIENTED_COMMON])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_ORIENTED_COMMON);
-                                //	return true;
-                                //}
+                                else if (val == token[TOKEN_BILLBOARD_ORIENTED_COMMON])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_COMMON);
+                                }
                                 //else if (val == token[TOKEN_BILLBOARD_ORIENTED_SHAPE])
                                 //{
                                 //	renderer->setBillboardType(BillboardRenderer::BBT_ORIENTED_SHAPE);
@@ -116,11 +115,10 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::PERPENDICULAR_COMMON);
                                 }
-                                //else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_SELF])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_PERPENDICULAR_SELF);
-                                //	return true;
-                                //}
+                                else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_SELF])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::PERPENDICULAR_SELF);
+                                }
                             }
                         }
                     }
