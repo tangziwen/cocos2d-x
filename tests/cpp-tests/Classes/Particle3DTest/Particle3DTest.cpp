@@ -159,19 +159,36 @@ bool Particle3DTestDemo::init()
     _camera->setCameraFlag(CameraFlag::USER1);
     this->addChild(_camera);
 
-    auto label1 = Label::createWithTTF("Rotate Left", "fonts/arial.ttf", 20);
-    auto menuItem1 = MenuItemLabel::create(label1, CC_CALLBACK_1(Particle3DTestDemo::rotateCameraLeft, this));
-    auto label2 = Label::createWithTTF("Rotate Right", "fonts/arial.ttf", 20);
-    auto menuItem2 = MenuItemLabel::create(label2, CC_CALLBACK_1(Particle3DTestDemo::rotateCameraRight, this));
-    auto menu = Menu::create(menuItem1, menuItem2, nullptr);
-    menu->setPosition(Vec2::ZERO);
-    menuItem1->setAnchorPoint(Vec2(0.0f, 0.0f));
-    menuItem2->setAnchorPoint(Vec2(0.0f, 0.0f));
-    menuItem1->setPosition(0, size.height -50);
-    menuItem2->setPosition(0, size.height -100);
-    this->addChild(menu);
-
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesBegan = CC_CALLBACK_2(Particle3DTestDemo::onTouchesBegan, this);
+    listener->onTouchesMoved = CC_CALLBACK_2(Particle3DTestDemo::onTouchesMoved, this);
+    listener->onTouchesEnded = CC_CALLBACK_2(Particle3DTestDemo::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    
     return true;
+}
+
+void Particle3DTestDemo::onTouchesBegan(const std::vector<Touch*>& touches, cocos2d::Event  *event)
+{
+    
+}
+
+void Particle3DTestDemo::onTouchesMoved(const std::vector<Touch*>& touches, cocos2d::Event  *event)
+{
+    if (touches.size())
+    {
+        auto touch = touches[0];
+        auto delta = touch->getDelta();
+        
+        _angle -= CC_DEGREES_TO_RADIANS(delta.x);
+        _camera->setPosition3D(Vec3(100.0f * sinf(_angle), 0.0f, 100.0f * cosf(_angle)));
+        _camera->lookAt(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
+    }
+}
+
+void Particle3DTestDemo::onTouchesEnded(const std::vector<Touch*>& touches, cocos2d::Event  *event)
+{
+    
 }
 
 ParticleSystem3D* Particle3DTestDemo::createParticleSystem()
@@ -287,25 +304,12 @@ ParticleSystem3D* Particle3DTestDemo::createParticleSystem()
     //this->addChild(ps);
 
     ps->setCameraMask((unsigned short)CameraFlag::USER1);
+    
     return ps;
 }
 
-void Particle3DTestDemo::rotateCameraLeft( cocos2d::Ref *sender )
-{
-    _angle -= 0.1f;
-    _camera->setPosition3D(Vec3(100.0f * sinf(_angle), 0.0f, 100.0f * cosf(_angle)));
-    _camera->lookAt(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
-}
-
-void Particle3DTestDemo::rotateCameraRight( cocos2d::Ref *sender )
-{
-    _angle += 0.1f;
-    _camera->setPosition3D(Vec3(100.0f * sinf(_angle), 0.0f, 100.0f * cosf(_angle)));
-    _camera->lookAt(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f));
-}
-
 Particle3DTestDemo::Particle3DTestDemo( void )
-    : _angle(0.0f)
+: _angle(0.0f)
 {
 
 }
@@ -461,7 +465,6 @@ bool Particle3DLineStreakDemo::init()
     //rootps->runAction(RepeatForever::create(Sequence::create(rotate, nullptr)));
     rootps->startParticle();
     this->addChild(rootps);
-
 
     //auto sprite = Sprite::create("pump_streak_04.png");
     //sprite->setCameraMask((unsigned short)CameraFlag::USER1);
