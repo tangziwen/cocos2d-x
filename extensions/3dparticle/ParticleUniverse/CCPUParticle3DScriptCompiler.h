@@ -129,7 +129,7 @@ class PUScriptCompiler
 
 private:
     bool compile(const PUConcreteNodeList &nodes);
-    //是否是排除的名单//
+    //is it excluded?//
     bool isNameExcluded(const std::string &cls, PUAbstractNode *parent);
     
 public:

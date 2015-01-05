@@ -1182,7 +1182,7 @@ static const std::string token[1000] =
 };
 
 
-//脚本解析//
+/**script translator*/
 class PUScriptTranslator
 {
     public:

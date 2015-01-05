@@ -177,7 +177,7 @@ std::string PUAtomAbstractNode::getValue() const
 
 
 
-PUScriptCompiler::PUScriptCompiler():_current(NULL),_nodes(NULL)
+PUScriptCompiler::PUScriptCompiler():_current(nullptr),_nodes(nullptr), _puSystem(nullptr)
 {
 }
 PUScriptCompiler::~PUScriptCompiler()
