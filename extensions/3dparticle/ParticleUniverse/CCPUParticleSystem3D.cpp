@@ -411,7 +411,10 @@ void PUParticleSystem3D::updator( float elapsedTime )
 {
     bool firstActiveParticle = true; // The first non-expired particle
     PUParticle3D *particle = static_cast<PUParticle3D *>(_particlePool.getFirst());
-
+	Mat4 ltow = getNodeToWorldTransform();
+	Vec3 scl;
+	Quaternion rot;
+	ltow.decompose(&scl, &rot, nullptr);
     while (particle){
 
         if (!isExpired(particle, elapsedTime)){
@@ -445,6 +448,7 @@ void PUParticleSystem3D::updator( float elapsedTime )
             // Update the position with the direction.
             particle->position += (particle->direction * _particleSystemScaleVelocity * elapsedTime);
             particle->positionInWorld = particle->position;
+            particle->orientationInWorld = particle->orientation;
             particle->widthInWorld = particle->width;
             particle->heightInWorld = particle->height;
             particle->depthInWorld = particle->depth;
@@ -454,10 +458,10 @@ void PUParticleSystem3D::updator( float elapsedTime )
             if (parent) keepLocal = keepLocal || parent->isKeepLocal();
 
             if (keepLocal){
-                Mat4 ltow = getNodeToWorldTransform();
                 ltow.transformPoint(particle->positionInWorld, &particle->positionInWorld);
-                Vec3 scl;
-                ltow.decompose(&scl, nullptr, nullptr);
+                Vec3 ori;
+                ltow.transformVector(Vec3(particle->orientation.x, particle->orientation.y, particle->orientation.z), &ori);
+                particle->orientationInWorld.x = ori.x; particle->orientationInWorld.y = ori.y; particle->orientationInWorld.z = ori.z;
                 particle->widthInWorld = scl.x * particle->width;
                 particle->heightInWorld = scl.y * particle->height;
                 particle->depthInWorld = scl.z * particle->depth;

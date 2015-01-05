@@ -70,6 +70,7 @@ static std::function<Layer*()> createFunctions[] =
     CL(Particle3DTimeShiftDemo),
     CL(Particle3DUVAnimDemo),
     CL(Particle3DFirePlaceDemo),
+	CL(Particle3DElectricBeamSystemDemo),
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -468,4 +469,23 @@ bool Particle3DLineStreakDemo::init()
     //this->addChild(sprite);
 
     return true;
+}
+
+std::string Particle3DElectricBeamSystemDemo::subtitle() const 
+{
+	return "ElectricBeamSystem";
+}
+
+bool Particle3DElectricBeamSystemDemo::init()
+{
+	if (!Particle3DTestDemo::init()) 
+		return false;
+
+
+	auto rootps = PUParticleSystem3D::create("electricBeamSystem.pu");
+	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+	rootps->startParticle();
+	this->addChild(rootps);
+
+	return true;
 }

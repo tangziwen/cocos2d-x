@@ -106,11 +106,10 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_COMMON);
                                 }
-                                //else if (val == token[TOKEN_BILLBOARD_ORIENTED_SHAPE])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_ORIENTED_SHAPE);
-                                //	return true;
-                                //}
+                                else if (val == token[TOKEN_BILLBOARD_ORIENTED_SHAPE])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_SHAPE);
+                                }
                                 else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_COMMON])
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::PERPENDICULAR_COMMON);

@@ -148,6 +148,19 @@ public:
     virtual bool init() override;
 };
 
+class Particle3DElectricBeamSystemDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DElectricBeamSystemDemo);
+	Particle3DElectricBeamSystemDemo(){};
+	virtual ~Particle3DElectricBeamSystemDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
 class Particle3DTestScene : public TestScene
 {
 public:

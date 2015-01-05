@@ -132,6 +132,11 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
             Vec3::cross(direction, right, &up);
             up.normalize();
             backward = direction;
+        }else if (_type == ORIENTED_SHAPE){
+            up = Vec3(particle->orientationInWorld.x, particle->orientationInWorld.y, particle->orientationInWorld.z);
+            up.normalize();
+            Vec3::cross(up, backward, &right);
+            right.normalize();
         }
         Vec3 halfwidth = particle->widthInWorld * 0.5f * right;
         Vec3 halfheight = particle->heightInWorld * 0.5f * up;
@@ -356,7 +361,6 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
     {
         auto particle = static_cast<PUParticle3D *>(activeParticleList[i]);
         q *= particle->orientation;
-        Mat4::createRotation(q, &rotMat);
         sclMat.m[0] = particle->widthInWorld / _spriteSize.x;
         sclMat.m[5]  = particle->heightInWorld / _spriteSize.y; 
         sclMat.m[10] = particle->depthInWorld / _spriteSize.z;
