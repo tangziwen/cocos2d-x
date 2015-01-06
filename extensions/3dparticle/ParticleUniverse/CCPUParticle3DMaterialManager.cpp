@@ -29,11 +29,15 @@
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include <io.h>
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID/* || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX*/)
 //#include <sys/io.h>
 //#include <sys/dir.h>
-#include <sys/types.h>
-#include <dirent.h>
+//#include <sys/types.h>
+#include "android/CCFileUtils-android.h"
+#include <android/asset_manager.h>
+//#include <sys/stat.h>
+//#include <dirent.h>
+//#include <unistd.h>
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
 #include <ftw.h>
 #endif
@@ -131,19 +135,20 @@ bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string 
     bool state = false;
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
     //for (auto iter : FileUtils::getInstance()->getSearchPaths()){
-        std::string fullPath = fileFolder + std::string("*.material");
+        std::string seg("/");
+        std::string fullPath = fileFolder + seg + std::string("*.material");
         _finddata_t data;
         intptr_t handle = _findfirst(fullPath.c_str(), &data);
         int done = 0;
         while ((handle != -1) && (done == 0))
         {
-            loadMaterials(fileFolder + std::string(data.name));
+            loadMaterials(fileFolder + seg + std::string(data.name));
             done = _findnext(handle, &data);
             state = true;
         }
         _findclose(handle);
    // }
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID/* || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX*/)
     //TODO:
     //for (auto iter : FileUtils::getInstance()->getSearchPaths()){
         //std::string fullPath = fileFolder + std::string("*.material");
@@ -157,24 +162,59 @@ bool PUParticle3DMaterialCache::loadMaterialsFromSearchPaths( const std::string 
         //}
     //}
 
-    struct dirent* ent = NULL;
-    DIR* pDir;
-    pDir = opendir(fileFolder.c_str());
-    while(NULL != (ent = readdir(pDir)))
-    {
-        //std::string fullpath = fileFolder + "/" + ent->d_name;
-        //CCLOG("%s", fullpath.c_str());
-        //if(8 == ent->d_type)  //在nfs或xfs下，有的文件d_type也是0
-        //if(IsFile(fullpath))
-        //{
-        //    if(strstr(ent->d_name, "material")!=NULL)
-        //    {
-        //        loadMaterials(fullpath);
-        //        //files.push_back(ent->d_name);
-        //    }
-        //}
+    //struct dirent* ent = NULL;
+    //DIR* pDir;
+    //pDir = opendir(fileFolder.c_str());
+    //while(NULL != (ent = readdir(pDir)))
+    //{
+    //    //std::string fullpath = fileFolder + "/" + ent->d_name;
+    //    //CCLOG("%s", fullpath.c_str());
+    //    //if(8 == ent->d_type)  //在nfs或xfs下，有的文件d_type也是0
+    //    //if(IsFile(fullpath))
+    //    //{
+    //    //    if(strstr(ent->d_name, "material")!=NULL)
+    //    //    {
+    //    //        loadMaterials(fullpath);
+    //    //        //files.push_back(ent->d_name);
+    //    //    }
+    //    //}
+    //}
+    //closedir(pDir);
+
+    //DIR *dp;
+    //struct dirent *entry;
+    //struct stat statbuf;
+    //int count = 0;
+
+    //dp=opendir(fileFolder.c_str());
+    //chdir(fileFolder.c_str());
+    //while((entry = readdir(dp)) != nullptr && count < 255)
+    //{
+    //    //++count;
+    //    //stat(entry->d_name,&statbuf);
+    //    //if(!S_ISREG(statbuf.st_mode))
+    //    //    continue;
+
+    //    //std::string fullpath = fileFolder + std::string(entry->d_name);
+    //    //loadMaterials(fullpath);
+    //    //CCLOG("%s",entry->d_name);
+    //}
+    //closedir(dp);
+    std::string::size_type pos = fileFolder.find("assets/");
+    std::string relativePath = fileFolder;
+    if (pos != std::string::npos) {
+        // "assets/" is at the beginning of the path and we don't want it
+        relativePath = fileFolder.substr(pos + strlen("assets/"));
     }
-    closedir(pDir);
+    AAssetDir *dir = AAssetManager_openDir(FileUtilsAndroid::getAssetManager(), relativePath.c_str());
+    const char *fileName = nullptr;
+    std::string seg("/");
+    while ((fileName = AAssetDir_getNextFileName(dir)) != nullptr)
+    {
+        std::string fullpath = fileFolder + seg + std::string(fileName);
+        loadMaterials(fullpath);
+    }
+    AAssetDir_close(dir);
 
 #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     ftw(fileFolder.c_str(), iterPath, 500);

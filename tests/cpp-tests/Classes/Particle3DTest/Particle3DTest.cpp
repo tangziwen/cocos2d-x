@@ -148,7 +148,7 @@ bool Particle3DTestDemo::init()
 {
     if (!BaseTest::init()) return false;
 
-    //FileUtils::getInstance()->addSearchPath("Particle3D/materials");
+    FileUtils::getInstance()->addSearchPath("Particle3D/materials");
     FileUtils::getInstance()->addSearchPath("Particle3D/scripts");
     //FileUtils::getInstance()->addSearchPath("Particle3D/textures");
 
@@ -492,7 +492,7 @@ bool Particle3DLineStreakDemo::init()
         return false;
 
 
-    auto rootps = PUParticleSystem3D::create("lineStreak.pu");
+    auto rootps = PUParticleSystem3D::create("lineStreak.pu", "pu_mediapack_01.material");
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
     rootps->setScale(5.0f);
     //rootps->runAction(RepeatForever::create(Sequence::create(rotate, nullptr)));

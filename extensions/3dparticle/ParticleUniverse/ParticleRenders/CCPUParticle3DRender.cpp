@@ -121,7 +121,7 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
             up.normalize();
             Vec3::cross(direction, backward, &right);
             right.normalize();
-		}else if (_type == PERPENDICULAR_SELF){
+        }else if (_type == PERPENDICULAR_SELF){
             Vec3 direction;
             transform.transformVector(particle->direction, &direction);
             direction.normalize();

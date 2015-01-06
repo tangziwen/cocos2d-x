@@ -70,11 +70,18 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
     {
          PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);
          PUParticle3DMaterial *material = PUParticle3DMaterialCache::Instance()->getMaterial(system->getMaterialName());
-         std::string texFolder = "../textures/";
+         std::string texFolder = "textures/";
          if (material){
-             std::string::size_type pos = obj->file.find_last_of("/\\");
-             if (pos != std::string::npos)
-                 texFolder = obj->file.substr(0, pos + 1) + texFolder;
+             std::string::size_type pos = obj->file.find_last_of("/");
+             //if (pos != std::string::npos)
+             //    texFolder = obj->file.substr(0, pos + 1) + texFolder;
+             if (pos != std::string::npos){
+                 std::string temp = obj->file.substr(0, pos);
+                 pos = temp.find_last_of("/");
+                 if (pos != std::string::npos){
+                     texFolder = temp.substr(0, pos + 1) + texFolder;
+                 }
+             }
          }
         if (type == "Billboard"){
             if (material)

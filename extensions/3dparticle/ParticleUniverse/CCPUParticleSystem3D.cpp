@@ -167,10 +167,15 @@ PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath, con
 PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath )
 {
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
-    std::string::size_type pos = fullPath.find_last_of("/\\");
-    std::string materialFolder = "../materials/";
-    if (pos != std::string::npos)
-        materialFolder = fullPath.substr(0, pos + 1) + materialFolder;
+    std::string::size_type pos = fullPath.find_last_of("/");
+    std::string materialFolder = "materials";
+    if (pos != std::string::npos){
+        std::string temp = fullPath.substr(0, pos);
+        pos = temp.find_last_of("/");
+        if (pos != std::string::npos){
+            materialFolder = temp.substr(0, pos + 1) + materialFolder;
+        }
+    }
     PUParticle3DMaterialCache::Instance()->loadMaterialsFromSearchPaths(materialFolder);
     PUParticleSystem3D* ps = PUParticleSystem3D::create();
     if (!ps->initSystem(fullPath)){
