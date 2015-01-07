@@ -287,6 +287,9 @@ unsigned short PUParticle3DEmitter::calculateRequestedParticles( float timeElaps
             if (_durationRemain <= 0)
             {
                 setEnabled(false);
+                if (!_dynRepeatDelaySet){
+                    _particleSystem->stopParticle();
+                }
             }
         }
     }
