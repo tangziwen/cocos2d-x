@@ -197,8 +197,11 @@ bool PUScriptCompiler::compile(const PUConcreteNodeList &nodes)
     {
         PUScriptTranslator *translator = PUParticle3DTranslateManager::Instance()->getTranslator(*i);
         if(translator){
-            PUParticleSystem3DTranslator *ps = dynamic_cast<PUParticleSystem3DTranslator *>(translator);
-            if (ps) ps->setParticleSystem3D(_puSystem);
+            if (translator->isParticleSystemTranslator())
+            {
+                PUParticleSystem3DTranslator *ps = static_cast<PUParticleSystem3DTranslator *>(translator);
+                if (ps) ps->setParticleSystem3D(_puSystem);
+            }
             translator->translate(this, *i);
         }
     }

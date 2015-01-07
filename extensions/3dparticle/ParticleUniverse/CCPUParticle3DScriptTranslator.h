@@ -1338,6 +1338,8 @@ public:
     void errorUnexpectedProperty(PUScriptCompiler* compiler, PUPropertyAbstractNode* prop);
 
     void processNode(PUScriptCompiler *compiler, PUAbstractNode *node);
+    
+    virtual bool isParticleSystemTranslator() const { return false; }
 };
 NS_CC_END
 
