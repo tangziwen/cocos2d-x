@@ -118,7 +118,7 @@ void PUParticle3DMaterialTranslator::translate(PUScriptCompiler* compiler, PUAbs
     _material->fileName = obj->file;
     _material->name = obj->name;
     _material->autorelease();
-    PUParticle3DMaterialCache::Instance()->addMaterial(_material);
+    _ms->addMaterial(_material);
     obj->context = _material;
 
     for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
@@ -133,6 +133,11 @@ void PUParticle3DMaterialTranslator::translate(PUScriptCompiler* compiler, PUAbs
             }
         }
     }
+}
+
+void PUParticle3DMaterialTranslator::setMaterialSystem( PUParticle3DMaterialCache *ms )
+{
+    _ms = ms;
 }
 
 

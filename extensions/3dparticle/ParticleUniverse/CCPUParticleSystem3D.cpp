@@ -28,6 +28,7 @@
 #include "3dparticle/CCParticle3DRender.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DMaterialManager.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DTranslateManager.h"
 #include "platform/CCFileUtils.h"
 
 NS_CC_BEGIN
@@ -186,6 +187,7 @@ PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath )
 
 void PUParticleSystem3D::startParticle()
 {
+    stopParticle();
     if (_state != State::RUNNING)
     {
         //if (_emitter)
@@ -416,10 +418,10 @@ void PUParticleSystem3D::updator( float elapsedTime )
 {
     bool firstActiveParticle = true; // The first non-expired particle
     PUParticle3D *particle = static_cast<PUParticle3D *>(_particlePool.getFirst());
-	Mat4 ltow = getNodeToWorldTransform();
-	Vec3 scl;
-	Quaternion rot;
-	ltow.decompose(&scl, &rot, nullptr);
+    Mat4 ltow = getNodeToWorldTransform();
+    Vec3 scl;
+    Quaternion rot;
+    ltow.decompose(&scl, &rot, nullptr);
     while (particle){
 
         if (!isExpired(particle, elapsedTime)){
@@ -643,10 +645,12 @@ void PUParticleSystem3D::setMaxVelocity( float maxVelocity )
 
 bool PUParticleSystem3D::initSystem( const std::string &filePath )
 {
-    PUScriptCompiler sc;
-    sc.setParticleSystem3D(this);
-    std::string  data = FileUtils::getInstance()->getStringFromFile(filePath);
-    return sc.compile(data, filePath);
+    bool isFirstCompile = true;
+    auto list = PUScriptCompiler::Instance()->compile(filePath, isFirstCompile);
+    if (list == nullptr || list->empty()) return false;
+    PUParticle3DTranslateManager::Instance()->translateParticleSystem(this, list);
+    //std::string  data = FileUtils::getInstance()->getStringFromFile(filePath);
+    return true;
 }
 
 void PUParticleSystem3D::addEmitter( PUParticle3DEmitter* emitter )

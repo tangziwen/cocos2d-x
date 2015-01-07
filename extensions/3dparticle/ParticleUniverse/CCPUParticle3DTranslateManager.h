@@ -38,7 +38,7 @@
 
 using namespace std;
 NS_CC_BEGIN
-
+class PUParticle3DMaterialCache;
 class PUParticle3DTranslateManager
 {
 private:
@@ -49,7 +49,7 @@ private:
         PUParticle3DRendererTranslator _rendererTranslator;
         PUParticle3DEmitterTranslator _emitterTranslator;
         PUParticle3DAffectorTranslator _affectorTranslator;
-		PUParticle3DMaterialTranslator _materialTranslator;
+        PUParticle3DMaterialTranslator _materialTranslator;
         //EmitterTranslator mEmitterTranslator;
         //AffectorTranslator mAffectorTranslator;
         //BehaviourTranslator mBehaviourTranslator;
@@ -67,6 +67,8 @@ public:
     
     /**
      */
+    void translateParticleSystem(PUParticleSystem3D *pu, const PUAbstractNodeList *alist);
+    void translateMaterialSystem(PUParticle3DMaterialCache *ms, const PUAbstractNodeList *alist);
     virtual PUScriptTranslator* getTranslator(PUAbstractNode *node);
 
     
