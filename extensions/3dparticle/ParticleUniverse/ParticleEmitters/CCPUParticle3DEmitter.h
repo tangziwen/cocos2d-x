@@ -105,6 +105,8 @@ public:
 
     bool isEnabled(void) const;
 
+    bool isEmitterDone() const;
+
         /** Todo
     */
     inline const std::string& getEmitterType(void) const {return _emitterType;};

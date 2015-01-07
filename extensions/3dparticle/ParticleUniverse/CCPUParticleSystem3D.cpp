@@ -188,73 +188,77 @@ PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath )
 void PUParticleSystem3D::startParticle()
 {
     stopParticle();
-    if (_state != State::RUNNING)
-    {
-        //if (_emitter)
-        //{
-        //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
-        //    emitter->notifyStart();
-        //}
-
-        for (auto& it : _emitters) {
-            auto emitter = static_cast<PUParticle3DEmitter*>(it);
-            emitter->notifyStart();
-        }
-
-        for (auto& it : _affectors) {
-            auto affector = static_cast<PUParticle3DAffector*>(it);
-            affector->notifyStart();
-        }
-
-        if (_render)
-            _render->notifyStart();
-
-        for (auto iter : _children)
+    if (!_emitters.empty()){
+        if (_state != State::RUNNING)
         {
-            PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
-            if (system)
-                system->startParticle();
-        }
+            //if (_emitter)
+            //{
+            //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
+            //    emitter->notifyStart();
+            //}
 
-        scheduleUpdate();
-        _state = State::RUNNING;
-        _timeElapsedSinceStart = 0.0f;
+            for (auto& it : _emitters) {
+                auto emitter = static_cast<PUParticle3DEmitter*>(it);
+                emitter->notifyStart();
+            }
+
+            for (auto& it : _affectors) {
+                auto affector = static_cast<PUParticle3DAffector*>(it);
+                affector->notifyStart();
+            }
+
+            if (_render)
+                _render->notifyStart();
+
+            scheduleUpdate();
+            _state = State::RUNNING;
+            _timeElapsedSinceStart = 0.0f;
+        }
+    }
+
+    for (auto iter : _children)
+    {
+        PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
+        if (system)
+            system->startParticle();
     }
 }
 
 void PUParticleSystem3D::stopParticle()
 {
-    if (_state != State::STOP)
-    {
-        //if (_emitter)
-        //{
-        //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
-        //    emitter->notifyStop();
-        //}
-
-        for (auto& it : _emitters) {
-            auto emitter = static_cast<PUParticle3DEmitter*>(it);
-            emitter->notifyStop();
-        }
-
-        for (auto& it : _affectors) {
-            auto affector = static_cast<PUParticle3DAffector*>(it);
-            affector->notifyStop();
-        }
-
-        if (_render)
-            _render->notifyStop();
-
-        for (auto iter : _children)
+    if (!_emitters.empty()){
+        if (_state != State::STOP)
         {
-            PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
-            if (system)
-                system->stopParticle();
-        }
+            //if (_emitter)
+            //{
+            //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
+            //    emitter->notifyStop();
+            //}
 
-        unscheduleUpdate();
-        _particlePool.lockAllParticles();
-        _state = State::STOP;
+            for (auto& it : _emitters) {
+                auto emitter = static_cast<PUParticle3DEmitter*>(it);
+                emitter->notifyStop();
+            }
+
+            for (auto& it : _affectors) {
+                auto affector = static_cast<PUParticle3DAffector*>(it);
+                affector->notifyStop();
+            }
+
+            if (_render)
+                _render->notifyStop();
+
+            unscheduleUpdate();
+            _particlePool.lockAllParticles();
+            _state = State::STOP;
+        }
+    }
+
+    for (auto iter : _children)
+    {
+        PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
+        if (system)
+            system->stopParticle();
     }
 }
 
@@ -278,14 +282,14 @@ void PUParticleSystem3D::pauseParticle()
             affector->notifyPause();
         }
 
-        for (auto iter : _children)
-        {
-            PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
-            if (system)
-                system->pauseParticle();
-        }
-
         _state = State::PAUSE;
+    }
+
+    for (auto iter : _children)
+    {
+        PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
+        if (system)
+            system->pauseParticle();
     }
 }
 
@@ -309,14 +313,14 @@ void PUParticleSystem3D::resumeParticle()
             affector->notifyResume();
         }
 
-        for (auto iter : _children)
-        {
-            PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
-            if (system)
-                system->resumeParticle();
-        }
-
         _state = State::RUNNING;
+    }
+
+    for (auto iter : _children)
+    {
+        PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
+        if (system)
+            system->resumeParticle();
     }
 }
 
@@ -400,11 +404,17 @@ void PUParticleSystem3D::preUpdator( float elapsedTime )
     //     auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
     //    emitter->preUpdateEmitter(elapsedTime);
     //}
-
+    bool hasNoEmitted = true;
     for (auto it : _emitters) {
-        if (it->isEnabled()){
+        if (!it->isEmitterDone()){
             (static_cast<PUParticle3DEmitter*>(it))->preUpdateEmitter(elapsedTime);
+            hasNoEmitted = false;
         }
+    }
+
+    if (hasNoEmitted){
+        if (_particlePool.getActiveParticleList().empty())
+            stopParticle();
     }
 
     for (auto it : _affectors) {
@@ -531,7 +541,6 @@ void PUParticleSystem3D::emitParticles( float elapsedTime )
         unsigned short requested = emitter->calculateRequestedParticles(elapsedTime);
         float timePoint = 0.0f;
         float timeInc = elapsedTime / requested;
-
         for (unsigned short i = 0; i < requested; ++i)
         {
             PUParticle3D *particle = static_cast<PUParticle3D *>(_particlePool.createParticle());
@@ -556,6 +565,7 @@ void PUParticleSystem3D::emitParticles( float elapsedTime )
             }
         }
     }
+
 }
 
 const float PUParticleSystem3D::getDefaultWidth( void ) const

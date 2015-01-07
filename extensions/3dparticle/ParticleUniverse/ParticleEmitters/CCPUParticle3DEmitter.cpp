@@ -287,9 +287,6 @@ unsigned short PUParticle3DEmitter::calculateRequestedParticles( float timeElaps
             if (_durationRemain <= 0)
             {
                 setEnabled(false);
-                if (!_dynRepeatDelaySet){
-                    _particleSystem->stopParticle();
-                }
             }
         }
     }
@@ -835,6 +832,11 @@ void PUParticle3DEmitter::initParticleDimensions( PUParticle3D* particle )
         particle->depth = _emitterScale.z * (static_cast<PUParticleSystem3D *>(_particleSystem))->getDefaultDepth();
         particle->calculateBoundingSphereRadius();
     }
+}
+
+bool PUParticle3DEmitter::isEmitterDone() const
+{
+    return !(_isEnabled || _dynRepeatDelaySet);
 }
 
 NS_CC_END
