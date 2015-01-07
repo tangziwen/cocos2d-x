@@ -39,6 +39,8 @@ public:
     ~PUParticleSystem3DTranslator();
 
 	void setParticleSystem3D(PUParticleSystem3D *pu) { _system = pu; };
+    
+    virtual bool isParticleSystemTranslator() const override { return true; }
 
 public:
 
