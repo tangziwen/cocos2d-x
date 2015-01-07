@@ -61,12 +61,20 @@ public:
         BOTTOM_RIGHT
     };
 
+    enum RotateType
+    {
+        TEXTURE_COORDS,
+        VERTEX
+    };
+
     static PUParticle3DQuadRender* create(const std::string& texFile = "");
     
     void setType(Type type) { _type = type; }
     Type getType() const { return _type; }
     void setOrigin(Origin origin) { _origin = origin; }
     Origin getOrigin() const { return _origin; }
+    void setRotateType(RotateType type) { _rotateType = type; }
+    RotateType getRotateType() const { return _rotateType; }
     void setCommonDirection(const Vec3 &dir) { _commonDir = dir; }
     const Vec3& getCommonDirection() const { return _commonDir; }
     void setCommonUp(const Vec3 &up) { _commonUp = up; }
@@ -88,10 +96,13 @@ protected:
 
     void getOriginOffset(int &offsetX, int &offsetY);
     void determineUVCoords(PUParticle3D *particle);
+    void fillVertex(unsigned short index, const cocos2d::Vec3 &pos, const cocos2d::Vec4 &color, const cocos2d::Vec2 &uv);
+    void fillTriangle(unsigned short index, unsigned short v0, unsigned short v1, unsigned short v2);
 
 protected:
     Type _type;
     Origin _origin;
+    RotateType _rotateType;
     Vec3 _commonDir;
     Vec3 _commonUp;
 
