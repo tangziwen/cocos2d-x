@@ -81,11 +81,13 @@ struct CC_DLL PUParticle3D : public Particle3D
         in 2D. */
     float zRotationSpeed; //radian
 
+    Quaternion orientationInWorld;
     /*@remarks
         The orientation of the particle is only visible if the Particle Renderer - such as the Box renderer - 
         supports orientation.
     */
     Quaternion originalOrientation;
+
 
     /** The rotation is used in combination with orientation. Because the rotation speed is part
         of the particle itself, it can be changed independently. */

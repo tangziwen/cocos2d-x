@@ -180,6 +180,18 @@ void Particle3DQuadRender::initQuadRender( const std::string& texFile )
     _meshCommand->setCullFaceEnabled(true);
 }
 
+void Particle3DQuadRender::setDepthTest( bool isDepthTest )
+{
+    Particle3DRender::setDepthTest(isDepthTest);
+    _meshCommand->setDepthTestEnabled(_depthTest);
+}
+
+void Particle3DQuadRender::setDepthWrite( bool isDepthWrite )
+{
+    Particle3DRender::setDepthWrite(isDepthWrite);
+    _meshCommand->setDepthWriteEnabled(_depthWrite);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 Particle3DModelRender::Particle3DModelRender()
     : _spriteSize(Vec3::ONE)

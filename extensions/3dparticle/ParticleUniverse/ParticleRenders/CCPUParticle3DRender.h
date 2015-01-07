@@ -41,8 +41,11 @@ public:
     enum Type
     {
         POINT,
+        ORIENTED_COMMON,
         ORIENTED_SELF,
+        ORIENTED_SHAPE,
         PERPENDICULAR_COMMON,
+        PERPENDICULAR_SELF,
     };
 
     enum Origin

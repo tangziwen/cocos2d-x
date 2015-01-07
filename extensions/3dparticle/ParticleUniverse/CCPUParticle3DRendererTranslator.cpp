@@ -70,11 +70,18 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
     {
          PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);
          PUParticle3DMaterial *material = PUParticle3DMaterialCache::Instance()->getMaterial(system->getMaterialName());
-         std::string texFolder = "../textures/";
+         std::string texFolder = "textures/";
          if (material){
-             std::string::size_type pos = obj->file.find_last_of("/\\");
-             if (pos != std::string::npos)
-                 texFolder = obj->file.substr(0, pos + 1) + texFolder;
+             std::string::size_type pos = obj->file.find_last_of("/");
+             //if (pos != std::string::npos)
+             //    texFolder = obj->file.substr(0, pos + 1) + texFolder;
+             if (pos != std::string::npos){
+                 std::string temp = obj->file.substr(0, pos);
+                 pos = temp.find_last_of("/");
+                 if (pos != std::string::npos){
+                     texFolder = temp.substr(0, pos + 1) + texFolder;
+                 }
+             }
          }
         if (type == "Billboard"){
             if (material)
@@ -102,25 +109,22 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_SELF);
                                 }
-                                //else if (val == token[TOKEN_BILLBOARD_ORIENTED_COMMON])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_ORIENTED_COMMON);
-                                //	return true;
-                                //}
-                                //else if (val == token[TOKEN_BILLBOARD_ORIENTED_SHAPE])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_ORIENTED_SHAPE);
-                                //	return true;
-                                //}
+                                else if (val == token[TOKEN_BILLBOARD_ORIENTED_COMMON])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_COMMON);
+                                }
+                                else if (val == token[TOKEN_BILLBOARD_ORIENTED_SHAPE])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::ORIENTED_SHAPE);
+                                }
                                 else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_COMMON])
                                 {
                                     static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::PERPENDICULAR_COMMON);
                                 }
-                                //else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_SELF])
-                                //{
-                                //	renderer->setBillboardType(BillboardRenderer::BBT_PERPENDICULAR_SELF);
-                                //	return true;
-                                //}
+                                else if (val == token[TOKEN_BILLBOARD_PERPENDICULAR_SELF])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setType(PUParticle3DQuadRender::PERPENDICULAR_SELF);
+                                }
                             }
                         }
                     }

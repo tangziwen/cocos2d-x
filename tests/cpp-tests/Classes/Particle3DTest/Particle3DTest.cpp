@@ -59,7 +59,7 @@ enum
 };
 
 static int sceneIdx = -1;
-
+#define PARTICLE_SYSTEM_TAG 0x0001
 
 static std::function<Layer*()> createFunctions[] =
 {
@@ -70,6 +70,7 @@ static std::function<Layer*()> createFunctions[] =
     CL(Particle3DTimeShiftDemo),
     CL(Particle3DUVAnimDemo),
     CL(Particle3DFirePlaceDemo),
+    CL(Particle3DElectricBeamSystemDemo),
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -147,7 +148,7 @@ bool Particle3DTestDemo::init()
 {
     if (!BaseTest::init()) return false;
 
-    //FileUtils::getInstance()->addSearchPath("Particle3D/materials");
+    FileUtils::getInstance()->addSearchPath("Particle3D/materials");
     FileUtils::getInstance()->addSearchPath("Particle3D/scripts");
     //FileUtils::getInstance()->addSearchPath("Particle3D/textures");
 
@@ -163,7 +164,16 @@ bool Particle3DTestDemo::init()
     listener->onTouchesMoved = CC_CALLBACK_2(Particle3DTestDemo::onTouchesMoved, this);
     listener->onTouchesEnded = CC_CALLBACK_2(Particle3DTestDemo::onTouchesEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+
+    TTFConfig config("fonts/tahoma.ttf",10);
+    _particleLab = Label::createWithTTF(config,"Particle Count: 0",TextHAlignment::LEFT);
+    _particleLab->retain();
+    _particleLab->setPosition(Vec2(0.0f, size.height / 6.0f));
+    _particleLab->setAnchorPoint(Vec2(0.0f, 0.0f));
+    this->addChild(_particleLab);
     
+    scheduleUpdate();
     return true;
 }
 
@@ -313,6 +323,30 @@ Particle3DTestDemo::Particle3DTestDemo( void )
 
 }
 
+void Particle3DTestDemo::update( float delta )
+{
+    ParticleSystem3D *ps = static_cast<ParticleSystem3D *>(this->getChildByTag(PARTICLE_SYSTEM_TAG));
+    if (ps){
+        unsigned int count = 0;
+        auto children = ps->getChildren();
+        for (auto iter : children){
+            ParticleSystem3D *child = dynamic_cast<ParticleSystem3D *>(iter);
+            if (child){
+                count += child->getParticlePool().getActiveParticleList().size();
+            }
+        }
+
+        char str[128];
+        sprintf(str, "Particle Count: %d", count);
+        _particleLab->setString(str);
+    }
+}
+
+Particle3DTestDemo::~Particle3DTestDemo( void )
+{
+    _particleLab->release();
+}
+
 std::string Particle3DAdvancedLodSystemDemo::subtitle() const 
 {
     return "AdvancedSystem";
@@ -333,7 +367,7 @@ bool Particle3DAdvancedLodSystemDemo::init()
     rootps->startParticle();
 
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -360,7 +394,7 @@ bool Particle3DBlackHoleDemo::init()
     //rootps->runAction(RepeatForever::create(Sequence::create(rotate, nullptr)));
     rootps->startParticle();
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -379,11 +413,11 @@ bool Particle3DHypnoDemo::init()
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
     auto scale = ScaleBy::create(1.0f, 2.0f, 2.0f, 2.0f);
 //    auto rotate = RotateBy::create(1.0f, Vec3(0.0, 100.0f, 0.0f));
-    rootps->runAction(RepeatForever::create(Sequence::create(scale, scale->reverse(), nullptr)));
+    //rootps->runAction(RepeatForever::create(Sequence::create(scale, scale->reverse(), nullptr)));
     //rootps->runAction(RepeatForever::create(Sequence::create(rotate, nullptr)));
     rootps->startParticle();
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -403,7 +437,7 @@ bool Particle3DTimeShiftDemo::init()
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
     rootps->startParticle();
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -422,7 +456,7 @@ bool Particle3DUVAnimDemo::init()
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
     rootps->startParticle();
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -442,7 +476,7 @@ bool Particle3DFirePlaceDemo::init()
     rootps->setScale(5.0f);
     rootps->startParticle();
 
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }
@@ -458,17 +492,36 @@ bool Particle3DLineStreakDemo::init()
         return false;
 
 
-    auto rootps = PUParticleSystem3D::create("lineStreak.pu");
+    auto rootps = PUParticleSystem3D::create("lineStreak.pu", "pu_mediapack_01.material");
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
     rootps->setScale(5.0f);
     //rootps->runAction(RepeatForever::create(Sequence::create(rotate, nullptr)));
     rootps->startParticle();
-    this->addChild(rootps);
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     //auto sprite = Sprite::create("pump_streak_04.png");
     //sprite->setCameraMask((unsigned short)CameraFlag::USER1);
     //sprite->setScale(0.5f);
     //this->addChild(sprite);
+
+    return true;
+}
+
+std::string Particle3DElectricBeamSystemDemo::subtitle() const 
+{
+    return "ElectricBeamSystem";
+}
+
+bool Particle3DElectricBeamSystemDemo::init()
+{
+    if (!Particle3DTestDemo::init()) 
+        return false;
+
+
+    auto rootps = PUParticleSystem3D::create("electricBeamSystem.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
 }

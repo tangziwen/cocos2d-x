@@ -34,7 +34,7 @@ class Particle3DTestDemo : public BaseTest
 public:
     CREATE_FUNC(Particle3DTestDemo);
     Particle3DTestDemo(void);
-    virtual ~Particle3DTestDemo(void){};
+    virtual ~Particle3DTestDemo(void);
     
     void restartCallback(Ref* sender);
     void nextCallback(Ref* sender);
@@ -44,6 +44,7 @@ public:
     virtual bool init() override;
     virtual std::string title() const override;
     virtual std::string subtitle() const override;
+    virtual void update(float delta) override;
 
     cocos2d::ParticleSystem3D* createParticleSystem();
     
@@ -54,6 +55,7 @@ public:
 protected:
     std::string    _title;
     cocos2d::Camera *_camera;
+    cocos2d::Label *_particleLab;
     float _angle;
 };
 
@@ -143,6 +145,19 @@ public:
     CREATE_FUNC(Particle3DLineStreakDemo);
     Particle3DLineStreakDemo(){};
     virtual ~Particle3DLineStreakDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DElectricBeamSystemDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DElectricBeamSystemDemo);
+    Particle3DElectricBeamSystemDemo(){};
+    virtual ~Particle3DElectricBeamSystemDemo(){};
 
     virtual std::string subtitle() const override;
 
