@@ -88,8 +88,8 @@ public:
     
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
-	virtual void setDepthTest(bool isDepthTest);
-	virtual void setDepthWrite(bool isDepthWrite);
+    virtual void setDepthTest(bool isDepthTest);
+    virtual void setDepthWrite(bool isDepthWrite);
     
 CC_CONSTRUCTOR_ACCESS:
     Particle3DQuadRender();

@@ -3,7 +3,7 @@ system hypno
     technique 
     {
         visual_particle_quota                   200
-        material                                ParticleUniverse/Swirl_01
+        material                                ParticleUniverse/Swirl_02
         default_particle_width                  6
         default_particle_height                 6
         renderer                                Billboard

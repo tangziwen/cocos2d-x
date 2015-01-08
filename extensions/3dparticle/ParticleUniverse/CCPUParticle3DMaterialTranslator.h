@@ -30,15 +30,18 @@
 
 NS_CC_BEGIN
 class PUParticle3DMaterial;
+class PUParticle3DMaterialCache;
 class  PUParticle3DMaterialTranslator : public PUScriptTranslator
 {
 public:
     PUParticle3DMaterialTranslator();
     virtual ~PUParticle3DMaterialTranslator();
     virtual void translate(PUScriptCompiler* compiler, PUAbstractNode *node);
+    void setMaterialSystem(PUParticle3DMaterialCache *ms);
 
 protected:
     PUParticle3DMaterial *_material;
+    PUParticle3DMaterialCache *_ms;
 };
 
 class PUParticle3DMaterialTechniqueTranslator : public PUScriptTranslator

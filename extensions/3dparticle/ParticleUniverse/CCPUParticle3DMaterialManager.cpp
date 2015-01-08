@@ -24,6 +24,7 @@
 
 #include "CCPUParticle3DMaterialManager.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DTranslateManager.h"
 #include "platform/CCFileUtils.h"
 #include "platform/CCPlatformMacros.h"
 
@@ -67,9 +68,7 @@ PUParticle3DMaterialCache::PUParticle3DMaterialCache()
 PUParticle3DMaterialCache::~PUParticle3DMaterialCache()
 {
     for (auto iter : _materialMap){
-        for (auto mt : iter.second){
-            mt->release();
-        }
+        iter->release();
     }
     _materialMap.clear();
 }
@@ -83,38 +82,37 @@ PUParticle3DMaterialCache* PUParticle3DMaterialCache::Instance()
 PUParticle3DMaterial* PUParticle3DMaterialCache::getMaterial( const std::string &name )
 {
     for (auto iter : _materialMap){
-        for (auto mt : iter.second){
-            if (mt->name == name)
-                return mt;
-        }
+        if (iter->name == name)
+            return iter;
     }
     return nullptr;
 }
 
 bool PUParticle3DMaterialCache::loadMaterials( const std::string &file )
 {
-    std::string data = FileUtils::getInstance()->getStringFromFile(file);
-    auto iter = _materialMap.find(file);
-    if (iter != _materialMap.end()) return true;
-
-    PUScriptCompiler sc;
-    return sc.compile(data, file);
+    //std::string data = FileUtils::getInstance()->getStringFromFile(file);
+    //auto iter = _materialMap.find(file);
+    //if (iter != _materialMap.end()) return true;
+    bool isFirstCompile = true;
+    auto list = PUScriptCompiler::Instance()->compile(file, isFirstCompile);
+    if (list == nullptr || list->empty()) return false;
+    if (isFirstCompile){
+        PUParticle3DTranslateManager::Instance()->translateMaterialSystem(this, list);
+    }
+    return true;
 }
 
 void PUParticle3DMaterialCache::addMaterial( PUParticle3DMaterial *material )
 {
-    auto iter = _materialMap.find(material->fileName);
-    if (iter != _materialMap.end()){
-        for (auto mt : iter->second){
-            if (mt->name == material->name){
-                CCLOG("warning: Material has existed (FilePath: %s,  MaterialName: %s)", material->fileName.c_str(), material->name.c_str());
-                return;
-            }
-        }
+    for (auto iter : _materialMap){
+        if (iter->name == material->name){
+          CCLOG("warning: Material has existed (FilePath: %s,  MaterialName: %s)", material->fileName.c_str(), material->name.c_str());
+        return;
+      }
     }
 
     material->retain();
-    _materialMap[material->fileName].push_back(material);
+    _materialMap.push_back(material);
 }
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)

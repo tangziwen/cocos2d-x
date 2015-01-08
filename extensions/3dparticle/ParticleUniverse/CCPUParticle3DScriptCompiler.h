@@ -128,29 +128,32 @@ class PUScriptCompiler
 {
 
 private:
-    bool compile(const PUConcreteNodeList &nodes);
+    bool compile(const PUConcreteNodeList &nodes, const std::string &file);
     //is it excluded?//
     bool isNameExcluded(const std::string &cls, PUAbstractNode *parent);
     
 public:
     typedef std::map<std::string,unsigned int> IdMap;
     
-    PUScriptCompiler();
-    virtual ~PUScriptCompiler();
+    static PUScriptCompiler* Instance();
 
     void setParticleSystem3D(PUParticleSystem3D *pu);
 
-    bool compile(const std::string &str, const std::string &source);
+    const PUAbstractNodeList* compile(const std::string &file, bool &isFirstCompile);
     
     void convertToAST(const PUConcreteNodeList &nodes,PUAbstractNodeList &aNodes);
     
     std::map<std::string,std::string> env;
     
 private:
+    PUScriptCompiler();
+    virtual ~PUScriptCompiler();
+
     void visitList(const PUConcreteNodeList &nodes);
     void visit(PUConcreteNode *node);
 private:
     
+    std::map<std::string, PUAbstractNodeList> _compiledScripts;
     PUAbstractNode *_current;
     PUAbstractNodeList *_nodes;
     PUParticleSystem3D *_puSystem;

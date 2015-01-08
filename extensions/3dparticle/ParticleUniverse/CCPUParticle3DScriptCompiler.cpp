@@ -24,6 +24,7 @@
 
 #include "CCPUParticle3DScriptCompiler.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DTranslateManager.h"
+#include "platform/CCFileUtils.h"
 NS_CC_BEGIN
 
 // ObjectAbstractNode
@@ -182,45 +183,57 @@ PUScriptCompiler::PUScriptCompiler():_current(nullptr),_nodes(nullptr), _puSyste
 }
 PUScriptCompiler::~PUScriptCompiler()
 {
-    
+    for (auto iter : _compiledScripts){
+        for (auto miter : iter.second){
+            delete miter;
+        }
+    }
+    _compiledScripts.clear();
 }
 
-bool PUScriptCompiler::compile(const PUConcreteNodeList &nodes)
+bool PUScriptCompiler::compile(const PUConcreteNodeList &nodes, const std::string &file)
 {
     if (nodes.empty()) return false;
 
     PUAbstractNodeList aNodes;
     convertToAST(nodes,aNodes);
+
+    _compiledScripts[file] = aNodes;
+    //for(PUAbstractNodeList::iterator i = aNodes.begin(); i != aNodes.end(); ++i)
+    //{
+    //    PUScriptTranslator *translator = PUParticle3DTranslateManager::Instance()->getTranslator(*i);
+    //    if(translator){
+    //        if (translator->isParticleSystemTranslator())
+    //        {
+    //            PUParticleSystem3DTranslator *ps = static_cast<PUParticleSystem3DTranslator *>(translator);
+    //            if (ps) ps->setParticleSystem3D(_puSystem);
+    //        }
+    //        translator->translate(this, *i);
+    //    }
+    //}
     
-    
-    for(PUAbstractNodeList::iterator i = aNodes.begin(); i != aNodes.end(); ++i)
-    {
-        PUScriptTranslator *translator = PUParticle3DTranslateManager::Instance()->getTranslator(*i);
-        if(translator){
-            if (translator->isParticleSystemTranslator())
-            {
-                PUParticleSystem3DTranslator *ps = static_cast<PUParticleSystem3DTranslator *>(translator);
-                if (ps) ps->setParticleSystem3D(_puSystem);
-            }
-            translator->translate(this, *i);
-        }
-    }
-    
-    for (auto iter : aNodes){
-        delete iter;
-    }
+    //for (auto iter : aNodes){
+    //    delete iter;
+    //}
     return true;
 }
 
-bool PUScriptCompiler::compile(const std::string &str, const std::string &source)
+const PUAbstractNodeList* PUScriptCompiler::compile(const std::string &file, bool &isFirstCompile)
 {
+    auto iter = _compiledScripts.find(file);
+    if (iter != _compiledScripts.end()){
+        isFirstCompile = false;
+        return &iter->second;
+    }
+
+    std::string data = FileUtils::getInstance()->getStringFromFile(file);
     PUScriptLexer lexer;
     PUScriptParser parser;
     PUScriptTokenList tokenList;
     PUConcreteNodeList creteNodeList;
-    lexer.openLexer(str, source, tokenList);
+    lexer.openLexer(data, file, tokenList);
     parser.parse(creteNodeList, tokenList);
-    bool state = compile(creteNodeList);
+    bool state = compile(creteNodeList, file);
 
     for (auto iter : creteNodeList){
         delete iter;
@@ -229,7 +242,12 @@ bool PUScriptCompiler::compile(const std::string &str, const std::string &source
     for (auto iter : tokenList){
         delete iter;
     }
-    return state;
+
+    isFirstCompile = true;
+    if (state){
+        return &_compiledScripts[file];
+    }
+    return nullptr;
 }
 
 
@@ -399,6 +417,12 @@ void PUScriptCompiler::visit(PUConcreteNode *node)
 void PUScriptCompiler::setParticleSystem3D( PUParticleSystem3D *pu )
 {
     _puSystem = pu;
+}
+
+PUScriptCompiler* PUScriptCompiler::Instance()
+{
+    static PUScriptCompiler psc;
+    return &psc;
 }
 
 NS_CC_END

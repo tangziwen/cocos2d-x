@@ -23,6 +23,7 @@
  ****************************************************************************/
 
 #include "CCPUParticle3DTranslateManager.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
 
 NS_CC_BEGIN
 PUParticle3DTranslateManager::PUParticle3DTranslateManager()
@@ -53,11 +54,11 @@ PUScriptTranslator* PUParticle3DTranslateManager::getTranslator(PUAbstractNode *
             // Parse Particle System
             translator = &_systemTranslator;
         }
-		else if(obj->cls == token[TOKEN_MATERIAL])
-		{
-			// Parse Particle System
-			translator = &_materialTranslator;
-		}
+        else if(obj->cls == token[TOKEN_MATERIAL])
+        {
+            // Parse Particle System
+            translator = &_materialTranslator;
+        }
         //else if(obj->cls == token[TOKEN_ALIAS])
         //{
         //    // Parse the Alias
@@ -112,6 +113,24 @@ PUParticle3DTranslateManager* PUParticle3DTranslateManager::Instance()
 {
     static PUParticle3DTranslateManager ptm;
     return &ptm;
+}
+
+void PUParticle3DTranslateManager::translateParticleSystem( PUParticleSystem3D *pu, const PUAbstractNodeList *alist )
+{
+    for(PUAbstractNodeList::const_iterator i = alist->begin(); i != alist->end(); ++i)
+    {
+        _systemTranslator.setParticleSystem3D(pu);
+        _systemTranslator.translate(PUScriptCompiler::Instance(), *i);
+    }
+}
+
+void PUParticle3DTranslateManager::translateMaterialSystem( PUParticle3DMaterialCache *ms, const PUAbstractNodeList *alist )
+{
+    for(PUAbstractNodeList::const_iterator i = alist->begin(); i != alist->end(); ++i)
+    {
+        _materialTranslator.setMaterialSystem(ms);
+        _materialTranslator.translate(PUScriptCompiler::Instance(), *i);
+    }
 }
 
 

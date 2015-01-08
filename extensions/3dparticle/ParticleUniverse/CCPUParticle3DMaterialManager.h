@@ -69,8 +69,8 @@ public:
 
 protected:
 
-    typedef std::map<std::string, std::vector<PUParticle3DMaterial *> > MaterialMap;
-    MaterialMap _materialMap;
+    typedef std::vector<PUParticle3DMaterial *> MaterialVector;
+    MaterialVector _materialMap;
 };
 
 NS_CC_END
