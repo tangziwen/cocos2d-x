@@ -27,6 +27,7 @@
 #include "3dparticle/CCParticle3DEmitter.h"
 #include "3dparticle/CCParticle3DAffector.h"
 #include "3dparticle/CCParticle3DRender.h"
+#include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.h"
 #include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DPointEmitter.h"
 #include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DBoxEmitter.h"
 #include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DCircleEmitter.h"
@@ -71,6 +72,7 @@ static std::function<Layer*()> createFunctions[] =
     CL(Particle3DUVAnimDemo),
     CL(Particle3DFirePlaceDemo),
     CL(Particle3DElectricBeamSystemDemo),
+    CL(Particle3DExplosionBlueDemo),
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -246,11 +248,11 @@ ParticleSystem3D* Particle3DTestDemo::createParticleSystem()
         pga->setGravity(2700);
         ps->addAffector(pga);
 
-//        auto psa = PUParticle3DScaleAffector::create();
+        auto psa = PUParticle3DScaleAffector::create();
         PUDynamicAttributeFixed *scl = new PUDynamicAttributeFixed();
         scl->setValue(-4.5f);
-        //psa->setDynScaleXYZ(scl);
-        //ps->addAffector(psa);
+        psa->setDynScaleXYZ(scl);
+        ps->addAffector(psa);
 
   //      auto pfca = PUParticle3DFlockCenteringAffector::create();
   //      ps->addAffector(pfca);
@@ -301,7 +303,7 @@ ParticleSystem3D* Particle3DTestDemo::createParticleSystem()
 
     //render
     {
-        auto pr = Particle3DQuadRender::create("pump_flare_04.png");
+        auto pr = PUParticle3DQuadRender::create("pump_flare_04.png");
         ps->setRender(pr);
     }
 
@@ -520,6 +522,26 @@ bool Particle3DElectricBeamSystemDemo::init()
 
     auto rootps = PUParticleSystem3D::create("electricBeamSystem.pu");
     rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+
+    return true;
+}
+
+std::string Particle3DExplosionBlueDemo::subtitle() const 
+{
+    return "ExplosionBlue";
+}
+
+bool Particle3DExplosionBlueDemo::init()
+{
+    if (!Particle3DTestDemo::init()) 
+        return false;
+
+
+    auto rootps = PUParticleSystem3D::create("mp_explosion_04_blue.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    rootps->setScale(0.25f);
     rootps->startParticle();
     this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
