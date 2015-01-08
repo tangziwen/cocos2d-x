@@ -223,6 +223,25 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
                             }
                         }
                     }
+                    else if (prop->name == token[TOKEN_BILLBOARD_ROTATION_TYPE])
+                    {
+                        // Property: billboard_rotation_type
+                        if (passValidateProperty(compiler, prop, token[TOKEN_BILLBOARD_ROTATION_TYPE], VAL_STRING))
+                        {
+                            std::string val;
+                            if(getString(*prop->values.front(), &val))
+                            {
+                                if (val == token[TOKEN_VERTEX])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setRotateType(PUParticle3DQuadRender::VERTEX);
+                                }
+                                else if (val == token[TOKEN_BILLBOARD_TEXCOORD])
+                                {
+                                    static_cast<PUParticle3DQuadRender *>(_renderer)->setRotateType(PUParticle3DQuadRender::TEXTURE_COORDS);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

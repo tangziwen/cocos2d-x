@@ -834,4 +834,9 @@ void PUParticle3DEmitter::initParticleDimensions( PUParticle3D* particle )
     }
 }
 
+bool PUParticle3DEmitter::isEmitterDone() const
+{
+    return !(_isEnabled || _dynRepeatDelaySet);
+}
+
 NS_CC_END
