@@ -150,18 +150,20 @@ void PUParticleSystem3DTranslator::translate(PUScriptCompiler* compiler, PUAbstr
             //			}
             //		}
             //	}
-            //	else if (prop->name == token[TOKEN_PS_SCALE])
-            //	{
-            //		// Property: scale
-            //		if (passValidateProperty(compiler, prop, token[TOKEN_PS_SCALE], VAL_VECTOR3))
-            //		{
-            //			Vector3 val;
-            //			if(getVector3(prop->values.begin(), prop->values.end(), &val))
-            //			{
-            //				mSystem->setScale(val);
-            //			}
-            //		}
-            //	}
+                if (prop->name == token[TOKEN_PS_SCALE])
+                {
+                    // Property: scale
+                    if (passValidateProperty(compiler, prop, token[TOKEN_PS_SCALE], VAL_VECTOR3))
+                    {
+                        Vec3 val;
+                        if(getVector3(prop->values.begin(), prop->values.end(), &val))
+                        {
+                            _system->setScaleX(val.x);
+                            _system->setScaleY(val.y);
+                            _system->setScaleZ(val.z);
+                        }
+                    }
+                }
             //	else if (prop->name == token[TOKEN_PS_SCALE_VELOCITY])
             //	{
             //		// Property: scale_velocity
@@ -186,7 +188,7 @@ void PUParticleSystem3DTranslator::translate(PUScriptCompiler* compiler, PUAbstr
             //			}
             //		}
             //	}
-                if (prop->name == token[TOKEN_KEEP_LOCAL])
+                else if (prop->name == token[TOKEN_KEEP_LOCAL])
                 {
                     // Property: keep_local
                     if (passValidateProperty(compiler, prop, token[TOKEN_KEEP_LOCAL], VAL_BOOL))
