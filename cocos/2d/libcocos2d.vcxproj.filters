@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="physics">
@@ -261,6 +261,12 @@
     </Filter>
     <Filter Include="ui\shaders">
       <UniqueIdentifier>{e6eaa24a-a21e-4c1d-b6b2-19326d129af2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extension\3dparticle\ParticleUniverse\ParticleObservers">
+      <UniqueIdentifier>{46b94a52-dcf2-414f-9882-9db63d1ad553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extension\3dparticle\ParticleUniverse\ParticleEventHandlers">
+      <UniqueIdentifier>{34a74221-d2fc-47f3-a91c-6eef75b1b023}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1630,6 +1636,101 @@
     </ClCompile>
     <ClCompile Include="..\ui\shaders\UIShaders.cpp">
       <Filter>ui\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\CCFrustum.cpp" />
+    <ClCompile Include="..\3d\CCPlane.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoAffectorEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoPlacementParticleEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoScaleEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoStopSystemEventHandler.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\CCPUParticle3DListener.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerManager.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverManager.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoAffectorEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.h.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoPlacementParticleEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoScaleEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoStopSystemEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3185,6 +3286,101 @@
     </ClInclude>
     <ClInclude Include="..\ui\shaders\UIShaders.h">
       <Filter>ui\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\CCFrustum.h" />
+    <ClInclude Include="..\3d\CCPlane.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoAffectorEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoPlacementParticleEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoScaleEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoStopSystemEventHandler.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\CCPUParticle3DListener.h">
+      <Filter>extension\3dparticle\ParticleUniverse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerManager.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverManager.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoAffectorEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoPlacementParticleEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoScaleEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoStopSystemEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

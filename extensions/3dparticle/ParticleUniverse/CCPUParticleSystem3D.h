@@ -37,9 +37,21 @@ NS_CC_BEGIN
 /**
  * 3d particle system
  */
+class PUParticle3DListener;
+class PUParticle3DObserver;
 class PUParticle3DEmitter;
 class PUParticle3DAffector;
 class Particle3DRender;
+
+enum PUComponentType
+{
+    CT_PARTICLE,
+    CT_SYSTEM,
+    CT_TECHNIQUE,
+    CT_EMITTER,
+    CT_AFFECTOR,
+    CT_OBSERVER
+};
 
 struct CC_DLL PUParticle3D : public Particle3D
 {
@@ -47,6 +59,16 @@ struct CC_DLL PUParticle3D : public Particle3D
     static float DEFAULT_MASS;
 
     PUParticle3D();
+
+	enum ParticleType
+	{
+		PT_VISUAL,
+		PT_TECHNIQUE,
+		PT_EMITTER,
+		PT_AFFECTOR,
+		PT_SYSTEM
+	};
+
         /** Enumeration which lists a number of reserved event flags. Although custom flags can be used to
         indicate that a certain condition occurs, the first number of flags may not be used as custom flags.
     */
@@ -59,6 +81,7 @@ struct CC_DLL PUParticle3D : public Particle3D
 
     PUParticle3DEmitter* parentEmitter;
 
+    ParticleType particleType;
     // Values that are assigned as soon as the particle is emitted (non-transformed)
     Vec3 positionInWorld;
     Vec3 originalPosition;
@@ -254,10 +277,25 @@ public:
     void setMaterialName(const std::string &name) { _matName = name; };
     const std::string getMaterialName() const { return _matName; };
 
+		/** Forces emission of particles.
+	@remarks
+		The number of requested particles are the exact number that are emitted. No down-scalling is applied.
+	*/
+	void forceEmission(PUParticle3DEmitter* emitter, unsigned requested);
+
         /**
      * add particle affector
      */
     void addEmitter(PUParticle3DEmitter* emitter);
+
+    PUParticle3DAffector* getAffector(const std::string &name);
+    PUParticle3DEmitter* getEmitter(const std::string &name);
+
+	void addListener(PUParticle3DListener *listener);
+	void removeListener(PUParticle3DListener *listener);
+
+	void addObserver(PUParticle3DObserver *observer);
+	PUParticle3DObserver* getObserver(const std::string &name);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticleSystem3D();
@@ -271,6 +309,8 @@ protected:
     void updator(float elapsedTime);
     void postUpdator(float elapsedTime);
     void emitParticles(float elapsedTime);
+    void executeEmitParticles(PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime);
+	void notifyRescaled();
     
     inline bool isExpired(PUParticle3D* particle, float timeElapsed);
 
@@ -279,6 +319,8 @@ protected:
 protected:
 
     std::vector<PUParticle3DEmitter*> _emitters;
+    std::vector<PUParticle3DListener *> _listeners;
+    std::vector<PUParticle3DObserver *> _observers;
 
     bool _prepared;
 
