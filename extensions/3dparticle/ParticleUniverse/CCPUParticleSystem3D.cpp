@@ -177,7 +177,13 @@ PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath )
             materialFolder = temp.substr(0, pos + 1) + materialFolder;
         }
     }
-    PUParticle3DMaterialCache::Instance()->loadMaterialsFromSearchPaths(materialFolder);
+    static std::vector<std::string> loadedFolder;
+    if (std::find(loadedFolder.begin(), loadedFolder.end(), materialFolder) == loadedFolder.end())
+    {
+        PUParticle3DMaterialCache::Instance()->loadMaterialsFromSearchPaths(materialFolder);
+        loadedFolder.push_back(materialFolder);
+    }
+    
     PUParticleSystem3D* ps = PUParticleSystem3D::create();
     if (!ps->initSystem(fullPath)){
         CC_SAFE_DELETE(ps);
