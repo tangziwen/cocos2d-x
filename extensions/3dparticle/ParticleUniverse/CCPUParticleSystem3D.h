@@ -214,6 +214,8 @@ public:
     */
     float getParticleSystemScaleVelocity() const;
 
+    void setParticleSystemScaleVelocity(float scaleVelocity) { _particleSystemScaleVelocity = scaleVelocity; }
+
     /** If the orientation of the particle system has been changed since the last update, the passed vector
         is rotated accordingly.
     */
@@ -273,6 +275,7 @@ protected:
     inline bool isExpired(PUParticle3D* particle, float timeElapsed);
 
     bool initSystem(const std::string &filePath);
+    static void convertToUnixStylePath(std::string &path);
 
 protected:
 
