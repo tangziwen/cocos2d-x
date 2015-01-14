@@ -683,9 +683,11 @@ void PUParticleSystem3D::addEmitter( PUParticle3DEmitter* emitter )
 
 void PUParticleSystem3D::convertToUnixStylePath( std::string &path )
 {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
     for (auto &iter : path){
         if (iter == '\\') iter = '/';
     }
+#endif
 }
 
 NS_CC_END
