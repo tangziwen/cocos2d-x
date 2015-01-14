@@ -275,6 +275,7 @@ protected:
     inline bool isExpired(PUParticle3D* particle, float timeElapsed);
 
     bool initSystem(const std::string &filePath);
+    static void convertToUnixStylePath(std::string &path);
 
 protected:
 

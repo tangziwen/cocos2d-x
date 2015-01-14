@@ -156,9 +156,11 @@ PUParticleSystem3D* PUParticleSystem3D::create()
 PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath, const std::string &materialPath )
 {
     std::string matfullPath = FileUtils::getInstance()->fullPathForFilename(materialPath);
+    convertToUnixStylePath(matfullPath);
     PUParticle3DMaterialCache::Instance()->loadMaterials(matfullPath);
     PUParticleSystem3D* ps = PUParticleSystem3D::create();
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
+    convertToUnixStylePath(fullPath);
     if (!ps->initSystem(fullPath)){
         CC_SAFE_DELETE(ps);
     }
@@ -168,6 +170,7 @@ PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath, con
 PUParticleSystem3D* PUParticleSystem3D::create( const std::string &filePath )
 {
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
+    convertToUnixStylePath(fullPath);
     std::string::size_type pos = fullPath.find_last_of("/");
     std::string materialFolder = "materials";
     if (pos != std::string::npos){
@@ -675,6 +678,13 @@ void PUParticleSystem3D::addEmitter( PUParticle3DEmitter* emitter )
         emitter->_particleSystem = this;
         emitter->retain();
         _emitters.push_back(emitter);
+    }
+}
+
+void PUParticleSystem3D::convertToUnixStylePath( std::string &path )
+{
+    for (auto &iter : path){
+        if (iter == '\\') iter = '/';
     }
 }
 
