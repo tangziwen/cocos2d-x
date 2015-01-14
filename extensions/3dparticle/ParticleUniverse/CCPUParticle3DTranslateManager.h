@@ -35,6 +35,9 @@
 #include "3dparticle/ParticleUniverse/CCPUParticle3DMaterialTranslator.h"
 #include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DEmitterTranslator.h"
 #include "3dparticle/ParticleUniverse/ParticleAffectors/CCPUParticle3DAffectorTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DBehaviourTranslator.h"
 
 using namespace std;
 NS_CC_BEGIN
@@ -50,6 +53,9 @@ private:
         PUParticle3DEmitterTranslator _emitterTranslator;
         PUParticle3DAffectorTranslator _affectorTranslator;
         PUParticle3DMaterialTranslator _materialTranslator;
+		PUParticle3DEventHandlerTranslator _eventHandlerTranslator;
+		PUParticle3DObserverTranslator _observerTranslator;
+		PUParticle3DBehaviourTranslator _behaviourTranslator;
         //EmitterTranslator mEmitterTranslator;
         //AffectorTranslator mAffectorTranslator;
         //BehaviourTranslator mBehaviourTranslator;

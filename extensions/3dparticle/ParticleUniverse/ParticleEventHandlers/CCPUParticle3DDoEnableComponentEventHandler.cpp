@@ -46,21 +46,25 @@ void PUParticle3DDoEnableComponentEventHandler::handle (PUParticleSystem3D* part
 		case CT_EMITTER:
 		{
 			PUParticle3DEmitter* emitter = particleSystem->getEmitter(_componentName);
-			//if (!emitter)
-			//{
-			//	// Search all techniques in this ParticleSystem for an emitter with the correct name
-			//	ParticleSystem* system = particleTechnique->getParentSystem();
-			//	size_t size = system->getNumTechniques();
-			//	for(size_t i = 0; i < size; ++i)		
-			//	{
-			//		technique = system->getTechnique(i);
-			//		emitter = technique->getEmitter(_componentName);
-			//		if (emitter)
-			//		{
-			//			break;
-			//		}
-			//	}
-			//}
+			if (!emitter)
+			{
+				// Search all techniques in this ParticleSystem for an emitter with the correct name
+				PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(particleSystem->getParent());
+				if (system){
+					auto children = system->getChildren();
+					for(auto iter : children)		
+					{
+						PUParticleSystem3D *child  = dynamic_cast<PUParticleSystem3D *>(iter);
+						if (child){
+							emitter = child->getEmitter(_componentName);
+							if (emitter)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
 			if (emitter)
 			{
 				emitter->setEnabled(_componentEnabled);
@@ -71,21 +75,25 @@ void PUParticle3DDoEnableComponentEventHandler::handle (PUParticleSystem3D* part
 		case CT_AFFECTOR:
 		{
 			PUParticle3DAffector* affector = particleSystem->getAffector(_componentName);
-			//if (!affector)
-			//{
-			//	// Search all techniques in this ParticleSystem for an affector with the correct name
-			//	ParticleSystem* system = particleTechnique->getParentSystem();
-			//	size_t size = system->getNumTechniques();
-			//	for(size_t i = 0; i < size; ++i)
-			//	{
-			//		technique = system->getTechnique(i);
-			//		affector = technique->getAffector(_componentName);
-			//		if (affector)
-			//		{
-			//			break;
-			//		}
-			//	}
-			//}
+			if (!affector)
+			{
+				// Search all techniques in this ParticleSystem for an emitter with the correct name
+				PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(particleSystem->getParent());
+				if (system){
+					auto children = system->getChildren();
+					for(auto iter : children)		
+					{
+						PUParticleSystem3D *child  = dynamic_cast<PUParticleSystem3D *>(iter);
+						if (child){
+							affector = child->getAffector(_componentName);
+							if (affector)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
 			if (affector)
 			{
 				affector->setEnabled(_componentEnabled);
@@ -96,21 +104,25 @@ void PUParticle3DDoEnableComponentEventHandler::handle (PUParticleSystem3D* part
 		case CT_OBSERVER:
 		{
 			PUParticle3DObserver* observer = particleSystem->getObserver(_componentName);
-			//if (!observer)
-			//{
-			//	// Search all techniques in this ParticleSystem for an observer with the correct name
-			//	ParticleSystem* system = particleTechnique->getParentSystem();
-			//	size_t size = system->getNumTechniques();
-			//	for(size_t i = 0; i < size; ++i)		
-			//	{
-			//		technique = system->getTechnique(i);
-			//		observer = technique->getObserver(_componentName);
-			//		if (observer)
-			//		{
-			//			break;
-			//		}
-			//	}
-			//}
+			if (!observer)
+			{
+				// Search all techniques in this ParticleSystem for an emitter with the correct name
+				PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(particleSystem->getParent());
+				if (system){
+					auto children = system->getChildren();
+					for(auto iter : children)		
+					{
+						PUParticleSystem3D *child  = dynamic_cast<PUParticleSystem3D *>(iter);
+						if (child){
+							observer = child->getObserver(_componentName);
+							if (observer)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
 			if (observer)
 			{
 				observer->setEnabled(_componentEnabled);

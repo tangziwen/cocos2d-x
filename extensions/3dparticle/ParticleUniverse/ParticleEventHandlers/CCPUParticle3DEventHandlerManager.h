@@ -28,6 +28,13 @@
 #include "base/CCRef.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DEventHandler.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoAffectorEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoEnableComponentEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoExpireEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoFreezeEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoScaleEventHandlerTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoStopSystemEventHandlerTranslator.h"
 
 
 NS_CC_BEGIN
@@ -49,6 +56,15 @@ CC_CONSTRUCTOR_ACCESS:
     ~PUParticle3DEventHandlerManager();
 
 protected:
+
+	PUParticle3DDoAffectorEventHandlerTranslator _doAffectorEventHandlerTranslator;
+	PUParticle3DDoEnableComponentEventHandlerTranslator _doEnableComponentEventHandlerTranslator;
+	PUParticle3DDoExpireEventHandlerTranslator _doExpireEventHandlerTranslator;
+	PUParticle3DDoFreezeEventHandlerTranslator _doFreezeEventHandlerTranslator;
+	PUParticle3DDoPlacementParticleEventHandlerTranslator _doPlacementParticleEventHandlerTranslator;
+	PUParticle3DDoScaleEventHandlerTranslator _doScaleEventHandlerTranslator;
+	PUParticle3DDoStopSystemEventHandlerTranslator _doStopSystemEventHandlerTranslator;
+
 };
 
 NS_CC_END

@@ -263,6 +263,11 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVelocityMatchingAffectorTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVortexAffector.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVortexAffectorTranslator.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviour.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourManager.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourTranslator.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviour.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DBoxEmitter.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DBoxEmitterTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DCircleEmitter.cpp" />
@@ -302,17 +307,29 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserver.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverManager.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRender.cpp" />
     <ClCompile Include="..\..\extensions\assets-manager\AssetsManager.cpp" />
     <ClCompile Include="..\..\extensions\assets-manager\AssetsManagerEx.cpp" />
@@ -755,6 +772,11 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVelocityMatchingAffectorTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVortexAffector.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleAffectors\CCPUParticle3DVortexAffectorTranslator.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviour.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourManager.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourTranslator.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviour.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DBoxEmitter.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DBoxEmitterTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEmitters\CCPUParticle3DCircleEmitter.h" />
@@ -794,17 +816,29 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserver.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverManager.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRender.h" />
     <ClInclude Include="..\..\extensions\assets-manager\AssetsManager.h" />
     <ClInclude Include="..\..\extensions\assets-manager\AssetsManagerEx.h" />
@@ -1228,6 +1262,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClInclude Include="CCTransitionPageTurn.h" />
     <ClInclude Include="CCTransitionProgress.h" />
     <ClInclude Include="CCTweenFunction.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\3d\CCAnimationCurve.inl" />
@@ -1248,6 +1283,9 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ProjectReference Include="..\editor-support\spine\proj.win32\libSpine.vcxproj">
       <Project>{b7c2a162-dec9-4418-972e-240ab3cbfcae}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libcocos2d.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

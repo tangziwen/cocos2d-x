@@ -28,7 +28,7 @@
 NS_CC_BEGIN
 
 
-    PUParticle3DPointEmitter::PUParticle3DPointEmitter( void )
+PUParticle3DPointEmitter::PUParticle3DPointEmitter( void )
 {
 
 }

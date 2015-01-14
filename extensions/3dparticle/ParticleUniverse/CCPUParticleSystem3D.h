@@ -39,6 +39,7 @@ NS_CC_BEGIN
  */
 class PUParticle3DListener;
 class PUParticle3DObserver;
+class PUParticle3DBehaviour;
 class PUParticle3DEmitter;
 class PUParticle3DAffector;
 class Particle3DRender;
@@ -59,6 +60,9 @@ struct CC_DLL PUParticle3D : public Particle3D
     static float DEFAULT_MASS;
 
     PUParticle3D();
+	virtual ~PUParticle3D();
+
+	typedef std::vector<PUParticle3DBehaviour*> ParticleBehaviourList;
 
 	enum ParticleType
 	{
@@ -120,6 +124,9 @@ struct CC_DLL PUParticle3D : public Particle3D
     */
     float radius;
 
+	ParticleBehaviourList behaviours;
+    void copyBehaviours(const ParticleBehaviourList &list);
+
     float calculateVelocity() const;
 
     /** Set own dimensions
@@ -128,6 +135,8 @@ struct CC_DLL PUParticle3D : public Particle3D
     void calculateBoundingSphereRadius();
 
     void initForEmission();
+	void initForExpiration(float timeElapsed);
+	void process(float timeElapsed);
 
     /** Does this particle have it's own dimensions? */
     bool ownDimensions;
@@ -195,6 +204,7 @@ struct CC_DLL PUParticle3D : public Particle3D
     float widthInWorld;
     float heightInWorld;
     float depthInWorld;
+    
 };
 
 class CC_DLL PUParticleSystem3D : public ParticleSystem3D
@@ -277,7 +287,7 @@ public:
     void setMaterialName(const std::string &name) { _matName = name; };
     const std::string getMaterialName() const { return _matName; };
 
-		/** Forces emission of particles.
+	/** Forces emission of particles.
 	@remarks
 		The number of requested particles are the exact number that are emitted. No down-scalling is applied.
 	*/
@@ -297,6 +307,8 @@ public:
 	void addObserver(PUParticle3DObserver *observer);
 	PUParticle3DObserver* getObserver(const std::string &name);
 
+	void addBehaviourTemplate(PUParticle3DBehaviour *behaviour);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticleSystem3D();
     virtual ~PUParticleSystem3D();
@@ -311,6 +323,8 @@ protected:
     void emitParticles(float elapsedTime);
     void executeEmitParticles(PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime);
 	void notifyRescaled();
+	void initParticleForEmission(PUParticle3D* particle);
+	void initParticleForExpiration(PUParticle3D* particle, float timeElapsed);
     
     inline bool isExpired(PUParticle3D* particle, float timeElapsed);
 
@@ -321,6 +335,7 @@ protected:
     std::vector<PUParticle3DEmitter*> _emitters;
     std::vector<PUParticle3DListener *> _listeners;
     std::vector<PUParticle3DObserver *> _observers;
+    PUParticle3D::ParticleBehaviourList _behaviourTemplates;
 
     bool _prepared;
 

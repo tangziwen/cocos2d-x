@@ -73,6 +73,8 @@ static std::function<Layer*()> createFunctions[] =
     CL(Particle3DFirePlaceDemo),
     CL(Particle3DElectricBeamSystemDemo),
     CL(Particle3DExplosionBlueDemo),
+	//CL(Particle3DFlareShieldDemo),
+	//CL(Particle3DLightningBoltDemo),
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -546,4 +548,44 @@ bool Particle3DExplosionBlueDemo::init()
     this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
     return true;
+}
+
+std::string Particle3DFlareShieldDemo::subtitle() const 
+{
+	return "flareShield";
+}
+
+bool Particle3DFlareShieldDemo::init()
+{
+	if (!Particle3DTestDemo::init()) 
+		return false;
+
+
+	auto rootps = PUParticleSystem3D::create("flareShield.pu");
+	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+	//rootps->setScale(0.25f);
+	rootps->startParticle();
+	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+
+	return true;
+}
+
+std::string Particle3DLightningBoltDemo::subtitle() const 
+{
+	return "LightningBolt";
+}
+
+bool Particle3DLightningBoltDemo::init()
+{
+	if (!Particle3DTestDemo::init()) 
+		return false;
+
+
+	auto rootps = PUParticleSystem3D::create("lightningBolt.pu");
+	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+	//rootps->setScale(0.25f);
+	rootps->startParticle();
+	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+
+	return true;
 }

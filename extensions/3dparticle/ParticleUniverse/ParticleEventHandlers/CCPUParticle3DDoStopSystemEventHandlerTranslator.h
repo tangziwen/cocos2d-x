@@ -22,8 +22,8 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_AFFECTOR_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_AFFECTOR_EVENT_HANDLER_TRANSLATOR_H__
+#ifndef __CC_PU_PARTICLE_3D_DO_STOP_EVENT_HANDLER_TRANSLATOR_H__
+#define __CC_PU_PARTICLE_3D_DO_STOP_EVENT_HANDLER_TRANSLATOR_H__
 
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"

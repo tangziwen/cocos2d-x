@@ -28,6 +28,17 @@
 #include "base/CCRef.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DObserver.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnClearObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnCollisionObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnCountObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnEmissionObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnEventFlagObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnExpireObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnPositionObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnQuotaObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnRandomObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnTimeObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnVelocityObserverTranslator.h"
 
 
 NS_CC_BEGIN
@@ -49,6 +60,18 @@ CC_CONSTRUCTOR_ACCESS:
     ~PUParticle3DObserverManager();
 
 protected:
+
+	PUParticle3DOnClearObserverTranslator _onClearObserverTranslator;
+	PUParticle3DOnCollisionObserverTranslator _onCollisionObserverTranslator;
+	PUParticle3DOnCountObserverTranslator _onCountObserverTranslator;
+	PUParticle3DOnEmissionObserverTranslator _onEmissionObserverTranslator;
+	PUParticle3DOnEventFlagObserverTranslator _onEventFlagObserverTranslator;
+	PUParticle3DOnExpireObserverTranslator _onExpireObserverTranslator;
+	PUParticle3DOnPositionObserverTranslator _onPositionObserverTranslator;
+	PUParticle3DOnQuotaObserverTranslator _onQuotaObserverTranslator;
+	PUParticle3DOnRandomObserverTranslator _onRandomObserverTranslator;
+	PUParticle3DOnTimeObserverTranslator _onTimeObserverTranslator;
+	PUParticle3DOnVelocityObserverTranslator _onVelocityObserverTranslator;
 };
 
 NS_CC_END

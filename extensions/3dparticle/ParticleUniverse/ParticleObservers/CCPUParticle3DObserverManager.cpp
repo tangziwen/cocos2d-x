@@ -54,60 +54,30 @@ PUParticle3DObserverManager* PUParticle3DObserverManager::Instance()
 
 PUScriptTranslator* PUParticle3DObserverManager::getTranslator( const std::string &type )
 {
-    //if (type == "Align"){
-    //    return &_alignAffectorTranslator;
-    //}else if (type == "Dummy02"){
-    //    return &_baseColliderTranslator;
-    //}else if (type == "Dummy01"){
-    //    return &_baseForceAffectorTranslator;
-    //}else if (type == "BoxCollider"){
-    //    return &_boxColliderTranslator;
-    //}else if (type == "CollisionAvoidance"){
-    //    return &_collisionAvoidanceAffectorTranstor;
-    //}else if (type == "Colour"){
-    //    return &_colorAffectorTranslator;
-    //}else if (type == "FlockCentering"){
-    //    return &_flockCenteringAffectorTranslator;
-    //}else if (type == "ForceField"){
-    //    return &_forceFieldAffectorTranslator;
-    //}else if (type == "GeometryRotator"){
-    //    return &_geometryRotatorTranslator;
-    //}else if (type == "Gravity"){
-    //    return &_gravityAffectorTranslator;
-    //}else if (type == "InterParticleCollider"){
-    //    return &_interParticleColliderTranslator;
-    //}else if (type == "Jet"){
-    //    return &_jetAffectorTranslator;
-    //}else if (type == "Line"){
-    //    return &_lineAffectorTranslator;
-    //}else if (type == "LinearForce"){
-    //    return &_linearForceAffectorTranslator;
-    //}else if (type == "ParticleFollower"){
-    //    return &_particleFollowerTranslator;
-    //}else if (type == "PathFollower"){
-    //    return &_pathFollowerTranslator;
-    //}else if (type == "PlaneCollider"){
-    //    return &_planeColliderTranslator;
-    //}else if (type == "Randomiser"){
-    //    return &_randomiserTranslator;
-    //}else if (type == "Scale"){
-    //    return &_scaleAffectorTranslator;
-    //}else if (type == "ScaleVelocity"){
-    //    return &_scaleVelocityAffectorTranslator;
-    //}else if (type == "SineForce"){
-    //    return &_sineForceAffectorTranslator;
-    //}else if (type == "SphereCollider"){
-    //    return &_sphereColliderTranslator;
-    //}else if (type == "TextureAnimator"){
-    //    return &_textureAnimatorTranslator;
-    //}else if (type == "TextureRotator"){
-    //    return &_textureRotatorTranslator;
-    //}else if (type == "VelocityMatching"){
-    //    return &_velocityMatchingAffectorTranslator;
-    //}else if (type == "Vortex"){
-    //    return &_vortexAffectorTranslator;
-    //}
-    return nullptr;
+	if (type == "OnClear"){
+		return &_onClearObserverTranslator;
+	}else if (type == "OnCollision"){
+		return &_onCollisionObserverTranslator;
+	}else if (type == "OnCount"){
+		return &_onCountObserverTranslator;
+	}else if (type == "OnEmission"){
+		return &_onEmissionObserverTranslator;
+	}else if (type == "OnEventFlag"){
+		return &_onEventFlagObserverTranslator;
+	}else if (type == "OnExpire"){
+		return &_onExpireObserverTranslator;
+	}else if (type == "OnPosition"){
+		return &_onPositionObserverTranslator;
+	}else if (type == "OnQuota"){
+		return &_onQuotaObserverTranslator;
+	}else if (type == "OnRandom"){
+		return &_onRandomObserverTranslator;
+	}else if (type == "OnTime"){
+		return &_onTimeObserverTranslator;
+	}else if (type == "OnVelocity"){
+		return &_onVelocityObserverTranslator;
+	}
+	return nullptr;
 }
 
 PUParticle3DObserver* PUParticle3DObserverManager::createObserver( const std::string &type )

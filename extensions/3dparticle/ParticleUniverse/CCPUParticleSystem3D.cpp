@@ -31,6 +31,7 @@
 #include "3dparticle/ParticleUniverse/CCPUParticle3DTranslateManager.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DListener.h"
 #include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DObserver.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DBehaviour.h"
 #include "platform/CCFileUtils.h"
 
 NS_CC_BEGIN
@@ -81,6 +82,26 @@ void PUParticle3D::initForEmission()
 
     // Reset freeze flag
     freezed = false;
+
+	for (auto it : behaviours) {
+		it->initParticleForEmission(this);
+	}
+}
+
+void PUParticle3D::initForExpiration( float timeElapsed )
+{
+	for (auto it : behaviours) {
+		it->initParticleForExpiration(this, timeElapsed);
+	}
+}
+
+void PUParticle3D::process( float timeElapsed )
+{
+	timeFraction = (totalTimeToLive - timeToLive) / totalTimeToLive;
+
+	for (auto it : behaviours) {
+		it->updateBehaviour(this, timeElapsed);
+	}
 }
 
 PUParticle3D::PUParticle3D():
@@ -119,6 +140,21 @@ PUParticle3D::PUParticle3D():
     depthInWorld(depth)
 {
 }
+
+PUParticle3D::~PUParticle3D()
+{
+	for (auto it : behaviours) {
+		it->release();
+	}
+}
+
+void PUParticle3D::copyBehaviours( const ParticleBehaviourList &list )
+{
+	for (auto it : list){
+		behaviours.push_back(it->clone());
+	}
+}
+
 //-----------------------------------------------------------------------
 
 const float PUParticleSystem3D::DEFAULT_WIDTH = 50;
@@ -147,6 +183,16 @@ PUParticleSystem3D::~PUParticleSystem3D()
         it->release();
     }
     _emitters.clear();
+
+	for (auto it : _observers){
+		it->release();
+	}
+
+	for (auto it : _behaviourTemplates) {
+		it->release();
+	}
+
+	_observers.clear();
 }
 
 PUParticleSystem3D* PUParticleSystem3D::create()
@@ -375,6 +421,10 @@ void PUParticleSystem3D::prepared()
         //    emitter->prepare();
         //}
 
+		for (auto it : _behaviourTemplates) {
+			it->prepare();
+		}
+
         for (auto it : _emitters) {
             if (it->isEnabled())
                 (static_cast<PUParticle3DEmitter*>(it))->prepare();
@@ -386,7 +436,9 @@ void PUParticleSystem3D::prepared()
         }
         
         for (unsigned short i = 0; i < _particleQuota; ++i){
-            _particlePool.addParticle(new PUParticle3D());
+			auto p = new PUParticle3D();
+			p->copyBehaviours(_behaviourTemplates);
+            _particlePool.addParticle(p);
         }
         _prepared = true;
     }
@@ -401,6 +453,10 @@ void PUParticleSystem3D::unPrepared()
     //     auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
     //    emitter->unPrepare();
     //}
+
+	for (auto it : _behaviourTemplates) {
+		it->unPrepare();
+	}
 
     for (auto it : _emitters) {
         if (it->isEnabled())
@@ -459,7 +515,7 @@ void PUParticleSystem3D::updator( float elapsedTime )
     while (particle){
 
         if (!isExpired(particle, elapsedTime)){
-            particle->timeFraction = (particle->totalTimeToLive - particle->timeToLive) / particle->totalTimeToLive;
+            particle->process(elapsedTime);
 
             //if (_emitter && _emitter->isEnabled())
             //    _emitter->updateEmitter(particle, elapsedTime);
@@ -509,6 +565,7 @@ void PUParticleSystem3D::updator( float elapsedTime )
             }
         }
         else{
+			initParticleForExpiration(particle, elapsedTime);
             _particlePool.lockLatestParticle();
         }
 
@@ -754,6 +811,8 @@ void PUParticleSystem3D::executeEmitParticles( PUParticle3DEmitter* emitter, uns
 				}
 			}
 
+			initParticleForEmission(particle);
+
 			particle->position += (particle->direction * _particleSystemScaleVelocity * timePoint);
 			// Increment time fragment
 			timePoint += timeInc;
@@ -799,6 +858,45 @@ void PUParticleSystem3D::notifyRescaled()
 
 	for (auto it : _observers){
 		it->notifyRescaled(scale);
+	}
+}
+
+void PUParticleSystem3D::initParticleForExpiration( PUParticle3D* particle, float timeElapsed )
+{
+	//particle->_initForExpiration(this, timeElapsed);
+
+	for (auto it : _listeners){
+		it->particleExpired(this, particle);
+	}
+
+	///** Externs are also called to perform expiration activities. If needed, affectors and emitters may be added, but at the moment
+	//	there is no reason for (and we don´t want to waste cpu resources).
+	//*/
+	//if (!mExterns.empty())
+	//{
+	//	ExternIterator itExtern;
+	//	ExternIterator itExternEnd = mExterns.end();
+	//	for (itExtern = mExterns.begin(); itExtern != itExternEnd; ++itExtern)
+	//	{
+	//		(*itExtern)->_initParticleForExpiration(particle);
+	//	}
+	//}
+}
+
+void PUParticleSystem3D::initParticleForEmission( PUParticle3D* particle )
+{
+	for (auto it : _listeners){
+		it->particleEmitted(this, particle);
+	}
+}
+
+void PUParticleSystem3D::addBehaviourTemplate( PUParticle3DBehaviour *behaviour )
+{
+	auto iter = std::find(_behaviourTemplates.begin(), _behaviourTemplates.end(), behaviour);
+	if (iter == _behaviourTemplates.end()){
+		behaviour->retain();
+		behaviour->_particleSystem = this;
+		_behaviourTemplates.push_back(behaviour);
 	}
 }
 

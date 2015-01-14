@@ -22,25 +22,45 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DSlaveBehaviour.h"
+#include "base/ccMacros.h"
 
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+PUParticle3DSlaveBehaviour::PUParticle3DSlaveBehaviour()
+: masterParticle(nullptr)
 {
-public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
 
-    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
-};
+}
+
+PUParticle3DSlaveBehaviour::~PUParticle3DSlaveBehaviour()
+{
+
+}
+
+void PUParticle3DSlaveBehaviour::updateBehaviour( PUParticle3D *particle, float deltaTime )
+{
+	if (masterParticle && !masterParticle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
+	{
+		particle->position = masterParticle->position;
+		particle->direction = masterParticle->direction;
+	}
+}
+
+PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::clone() const
+{
+	auto pb = PUParticle3DSlaveBehaviour::create();
+	pb->_particleSystem = _particleSystem;
+	pb->_behaviourType = _behaviourType;
+	pb->_behaviourScale = _behaviourScale;
+	return pb;
+}
+
+PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::create()
+{
+	auto pb = new PUParticle3DSlaveBehaviour();
+	pb->autorelease();
+	return pb;
+}
 
 NS_CC_END
-
-#endif

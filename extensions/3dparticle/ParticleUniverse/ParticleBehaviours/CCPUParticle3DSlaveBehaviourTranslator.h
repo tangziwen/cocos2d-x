@@ -22,25 +22,25 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
+#ifndef __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_TRANSLATOR_H__
+#define __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_TRANSLATOR_H__
 
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DSlaveBehaviour.h"
 
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+class  PUParticle3DSlaveBehaviourTranslator : public PUScriptTranslator
 {
 public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
+    PUParticle3DSlaveBehaviourTranslator();
+    virtual ~PUParticle3DSlaveBehaviourTranslator(){};
 
-    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
+	virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
+	virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
 };
 
 NS_CC_END
 
-#endif
+#endif /* defined(__cocos2d_libs__CCParticle3DAffectorTranslator__) */

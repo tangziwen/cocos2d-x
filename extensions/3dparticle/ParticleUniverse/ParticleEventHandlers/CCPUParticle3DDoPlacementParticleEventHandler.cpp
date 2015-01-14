@@ -67,25 +67,33 @@ void PUParticle3DDoPlacementParticleEventHandler::handle (PUParticleSystem3D* pa
 
 	if (!_found)
 	{
+		auto system = particleSystem;
+		auto emitter = system->getEmitter(_forceEmitterName);
 		//ParticleTechnique* technique = particleTechnique;
 		//ParticleEmitter* emitter = particleTechnique->getEmitter(_forceEmitterName);
-		//if (!emitter)
-		//{
-		//	// Search all techniques in this ParticleSystem for an emitter with the correct name
-		//	ParticleSystem* system = particleTechnique->getParentSystem();
-		//	size_t size = system->getNumTechniques();
-		//	for(size_t i = 0; i < size; ++i)
-		//	{
-		//		technique = system->getTechnique(i);
-		//		emitter = technique->getEmitter(_forceEmitterName);
-		//		if (emitter)
-		//			break;
-		//	}
-		//}
-		auto emitter = particleSystem->getEmitter(_forceEmitterName);
+		if (!emitter)
+		{
+			// Search all techniques in this ParticleSystem for an emitter with the correct name
+			PUParticleSystem3D* parentSystem = dynamic_cast<PUParticleSystem3D *>(system->getParent());
+			if (parentSystem){
+				auto children = parentSystem->getChildren();
+				for(auto iter : children)		
+				{
+					PUParticleSystem3D *child  = dynamic_cast<PUParticleSystem3D *>(iter);
+					if (child){
+						system = child;
+						emitter = system->getEmitter(_forceEmitterName);
+						if (emitter)
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
 		if (emitter)
 		{
-			_system = particleSystem;
+			_system = system;
 			_emitter = emitter;
 			if (_system)
 			{

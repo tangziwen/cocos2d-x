@@ -22,25 +22,39 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
+#ifndef __CC_PU_PARTICLE_3D_BEHAVIOUR_MANAGER_H__
+#define __CC_PU_PARTICLE_3D_BEHAVIOUR_MANAGER_H__
 
+#include "base/CCRef.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DBehaviour.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DSlaveBehaviourTranslator.h"
 
+using namespace std;
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+class PUParticle3DBehaviourManager
 {
 public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
+    
+    static PUParticle3DBehaviourManager* Instance();
 
-    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
+    /**
+     */
+    PUScriptTranslator* getTranslator(const std::string &type);
+    PUParticle3DBehaviour* createBehaviour(const std::string &type);
+
+    
+CC_CONSTRUCTOR_ACCESS:
+    PUParticle3DBehaviourManager();
+    ~PUParticle3DBehaviourManager();
+
+protected:
+
+	PUParticle3DSlaveBehaviourTranslator _slaveBehaviourTranslator;
 };
 
 NS_CC_END
 
-#endif
+
+#endif 

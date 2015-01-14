@@ -268,6 +268,9 @@
     <Filter Include="extension\3dparticle\ParticleUniverse\ParticleEventHandlers">
       <UniqueIdentifier>{34a74221-d2fc-47f3-a91c-6eef75b1b023}</UniqueIdentifier>
     </Filter>
+    <Filter Include="extension\3dparticle\ParticleUniverse\ParticleBehaviours">
+      <UniqueIdentifier>{da1a617b-fe09-4f94-8e0a-3591ed3249a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\physics\CCPhysicsBody.cpp">
@@ -1731,6 +1734,57 @@
     </ClCompile>
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.cpp">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviour.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviour.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourManager.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3382,6 +3436,58 @@
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DEventHandlerTranslator.h">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnClearObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCollisionObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnCountObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEmissionObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnEventFlagObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnExpireObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnPositionObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnQuotaObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnRandomObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviour.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviour.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourManager.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DBehaviourTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\math\Mat4.inl">
@@ -3412,5 +3518,8 @@
     <None Include="..\ui\shaders\ccShader_grayscale.frag">
       <Filter>ui\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="libcocos2d.rc" />
   </ItemGroup>
 </Project>

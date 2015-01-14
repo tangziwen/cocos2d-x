@@ -50,60 +50,22 @@ PUParticle3DEventHandlerManager* PUParticle3DEventHandlerManager::Instance()
 
 PUScriptTranslator* PUParticle3DEventHandlerManager::getTranslator( const std::string &type )
 {
-    //if (type == "Align"){
-    //    return &_alignAffectorTranslator;
-    //}else if (type == "Dummy02"){
-    //    return &_baseColliderTranslator;
-    //}else if (type == "Dummy01"){
-    //    return &_baseForceAffectorTranslator;
-    //}else if (type == "BoxCollider"){
-    //    return &_boxColliderTranslator;
-    //}else if (type == "CollisionAvoidance"){
-    //    return &_collisionAvoidanceAffectorTranstor;
-    //}else if (type == "Colour"){
-    //    return &_colorAffectorTranslator;
-    //}else if (type == "FlockCentering"){
-    //    return &_flockCenteringAffectorTranslator;
-    //}else if (type == "ForceField"){
-    //    return &_forceFieldAffectorTranslator;
-    //}else if (type == "GeometryRotator"){
-    //    return &_geometryRotatorTranslator;
-    //}else if (type == "Gravity"){
-    //    return &_gravityAffectorTranslator;
-    //}else if (type == "InterParticleCollider"){
-    //    return &_interParticleColliderTranslator;
-    //}else if (type == "Jet"){
-    //    return &_jetAffectorTranslator;
-    //}else if (type == "Line"){
-    //    return &_lineAffectorTranslator;
-    //}else if (type == "LinearForce"){
-    //    return &_linearForceAffectorTranslator;
-    //}else if (type == "ParticleFollower"){
-    //    return &_particleFollowerTranslator;
-    //}else if (type == "PathFollower"){
-    //    return &_pathFollowerTranslator;
-    //}else if (type == "PlaneCollider"){
-    //    return &_planeColliderTranslator;
-    //}else if (type == "Randomiser"){
-    //    return &_randomiserTranslator;
-    //}else if (type == "Scale"){
-    //    return &_scaleAffectorTranslator;
-    //}else if (type == "ScaleVelocity"){
-    //    return &_scaleVelocityAffectorTranslator;
-    //}else if (type == "SineForce"){
-    //    return &_sineForceAffectorTranslator;
-    //}else if (type == "SphereCollider"){
-    //    return &_sphereColliderTranslator;
-    //}else if (type == "TextureAnimator"){
-    //    return &_textureAnimatorTranslator;
-    //}else if (type == "TextureRotator"){
-    //    return &_textureRotatorTranslator;
-    //}else if (type == "VelocityMatching"){
-    //    return &_velocityMatchingAffectorTranslator;
-    //}else if (type == "Vortex"){
-    //    return &_vortexAffectorTranslator;
-    //}
-    return nullptr;
+	if (type == "DoAffector"){
+		return &_doAffectorEventHandlerTranslator;
+	}else if (type == "DoEnableComponent"){
+		return &_doEnableComponentEventHandlerTranslator;
+	}else if (type == "DoExpire"){
+		return &_doExpireEventHandlerTranslator;
+	}else if (type == "DoFreeze"){
+		return &_doFreezeEventHandlerTranslator;
+	}else if (type == "DoPlacementParticle"){
+		return &_doPlacementParticleEventHandlerTranslator;
+	}else if (type == "DoScale"){
+		return &_doScaleEventHandlerTranslator;
+	}else if (type == "DoStopSystem"){
+		return &_doStopSystemEventHandlerTranslator;
+	}
+	return nullptr;
 }
 
 PUParticle3DEventHandler* PUParticle3DEventHandlerManager::createEventHandler( const std::string &type )

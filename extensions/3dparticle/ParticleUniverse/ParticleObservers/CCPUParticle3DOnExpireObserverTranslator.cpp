@@ -22,25 +22,26 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "CCPUParticle3DOnExpireObserverTranslator.h"
+#include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DDynamicAttribute.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DDynamicAttributeTranslator.h"
 
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+PUParticle3DOnExpireObserverTranslator::PUParticle3DOnExpireObserverTranslator()
 {
-public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
+}
+//-------------------------------------------------------------------------
+bool PUParticle3DOnExpireObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
+{
+	return false;
+}
 
-    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
-};
+bool PUParticle3DOnExpireObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )
+{
+    // No objects
+    return false;
+}
 
 NS_CC_END
-
-#endif

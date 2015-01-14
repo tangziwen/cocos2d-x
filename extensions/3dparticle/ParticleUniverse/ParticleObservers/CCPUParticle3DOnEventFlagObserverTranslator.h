@@ -22,20 +22,20 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
+#ifndef __CC_PU_PARTICLE_3D_ON_EVENT_FLAG_OBSERVER_TRANSLATOR_H__
+#define __CC_PU_PARTICLE_3D_ON_EVENT_FLAG_OBSERVER_TRANSLATOR_H__
 
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DOnEventFlagObserver.h"
 
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+class  PUParticle3DOnEventFlagObserverTranslator : public PUScriptTranslator
 {
 public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
+    PUParticle3DOnEventFlagObserverTranslator();
+    virtual ~PUParticle3DOnEventFlagObserverTranslator(){};
 
     virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
     virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);

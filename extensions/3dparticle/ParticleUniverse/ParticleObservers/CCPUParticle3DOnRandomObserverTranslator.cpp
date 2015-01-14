@@ -22,23 +22,44 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoStopSystemEventHandler.h"
+#include "CCPUParticle3DOnRandomObserverTranslator.h"
 #include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DDynamicAttribute.h"
+#include "3dparticle/ParticleUniverse/CCPUParticle3DDynamicAttributeTranslator.h"
 
 NS_CC_BEGIN
-//-----------------------------------------------------------------------
-void PUParticle3DDoStopSystemEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
+
+PUParticle3DOnRandomObserverTranslator::PUParticle3DOnRandomObserverTranslator()
 {
-	ParticleSystem3D *parent = dynamic_cast<ParticleSystem3D *>(particleSystem->getParent());
-	if (parent)
-		parent->stopParticle();
+}
+//-------------------------------------------------------------------------
+bool PUParticle3DOnRandomObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
+{
+	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+	PUParticle3DOnRandomObserver* observer = static_cast<PUParticle3DOnRandomObserver*>(ob);
+
+	if (prop->name == token[TOKEN_ONRANDOM_THRESHOLD])
+	{
+		// Property: random_threshold
+		if (passValidateProperty(compiler, prop, token[TOKEN_ONRANDOM_THRESHOLD], VAL_REAL))
+		{
+			float val = 0.0f;
+			if(getFloat(*prop->values.front(), &val))
+			{
+				observer->setThreshold(val);
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
-PUParticle3DDoStopSystemEventHandler* PUParticle3DDoStopSystemEventHandler::create()
+bool PUParticle3DOnRandomObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	auto peh = new PUParticle3DDoStopSystemEventHandler();
-	peh->autorelease();
-	return peh;
+    // No objects
+    return false;
 }
 
 NS_CC_END

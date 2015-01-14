@@ -22,23 +22,38 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
-#define __CC_PU_PARTICLE_3D_DO_PLACEMENT_PARTICLE_EVENT_HANDLER_TRANSLATOR_H__
+#ifndef __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_H__
+#define __CC_PU_PARTICLE_3D_SLAVE_BEHAVIOUR_H__
 
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
-#include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
-#include "3dparticle/ParticleUniverse/ParticleEventHandlers/CCPUParticle3DDoPlacementParticleEventHandler.h"
+#include "base/CCRef.h"
+#include "math/CCMath.h"
+#include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
+#include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DBehaviour.h"
+#include <vector>
+#include <string>
 
 NS_CC_BEGIN
 
-class PUParticle3DDoPlacementParticleEventHandlerTranslator : public PUScriptTranslator
+struct PUParticle3D;
+class PUParticleSystem3D;
+
+class CC_DLL PUParticle3DSlaveBehaviour : public PUParticle3DBehaviour
 {
 public:
-    PUParticle3DDoPlacementParticleEventHandlerTranslator();
-    virtual ~PUParticle3DDoPlacementParticleEventHandlerTranslator(){};
 
-    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
+	static PUParticle3DSlaveBehaviour* create();
+
+	PUParticle3D* masterParticle;
+
+	/** See ParticleBehaviour.
+	*/
+	virtual void updateBehaviour(PUParticle3D *particle, float deltaTime);
+
+	virtual PUParticle3DSlaveBehaviour* clone() const override;
+
+CC_CONSTRUCTOR_ACCESS:
+	PUParticle3DSlaveBehaviour();
+	virtual ~PUParticle3DSlaveBehaviour();
 };
 
 NS_CC_END

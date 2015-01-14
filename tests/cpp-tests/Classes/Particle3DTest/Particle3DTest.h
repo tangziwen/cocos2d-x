@@ -177,6 +177,32 @@ public:
     virtual bool init() override;
 };
 
+class Particle3DFlareShieldDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DFlareShieldDemo);
+	Particle3DFlareShieldDemo(){};
+	virtual ~Particle3DFlareShieldDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
+class Particle3DLightningBoltDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DLightningBoltDemo);
+	Particle3DLightningBoltDemo(){};
+	virtual ~Particle3DLightningBoltDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
 class Particle3DTestScene : public TestScene
 {
 public:
