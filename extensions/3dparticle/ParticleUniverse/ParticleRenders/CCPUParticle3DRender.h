@@ -69,7 +69,7 @@ public:
 
     static PUParticle3DQuadRender* create(const std::string& texFile = "");
     
-    void setType(Type type) { _type = type; }
+    void setType(Type type);
     Type getType() const { return _type; }
     void setOrigin(Origin origin) { _origin = origin; }
     Origin getOrigin() const { return _origin; }

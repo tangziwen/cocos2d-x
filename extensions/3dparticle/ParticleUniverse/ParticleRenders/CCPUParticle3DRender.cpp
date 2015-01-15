@@ -366,6 +366,16 @@ void PUParticle3DQuadRender::fillTriangle( unsigned short index, unsigned short 
     _indexData[index + 2] = v2;
 }
 
+void PUParticle3DQuadRender::setType( Type type )
+{
+    _type = type;
+    if (_type == PERPENDICULAR_COMMON || _type == PERPENDICULAR_SELF){
+        _meshCommand->setCullFaceEnabled(false);
+    }else{
+        _meshCommand->setCullFaceEnabled(true);
+    }
+}
+
 
 PUParticle3DModelRender* PUParticle3DModelRender::create( const std::string& modelFile, const std::string &texFile /*= ""*/ )
 {
