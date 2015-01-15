@@ -93,7 +93,10 @@ _particleTextureCoordsRangeStart(DEFAULT_START_TEXTURE_COORDS),
 _particleTextureCoordsRangeEnd(DEFAULT_END_TEXTURE_COORDS),
 _particleTextureCoordsRangeSet(false),
 _originEnabled(true),
-_originEnabledSet(false)
+_originEnabledSet(false),
+_emitsType(PUParticle3D::PT_VISUAL),
+_emitsEntity(nullptr),
+_isMarkedForEmission(false)
 {
     //particleType = PT_EMITTER;
     //mAliasType = AT_EMITTER;
@@ -183,16 +186,15 @@ void PUParticle3DEmitter::initParticlePosition( PUParticle3D* particle )
 
 const Vec3& PUParticle3DEmitter::getDerivedPosition()
 {
-    PUParticleSystem3D *ps = static_cast<PUParticleSystem3D *>(_particleSystem);
-    if (ps){
+    if (_isMarkedForEmission){
+        _derivedPosition = _position;
+    }else {
+        PUParticleSystem3D *ps = static_cast<PUParticleSystem3D *>(_particleSystem);
         Mat4 rotMat;
         Mat4::createRotation(ps->getDerivedOrientation(), &rotMat);
         _derivedPosition = ps->getDerivedPosition() + rotMat * Vec3(_position.x * _emitterScale.x, _position.y * _emitterScale.y, _position.z * _emitterScale.z);
         //_particleSystem->getNodeToWorldTransform().transformPoint(_position, &_derivedPosition);
     }
-    else
-        _derivedPosition = Vec3::ZERO;
-
     return _derivedPosition;
 }
 
@@ -363,7 +365,26 @@ void PUParticle3DEmitter::notifyResume()
 
 void PUParticle3DEmitter::prepare()
 {
-
+	if (_emitsType == PUParticle3D::PT_EMITTER){
+		auto emitter = static_cast<PUParticleSystem3D *>(_particleSystem)->getEmitter(_emitsName);
+		if (emitter){
+			emitter->setMarkedForEmission(true);
+			_emitsEntity = emitter;
+		}
+	}
+	else if (_emitsType == PUParticle3D::PT_TECHNIQUE){
+		PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(_particleSystem->getParent());
+		if (system){
+			auto children = system->getChildren();
+			for (auto it : children){
+				if (it->getName() == _emitsName)
+				{
+					_emitsEntity = it;
+					break;
+				}
+			}
+		}
+	}
 }
 
 void PUParticle3DEmitter::unPrepare()
@@ -837,6 +858,11 @@ void PUParticle3DEmitter::initParticleDimensions( PUParticle3D* particle )
 bool PUParticle3DEmitter::isEmitterDone() const
 {
     return !(_isEnabled || _dynRepeatDelaySet);
+}
+
+Ref* PUParticle3DEmitter::getEmitsEntityPtr() const
+{
+	return _emitsEntity;
 }
 
 NS_CC_END

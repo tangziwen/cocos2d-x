@@ -61,8 +61,8 @@ struct CC_DLL Particle3D
 class CC_DLL ParticlePool
 {
 public:
-    typedef std::vector<Particle3D *> PoolList;
-    typedef std::vector<Particle3D *>::iterator PoolIterator;
+    typedef std::list<Particle3D *> PoolList;
+    typedef std::list<Particle3D *>::iterator PoolIterator;
 
     ParticlePool();
     ~ParticlePool();

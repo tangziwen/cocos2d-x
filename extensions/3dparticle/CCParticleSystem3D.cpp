@@ -61,9 +61,9 @@ Particle3D* ParticlePool::createParticle()
 {
     if (_locked.empty()) return nullptr;
     Particle3D* p = _locked.front();
-    _released.push_back(p);
-    _locked.erase(_locked.begin());
-    //_released.splice(_released.end(), _locked, _locked.begin());
+    //_released.push_back(p);
+    //_locked.erase(_locked.begin());
+    _released.splice(_released.end(), _locked, _locked.begin());
     return p;
 }
 
@@ -79,9 +79,9 @@ void ParticlePool::lockLatestParticle()
 
 void ParticlePool::lockAllParticles()
 {
-    //_locked.splice(_locked.end(), _released);
-    _locked.insert(_locked.end(), _released.begin(), _released.end());
-    _released.clear();
+    _locked.splice(_locked.end(), _released);
+    //_locked.insert(_locked.end(), _released.begin(), _released.end());
+    //_released.clear();
     _releasedIter = _released.begin();
 }
 

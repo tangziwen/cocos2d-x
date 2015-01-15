@@ -83,6 +83,7 @@ struct CC_DLL PUParticle3D : public Particle3D
         PEF_COLLIDED = 1<<2
     };
 
+	Ref *particleEntityPtr;
     PUParticle3DEmitter* parentEmitter;
 
     ParticleType particleType;
@@ -329,6 +330,7 @@ protected:
     inline bool isExpired(PUParticle3D* particle, float timeElapsed);
 
     bool initSystem(const std::string &filePath);
+    static void convertToUnixStylePath(std::string &path);
 
 protected:
 

@@ -242,9 +242,10 @@ void Particle3DModelRender::render(Renderer* renderer, const Mat4 &transform, Pa
     Mat4 sclMat;
     Quaternion q;
     transform.decompose(nullptr, &q, nullptr);
-    for (unsigned int i = 0; i < activeParticleList.size(); ++i)
+    unsigned int index = 0;
+    for (auto iter : activeParticleList)
     {
-        auto particle = activeParticleList[i];
+        auto particle = iter;
         q *= particle->orientation;
         Mat4::createRotation(q, &rotMat);
         sclMat.m[0] = particle->width / _spriteSize.x;
@@ -254,7 +255,7 @@ void Particle3DModelRender::render(Renderer* renderer, const Mat4 &transform, Pa
         mat.m[12] = particle->position.x;
         mat.m[13] = particle->position.y;
         mat.m[14] = particle->position.z;
-        _spriteList[i]->draw(renderer, mat, 0);
+        _spriteList[index++]->draw(renderer, mat, 0);
     }
 }
 

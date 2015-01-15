@@ -46,6 +46,9 @@ public:
     virtual std::string subtitle() const override;
     virtual void update(float delta) override;
 
+    virtual void onEnter() override;
+    virtual void onExit() override;
+
     cocos2d::ParticleSystem3D* createParticleSystem();
     
     void onTouchesBegan(const std::vector<Touch*>& touches, cocos2d::Event  *event);
@@ -197,6 +200,19 @@ public:
 	CREATE_FUNC(Particle3DLightningBoltDemo);
 	Particle3DLightningBoltDemo(){};
 	virtual ~Particle3DLightningBoltDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
+class Particle3DExplosionSystemDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DExplosionSystemDemo);
+	Particle3DExplosionSystemDemo(){};
+	virtual ~Particle3DExplosionSystemDemo(){};
 
 	virtual std::string subtitle() const override;
 

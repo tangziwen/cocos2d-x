@@ -29,6 +29,7 @@
 #include "math/CCMath.h"
 #include "3dparticle/CCParticle3DEmitter.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DDynamicAttribute.h"
+#include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
 #include <vector>
 #include <string>
 
@@ -187,6 +188,11 @@ public:
     */
     inline const std::string& getEmitsName(void) const {return _emitsName;};
     void setEmitsName(const std::string& emitsName);
+    inline PUParticle3D::ParticleType getEmitsType() const {return _emitsType;};
+    void setEmitsType(PUParticle3D::ParticleType type) {_emitsType = type;};
+	Ref* getEmitsEntityPtr() const;
+	bool isMarkedForEmission() const {return _isMarkedForEmission;};
+	void setMarkedForEmission(bool isMarked) {_isMarkedForEmission = isMarked;};
 
         /** Returns the base direction of the particle that is going to be emitted.
     */
@@ -558,6 +564,11 @@ protected:
 
     bool _originEnabled;
     bool _originEnabledSet;
+
+	PUParticle3D::ParticleType _emitsType;
+	Ref *_emitsEntity;
+
+	bool _isMarkedForEmission;
 };
 
 NS_CC_END
