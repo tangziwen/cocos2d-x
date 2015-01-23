@@ -232,7 +232,7 @@ void PUParticle3DRibbonTrailRender::prepare()
 		std::string childNodeNodeName = "ParticleUniverse" + ss.str();
 		//_childNode = mParentTechnique->getParentSystem()->getParentSceneNode()->createChildSceneNode(childNodeNodeName);
 		//_childNode->setInheritOrientation(false);
-		auto parent = _particleSystem->getParent()->getParent();
+		auto parent = _particleSystem->getParent();
 		if (parent)
 		{
 			_childNode = Node::create();

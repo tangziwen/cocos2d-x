@@ -371,7 +371,7 @@ void PURibbonTrail::timeUpdate(float time)
 				elem.width = elem.width - (time * _deltaWidth[s]);
 				elem.width = 0.0f < elem.width? elem.width: 0.0f;
 				elem.color = elem.color - (_deltaColor[s] * time);
-				//elem.color.saturate();
+				elem.color.clamp(Vec4(0.0f, 0.0f, 0.0f, 0.0f), Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 				if (e == seg.tail)
 					break;
@@ -421,7 +421,12 @@ void PURibbonTrail::resetAllTrails(void)
 void PURibbonTrail::update( float deltaTime )
 {
 	if (_needTimeUpdate){
-		//timeUpdate(deltaTime);
+		//static float lastUpdateTime = 0.0f;
+		//if (1.0f < lastUpdateTime){
+			//timeUpdate(deltaTime);
+		//	lastUpdateTime = 0.0f;
+		//}
+		//lastUpdateTime += deltaTime;
 	}
 
 	for (auto iter : _nodeToSegMap){

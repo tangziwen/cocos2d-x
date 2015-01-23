@@ -398,7 +398,9 @@ void PUParticle3DMaterialTextureUnitTranslator::translate( PUScriptCompiler* com
             PUPropertyAbstractNode *prop = reinterpret_cast<PUPropertyAbstractNode*>((*i));
             if (prop->name == matToken[TOKEN_MAT_TEXTURE_FILE])
             {
-                if (passValidateProperty(compiler, prop, matToken[TOKEN_MAT_TEXTURE_FILE], VAL_STRING))
+
+                //if (passValidateProperty(compiler, prop, matToken[TOKEN_MAT_TEXTURE_FILE], VAL_STRING))
+                if (!prop->values.empty())
                 {
                     std::string val;
                     if(getString(*prop->values.front(), &val))
