@@ -1786,6 +1786,18 @@
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.cpp">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBeamRender.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBillboardChain.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrailRender.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrail.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCPhysicsBody.h">
@@ -3487,6 +3499,18 @@
     </ClInclude>
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleBehaviours\CCPUParticle3DSlaveBehaviourTranslator.h">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleBehaviours</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBeamRender.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBillboardChain.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrailRender.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrail.h">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,8 @@
 #define __CC_PU_PARTICLE_3D_RENDERER_TRANSLATOR_H__
 
 #include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.h"
+#include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DBeamRender.h"
+#include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRibbonTrailRender.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptTranslator.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
 

@@ -93,6 +93,10 @@ void PUParticle3D::initForExpiration( float timeElapsed )
 	for (auto it : behaviours) {
 		it->initParticleForExpiration(this, timeElapsed);
 	}
+
+	if (particleType == PUParticle3D::PT_TECHNIQUE){
+		static_cast<PUParticleSystem3D *>(particleEntityPtr)->clearAllParticles();
+	}
 }
 
 void PUParticle3D::process( float timeElapsed )
@@ -107,6 +111,7 @@ void PUParticle3D::process( float timeElapsed )
 PUParticle3D::PUParticle3D():
     //position(Vec3::ZERO),
 	particleEntityPtr(nullptr),
+	visualData(nullptr),
     particleType(PT_VISUAL),
     direction(Vec3::ZERO),
     timeToLive(DEFAULT_TTL),
@@ -172,6 +177,7 @@ PUParticleSystem3D::PUParticleSystem3D()
 , _defaultDepth(DEFAULT_DEPTH)
 , _maxVelocity(DEFAULT_MAX_VELOCITY)
 , _maxVelocitySet(false)
+, _isMarkedForEmission(false)
 {
     _particleQuota = DEFAULT_PARTICLE_QUOTA;
 }
@@ -392,16 +398,21 @@ void PUParticleSystem3D::resumeParticle()
 
 void PUParticleSystem3D::update(float delta)
 {
-    if (_state != State::RUNNING)
+    if (_state != State::RUNNING || _isMarkedForEmission)
         return;
-    
-    prepared();
-    emitParticles(delta);
-    preUpdator(delta);
-    updator(delta);
-    postUpdator(delta);
 
-    _timeElapsedSinceStart += delta;
+	forceUpdate(delta);
+}
+
+void PUParticleSystem3D::forceUpdate( float delta )
+{
+	prepared();
+	emitParticles(delta);
+	preUpdator(delta);
+	updator(delta);
+	postUpdator(delta);
+
+	_timeElapsedSinceStart += delta;
 }
 
 float PUParticleSystem3D::getParticleSystemScaleVelocity() const
@@ -424,6 +435,9 @@ void PUParticleSystem3D::prepared()
         //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
         //    emitter->prepare();
         //}
+
+		if (_render)
+			static_cast<PUParticle3DRender *>(_render)->prepare();
 
 		for (auto it : _behaviourTemplates) {
 			it->prepare();
@@ -457,6 +471,9 @@ void PUParticleSystem3D::unPrepared()
     //     auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
     //    emitter->unPrepare();
     //}
+
+	if (_render)
+		static_cast<PUParticle3DRender *>(_render)->unPrepare();
 
 	for (auto it : _behaviourTemplates) {
 		it->unPrepare();
@@ -538,6 +555,9 @@ void PUParticleSystem3D::updator( float elapsedTime )
                 }
             }
 
+			if (_render)
+				static_cast<PUParticle3DRender *>(_render)->updateRender(particle, elapsedTime, firstActiveParticle);
+
 			if (_isEnabled && particle->particleType != PUParticle3D::PT_VISUAL){
 				if (particle->particleType == PUParticle3D::PT_EMITTER){
 					auto emitter = static_cast<PUParticle3DEmitter *>(particle->particleEntityPtr);
@@ -547,8 +567,8 @@ void PUParticleSystem3D::updator( float elapsedTime )
 					auto system = static_cast<PUParticleSystem3D *>(particle->particleEntityPtr);
 					system->setPosition3D(particle->position);
 					system->setRotationQuat(particle->orientation);
-					system->setScaleX(scl.x);system->setScaleY(scl.y);system->setScaleZ(scl.z);
-					system->update(elapsedTime);
+					//system->setScaleX(scl.x);system->setScaleY(scl.y);system->setScaleZ(scl.z);
+					system->forceUpdate(elapsedTime);
 				}
 			}
 
@@ -647,9 +667,10 @@ void PUParticleSystem3D::emitParticles( float elapsedTime )
         //auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
         auto emitter = iter;
         //emitter->notifyRescaled(scale);
-        unsigned short requested = emitter->calculateRequestedParticles(elapsedTime);
-		if (!iter->isMarkedForEmission())
+		if (!iter->isMarkedForEmission()){
+			unsigned short requested = emitter->calculateRequestedParticles(elapsedTime);
 			executeEmitParticles(emitter, requested, elapsedTime);
+		}
     }
 
 }
@@ -884,7 +905,7 @@ void PUParticleSystem3D::notifyRescaled()
 
 void PUParticleSystem3D::initParticleForExpiration( PUParticle3D* particle, float timeElapsed )
 {
-	//particle->_initForExpiration(this, timeElapsed);
+	particle->initForExpiration(timeElapsed);
 
 	for (auto it : _listeners){
 		it->particleExpired(this, particle);
@@ -929,6 +950,11 @@ void PUParticleSystem3D::convertToUnixStylePath( std::string &path )
         if (iter == '\\') iter = '/';
     }
 #endif
+}
+
+void PUParticleSystem3D::clearAllParticles()
+{
+	_particlePool.lockAllParticles();
 }
 
 NS_CC_END

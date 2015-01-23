@@ -34,7 +34,50 @@ NS_CC_BEGIN
 
 // particle render for quad
 struct PUParticle3D;
-class CC_DLL PUParticle3DQuadRender : public Particle3DQuadRender
+
+class CC_DLL PUParticle3DRender : public Particle3DRender
+{
+public:
+
+	virtual void prepare(){};
+	virtual void unPrepare(){};
+	virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle){};
+};
+
+class CC_DLL PUParticle3DEntityRender : public PUParticle3DRender
+{
+public:
+
+	virtual void setDepthTest(bool isDepthTest);
+	virtual void setDepthWrite(bool isDepthWrite);
+
+CC_CONSTRUCTOR_ACCESS:
+	PUParticle3DEntityRender();
+	virtual ~PUParticle3DEntityRender();
+
+protected:
+
+	void initRender(const std::string &texFile);
+
+protected:
+
+	struct VertexInfo
+	{
+		Vec3 position;
+		Vec2 uv;
+		Vec4 color;
+	};
+	MeshCommand* _meshCommand;
+	Texture2D*             _texture;
+	GLProgramState*        _glProgramState;
+	IndexBuffer*           _indexBuffer; //index buffer
+	VertexBuffer*          _vertexBuffer; // vertex buffer
+
+	std::vector<VertexInfo> _vertices;
+	std::vector<unsigned short> _indices;
+};
+
+class CC_DLL PUParticle3DQuadRender : public PUParticle3DEntityRender
 {
 public:
 
@@ -113,7 +156,7 @@ protected:
 };
 
 // particle render for Sprite3D
-class CC_DLL PUParticle3DModelRender : public Particle3DModelRender
+class CC_DLL PUParticle3DModelRender : public PUParticle3DRender
 {
 public:
     static PUParticle3DModelRender* create(const std::string& modelFile, const std::string &texFile = "");
@@ -123,6 +166,53 @@ public:
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DModelRender();
     virtual ~PUParticle3DModelRender();
+
+protected:
+
+	std::vector<Sprite3D *> _spriteList;
+	std::string _modelFile;
+	std::string _texFile;
+	Vec3 _spriteSize;
+};
+
+class CC_DLL PUParticle3DBoxRender : public PUParticle3DEntityRender
+{
+public:
+
+	static PUParticle3DBoxRender* create(const std::string &texFile = "");
+
+	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+CC_CONSTRUCTOR_ACCESS:
+	PUParticle3DBoxRender();
+	virtual ~PUParticle3DBoxRender();
+
+protected:
+
+	void reBuildIndices(unsigned short count);
+};
+
+class CC_DLL PUParticle3DSphereRender : public PUParticle3DEntityRender
+{
+public:
+
+	static PUParticle3DSphereRender* create(const std::string &texFile = "");
+
+	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+CC_CONSTRUCTOR_ACCESS:
+	PUParticle3DSphereRender();
+	virtual ~PUParticle3DSphereRender();
+
+protected:
+
+	void buildBuffers(unsigned short count);
+
+protected:
+
+	unsigned short _numberOfRings;
+	unsigned short _numberOfSegments;
+	std::vector<VertexInfo> _vertexTemplate;
 };
 
 NS_CC_END

@@ -86,6 +86,8 @@ struct CC_DLL PUParticle3D : public Particle3D
 	Ref *particleEntityPtr;
     PUParticle3DEmitter* parentEmitter;
 
+	Ref *visualData;
+
     ParticleType particleType;
     // Values that are assigned as soon as the particle is emitted (non-transformed)
     Vec3 positionInWorld;
@@ -223,6 +225,7 @@ public:
     static PUParticleSystem3D* create(const std::string &filePath, const std::string &materialPath);
     
     virtual void update(float delta) override;
+	void forceUpdate(float delta);
     
     /**
      * particle system play control
@@ -310,6 +313,11 @@ public:
 
 	void addBehaviourTemplate(PUParticle3DBehaviour *behaviour);
 
+	bool isMarkedForEmission() const {return _isMarkedForEmission;};
+	void setMarkedForEmission(bool isMarked) {_isMarkedForEmission = isMarked;};
+
+	void clearAllParticles();
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticleSystem3D();
     virtual ~PUParticleSystem3D();
@@ -370,6 +378,8 @@ protected:
     bool _maxVelocitySet;
 
     std::string _matName;
+
+	bool _isMarkedForEmission;
 };
 
 NS_CC_END

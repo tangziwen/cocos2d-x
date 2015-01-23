@@ -379,6 +379,7 @@ void PUParticle3DEmitter::prepare()
 			for (auto it : children){
 				if (it->getName() == _emitsName)
 				{
+					static_cast<PUParticleSystem3D *>(it)->setMarkedForEmission(true);
 					_emitsEntity = it;
 					break;
 				}

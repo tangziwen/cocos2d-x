@@ -206,6 +206,7 @@ void ParticleSystem3D::setRender(Particle3DRender* render)
     {
         CC_SAFE_RELEASE(_render);
         _render = render;
+		_render->_particleSystem = this;
         CC_SAFE_RETAIN(_render);
     }
 }

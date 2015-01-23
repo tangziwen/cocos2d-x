@@ -330,7 +330,11 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBeamRender.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBillboardChain.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRender.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrail.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrailRender.cpp" />
     <ClCompile Include="..\..\extensions\assets-manager\AssetsManager.cpp" />
     <ClCompile Include="..\..\extensions\assets-manager\AssetsManagerEx.cpp" />
     <ClCompile Include="..\..\extensions\assets-manager\CCEventAssetsManagerEx.cpp" />
@@ -839,7 +843,11 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnTimeObserverTranslator.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserver.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleObservers\CCPUParticle3DOnVelocityObserverTranslator.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBeamRender.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DBillboardChain.h" />
     <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRender.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrail.h" />
+    <ClInclude Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrailRender.h" />
     <ClInclude Include="..\..\extensions\assets-manager\AssetsManager.h" />
     <ClInclude Include="..\..\extensions\assets-manager\AssetsManagerEx.h" />
     <ClInclude Include="..\..\extensions\assets-manager\CCEventAssetsManagerEx.h" />
