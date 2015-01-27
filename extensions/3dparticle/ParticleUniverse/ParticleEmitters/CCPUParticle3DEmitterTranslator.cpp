@@ -68,6 +68,7 @@ void PUParticle3DEmitterTranslator::translate(PUScriptCompiler* compiler, PUAbst
     //}
     _emitter = PUParticle3DEmitterManager::Instance()->createEmitter(type);
     if (!_emitter) return;
+	_emitter->setEmitterType(type);
 
     if (parent && parent->context)
     {

@@ -318,6 +318,8 @@ public:
 
 	void clearAllParticles();
 
+	virtual void copyAttributesTo (PUParticleSystem3D* system);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticleSystem3D();
     virtual ~PUParticleSystem3D();
@@ -343,9 +345,11 @@ protected:
 protected:
 
     std::vector<PUParticle3DEmitter*> _emitters;
-    std::vector<PUParticle3DListener *> _listeners;
     std::vector<PUParticle3DObserver *> _observers;
+
+	//internal
     PUParticle3D::ParticleBehaviourList _behaviourTemplates;
+	std::vector<PUParticle3DListener *> _listeners;
 
     bool _prepared;
 

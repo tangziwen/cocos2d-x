@@ -24,13 +24,16 @@
 
 #include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
 #include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DEmitter.h"
+#include "3dparticle/ParticleUniverse/ParticleEmitters/CCPUParticle3DEmitterManager.h"
 #include "3dparticle/ParticleUniverse/ParticleAffectors/CCPUParticle3DAffector.h"
+#include "3dparticle/ParticleUniverse/ParticleAffectors/CCPUParticle3DAffectorManager.h"
 #include "3dparticle/CCParticle3DRender.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DScriptCompiler.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DMaterialManager.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DTranslateManager.h"
 #include "3dparticle/ParticleUniverse/CCPUParticle3DListener.h"
 #include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DObserver.h"
+#include "3dparticle/ParticleUniverse/ParticleObservers/CCPUParticle3DObserverManager.h"
 #include "3dparticle/ParticleUniverse/ParticleBehaviours/CCPUParticle3DBehaviour.h"
 #include "platform/CCFileUtils.h"
 
@@ -955,6 +958,50 @@ void PUParticleSystem3D::convertToUnixStylePath( std::string &path )
 void PUParticleSystem3D::clearAllParticles()
 {
 	_particlePool.lockAllParticles();
+}
+
+void PUParticleSystem3D::copyAttributesTo( PUParticleSystem3D* system )
+{
+	system->_state = _state;
+
+	PUParticle3DEmitter *copyEmitter = PUParticle3DEmitterManager::Instance()->createEmitter(static_cast<PUParticle3DEmitter *>(_emitter)->getEmitterType());
+	static_cast<PUParticle3DEmitter *>(_emitter)->copyAttributesTo(copyEmitter);
+	system->_emitter = copyEmitter;
+	
+	system->_render = static_cast<PUParticle3DRender *>(_render)->clone();
+	system->_particleQuota = _particleQuota;
+	system->_blend = _blend;
+	system->_keepLocal = _keepLocal;
+	system->_isEnabled = _isEnabled;
+
+	for (auto iter : _affectors){
+		PUParticle3DAffector *affector = static_cast<PUParticle3DAffector *>(iter);
+		PUParticle3DAffector *copy = PUParticle3DAffectorManager::Instance()->createAffector(affector->getAffectorType());
+		affector->copyAttributesTo(copy);
+		system->addAffector(copy);
+	}
+
+	for (auto iter : _emitters){
+		PUParticle3DEmitter *emitter = static_cast<PUParticle3DEmitter *>(iter);
+		PUParticle3DEmitter *copy = PUParticle3DEmitterManager::Instance()->createEmitter(emitter->getEmitterType());
+		emitter->copyAttributesTo(copy);
+		system->addEmitter(copy);
+	}
+
+	for (auto iter : _observers){
+		PUParticle3DObserver *observer = static_cast<PUParticle3DObserver *>(iter);
+		PUParticle3DObserver *copy = PUParticle3DObserverManager::Instance()->createObserver(observer->getObserverType());
+		observer->copyAttributesTo(copy);
+		system->addObserver(copy);
+	}
+
+	system->_particleSystemScaleVelocity = _particleSystemScaleVelocity;
+	system->_defaultWidth = _defaultWidth;
+	system->_defaultHeight = _defaultHeight;
+	system->_defaultDepth = _defaultDepth;
+	system->_maxVelocity = _maxVelocity;
+	system->_maxVelocitySet = _maxVelocitySet;
+	system->_matName = _matName;
 }
 
 NS_CC_END

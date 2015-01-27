@@ -1717,9 +1717,6 @@
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandlerTranslator.cpp">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.h.cpp">
-      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandlerTranslator.cpp">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClCompile>
@@ -1797,6 +1794,9 @@
     </ClCompile>
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleRenders\CCPUParticle3DRibbonTrail.cpp">
       <Filter>extension\3dparticle\ParticleUniverse\ParticleRenders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.cpp">
+      <Filter>extension\3dparticle\ParticleUniverse\ParticleEventHandlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

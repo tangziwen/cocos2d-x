@@ -599,6 +599,7 @@ void PUParticle3DRendererTranslator::translate(PUScriptCompiler* compiler, PUAbs
             if (material){
                 _renderer->setDepthTest(material->depthTest);
                 _renderer->setDepthWrite(material->depthWrite);
+				static_cast<PUParticle3DRender *>(_renderer)->setRenderType(type);
             }
             system->setRender(_renderer);
         }

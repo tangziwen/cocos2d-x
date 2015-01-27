@@ -82,4 +82,20 @@ PUParticle3DOnPositionObserver* PUParticle3DOnPositionObserver::create()
 	return ppo;
 }
 
+void PUParticle3DOnPositionObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+
+	PUParticle3DOnPositionObserver* onPositionObserver = static_cast<PUParticle3DOnPositionObserver*>(observer);
+	onPositionObserver->_positionXThreshold = _positionXThreshold;
+	onPositionObserver->_positionYThreshold = _positionYThreshold;
+	onPositionObserver->_positionZThreshold = _positionZThreshold;
+	onPositionObserver->_comparePositionX = _comparePositionX;
+	onPositionObserver->_comparePositionY = _comparePositionY;
+	onPositionObserver->_comparePositionZ = _comparePositionZ;
+	onPositionObserver->_positionXThresholdSet = _positionXThresholdSet;
+	onPositionObserver->_positionYThresholdSet = _positionYThresholdSet;
+	onPositionObserver->_positionZThresholdSet = _positionZThresholdSet;
+}
+
 NS_CC_END

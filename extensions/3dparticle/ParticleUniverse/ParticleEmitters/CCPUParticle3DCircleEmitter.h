@@ -72,6 +72,8 @@ public:
     */
     virtual void notifyStart(void) override;
 
+	virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DCircleEmitter(void);
     virtual ~PUParticle3DCircleEmitter(void) {};

@@ -64,7 +64,8 @@ void PUParticle3DAffectorTranslator::translate(PUScriptCompiler* compiler, PUAbs
     //}
     _affector = PUParticle3DAffectorManager::Instance()->createAffector(type);
     if (!_affector) return;
-    
+    _affector->setAffectorType(type);
+
     if (parent && parent->context)
     {
         PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);

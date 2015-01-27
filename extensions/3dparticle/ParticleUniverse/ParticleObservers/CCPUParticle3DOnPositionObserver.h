@@ -83,6 +83,8 @@ public:
 	const PUComparisionOperator getComparePositionY(void) const {return _comparePositionY;};
 	const PUComparisionOperator getComparePositionZ(void) const {return _comparePositionZ;};
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DOnPositionObserver(void);
 	virtual ~PUParticle3DOnPositionObserver(void) {};

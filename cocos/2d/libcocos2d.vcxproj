@@ -293,7 +293,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\external\chipmunk\prebuilt\win32\release-lib\*.*
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandler.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoEnableComponentEventHandlerTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandler.cpp" />
-    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.h.cpp" />
+    <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoExpireEventHandlerTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandler.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoFreezeEventHandlerTranslator.cpp" />
     <ClCompile Include="..\..\extensions\3dparticle\ParticleUniverse\ParticleEventHandlers\CCPUParticle3DDoPlacementParticleEventHandler.cpp" />

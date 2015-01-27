@@ -126,6 +126,9 @@ public:
 	*/
 	void destroyAll(void);
 
+	virtual PUParticle3DBeamRender* clone();
+	virtual void copyAttributesTo (PUParticle3DRender *render);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DBeamRender();
 	virtual ~PUParticle3DBeamRender();

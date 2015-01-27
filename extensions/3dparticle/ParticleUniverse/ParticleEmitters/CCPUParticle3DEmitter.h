@@ -353,6 +353,7 @@ protected:
     */
     void generateAngle(float &angle);
 
+	virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
     
 protected:
 

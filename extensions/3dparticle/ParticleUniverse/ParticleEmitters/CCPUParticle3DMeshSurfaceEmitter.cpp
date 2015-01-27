@@ -580,4 +580,14 @@ PUParticle3DMeshSurfaceEmitter* PUParticle3DMeshSurfaceEmitter::create()
     return pe;
 }
 
+void PUParticle3DMeshSurfaceEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
+{
+	PUParticle3DEmitter::copyAttributesTo(emitter);
+	PUParticle3DMeshSurfaceEmitter* meshSurfaceEmitter = static_cast<PUParticle3DMeshSurfaceEmitter*>(emitter);
+	meshSurfaceEmitter->_meshName = _meshName;
+	meshSurfaceEmitter->_distribution = _distribution;
+	meshSurfaceEmitter->_orientation = _orientation;
+	meshSurfaceEmitter->_scale = _scale;
+}
+
 NS_CC_END

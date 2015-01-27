@@ -56,6 +56,8 @@ public:
 	unsigned int getEventFlag(void) const {return _eventFlag;};
 	void setEventFlag(unsigned int eventFlag){_eventFlag = eventFlag;};
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DOnEventFlagObserver(void);
 	virtual ~PUParticle3DOnEventFlagObserver(void) {};

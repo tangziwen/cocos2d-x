@@ -166,6 +166,8 @@ public:
 	*/
 	bool isParticleTypeToObserveSet(void) const;
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DObserver(void);
 	virtual ~PUParticle3DObserver(void);

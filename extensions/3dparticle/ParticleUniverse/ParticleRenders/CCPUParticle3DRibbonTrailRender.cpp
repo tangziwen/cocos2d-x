@@ -104,8 +104,8 @@ PUParticle3DRibbonTrailRender::PUParticle3DRibbonTrailRender() :
 	_trailLength(DEFAULT_LENGTH),
 	_setWidth(false),
 	_trailWidth(DEFAULT_WIDTH),
-	_randomInitialColour(DEFAULT_RANDOM_INITIAL_COLOUR),
-	_initialColour(DEFAULT_INITIAL_COLOUR),
+	_randomInitialColor(DEFAULT_RANDOM_INITIAL_COLOUR),
+	_initialColor(DEFAULT_INITIAL_COLOUR),
 	_colorChange(DEFAULT_COLOUR_CHANGE),
 	_childNode(0)
 {
@@ -181,22 +181,22 @@ void PUParticle3DRibbonTrailRender::setTrailWidth(float trailWidth)
 //-----------------------------------------------------------------------
 bool PUParticle3DRibbonTrailRender::isRandomInitialColor(void) const
 {
-	return _randomInitialColour;
+	return _randomInitialColor;
 } 
 //-----------------------------------------------------------------------
 void PUParticle3DRibbonTrailRender::setRandomInitialColor(bool randomInitialColour)
 {
-	_randomInitialColour = randomInitialColour;
+	_randomInitialColor = randomInitialColour;
 } 
 //-----------------------------------------------------------------------
 const Vec4& PUParticle3DRibbonTrailRender::getInitialColor(void) const
 {
-	return _initialColour;
+	return _initialColor;
 } 
 //-----------------------------------------------------------------------
 void PUParticle3DRibbonTrailRender::setInitialColor(const Vec4& initialColour)
 {
-	_initialColour = initialColour;
+	_initialColor = initialColour;
 } 
 //-----------------------------------------------------------------------
 const Vec4& PUParticle3DRibbonTrailRender::getColorChange(void) const
@@ -273,13 +273,13 @@ void PUParticle3DRibbonTrailRender::prepare()
 			visualData->index = i;
 			_allVisualData.push_back(visualData); // Managed by this renderer
 			_visualData.push_back(visualData); // Used to assign to a particle
-			if (_randomInitialColour)
+			if (_randomInitialColor)
 			{
 				_trail->setInitialColour(i, CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1());
 			}
 			else
 			{
-				_trail->setInitialColour(i, _initialColour);
+				_trail->setInitialColour(i, _initialColor);
 			}
 			_trail->setColourChange(i, _colorChange);
 			if (_setWidth)
@@ -362,6 +362,26 @@ void PUParticle3DRibbonTrailRender::notifyRescaled( const Vec3& scale )
 			_trail->setInitialWidth(i, scale.x * _trailWidth);
 		}
 	}
+}
+
+PUParticle3DRibbonTrailRender* PUParticle3DRibbonTrailRender::clone()
+{
+	auto tr = PUParticle3DRibbonTrailRender::create(_texFile);
+	copyAttributesTo(tr);
+	return tr;
+}
+
+void PUParticle3DRibbonTrailRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
+	PUParticle3DRibbonTrailRender *trailRender = static_cast<PUParticle3DRibbonTrailRender*>(render);
+	trailRender->setUseVertexColors(_useVertexColours);
+	trailRender->setMaxChainElements(_maxChainElements);
+	trailRender->setTrailLength(_trailLength);
+	trailRender->setTrailWidth(_trailWidth);
+	trailRender->setRandomInitialColor(_randomInitialColor);
+	trailRender->setInitialColor(_initialColor);
+	trailRender->setColorChange(_colorChange);
 }
 
 NS_CC_END

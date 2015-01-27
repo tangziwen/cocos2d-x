@@ -110,4 +110,14 @@ PUParticle3DOnTimeObserver* PUParticle3DOnTimeObserver::create()
 	return pto;
 }
 
+void PUParticle3DOnTimeObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+
+	PUParticle3DOnTimeObserver* onTimeObserver = static_cast<PUParticle3DOnTimeObserver*>(observer);
+	onTimeObserver->_threshold = _threshold;
+	onTimeObserver->_compare = _compare;
+	onTimeObserver->_sinceStartSystem = _sinceStartSystem;
+}
+
 NS_CC_END

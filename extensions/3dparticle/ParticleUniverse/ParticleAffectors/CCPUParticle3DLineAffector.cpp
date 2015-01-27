@@ -163,4 +163,16 @@ PUParticle3DLineAffector* PUParticle3DLineAffector::create()
     return pla;
 }
 
+void PUParticle3DLineAffector::copyAttributesTo( PUParticle3DAffector* affector )
+{
+	PUParticle3DAffector::copyAttributesTo(affector);
+
+	PUParticle3DLineAffector* lineAffector = static_cast<PUParticle3DLineAffector*>(affector);
+	lineAffector->setMaxDeviation(_maxDeviation);
+	lineAffector->_end = _end;
+	lineAffector->_timeStep = _timeStep;
+	lineAffector->_drift = _drift;
+	lineAffector->_oneMinusDrift = _oneMinusDrift;
+}
+
 NS_CC_END

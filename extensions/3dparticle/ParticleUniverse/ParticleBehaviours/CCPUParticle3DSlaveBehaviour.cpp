@@ -47,12 +47,10 @@ void PUParticle3DSlaveBehaviour::updateBehaviour( PUParticle3D *particle, float 
 	}
 }
 
-PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::clone() const
+PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::clone()
 {
 	auto pb = PUParticle3DSlaveBehaviour::create();
-	pb->_particleSystem = _particleSystem;
-	pb->_behaviourType = _behaviourType;
-	pb->_behaviourScale = _behaviourScale;
+	copyAttributesTo(pb);
 	return pb;
 }
 
@@ -61,6 +59,11 @@ PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::create()
 	auto pb = new PUParticle3DSlaveBehaviour();
 	pb->autorelease();
 	return pb;
+}
+
+void PUParticle3DSlaveBehaviour::copyAttributesTo( PUParticle3DBehaviour* behaviour )
+{
+	PUParticle3DBehaviour::copyAttributesTo(behaviour);
 }
 
 NS_CC_END

@@ -55,6 +55,8 @@ public:
     */
     void calculateDirectionAfterCollision(PUParticle3D* particle, float timeElapsed);
 
+	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
 CC_CONSTRUCTOR_ACCESS:	
 	PUParticle3DPlaneCollider(void);
 	virtual ~PUParticle3DPlaneCollider(void);

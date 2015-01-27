@@ -62,6 +62,7 @@ void PUParticle3DEventHandlerTranslator::translate(PUScriptCompiler* compiler, P
 		return;
 	}
 
+	_handler->setEventHandlerType(type);
 	if (parent && parent->context)
 	{
 		PUParticle3DObserver* observer = static_cast<PUParticle3DObserver *>(parent->context);

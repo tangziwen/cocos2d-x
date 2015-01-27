@@ -123,6 +123,9 @@ public:
 	*/
 	void destroyAll(void);
 
+	virtual PUParticle3DRibbonTrailRender* clone();
+	virtual void copyAttributesTo (PUParticle3DRender *render);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DRibbonTrailRender();
 	virtual ~PUParticle3DRibbonTrailRender();
@@ -138,10 +141,10 @@ protected:
 	size_t _maxChainElements;
 	float _trailLength;
 	float _trailWidth;
-	bool _randomInitialColour;
+	bool _randomInitialColor;
 	bool _setLength;
 	bool _setWidth;
-	Vec4 _initialColour;
+	Vec4 _initialColor;
 	Vec4 _colorChange;
 	Node* _childNode;
 	std::string _texFile;

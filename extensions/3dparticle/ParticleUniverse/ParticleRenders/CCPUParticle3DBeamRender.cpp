@@ -70,7 +70,7 @@ void PUParticle3DBeamRender::render( Renderer* renderer, const Mat4 &transform, 
 		auto particle = static_cast<PUParticle3D *>(iter);
 		auto visualData = static_cast<PUParticle3DBeamVisualData*>(particle->visualData);
 		if (visualData){
-			Vec3 end = particle->position - basePosition;
+			Vec3 end = particle->positionInWorld - basePosition;
 			PUSimpleSpline spline;
 
 			// Add points
@@ -294,7 +294,7 @@ void PUParticle3DBeamRender::updateRender( PUParticle3D *particle, float deltaTi
 	if (beamRendererVisualData->timeSinceLastUpdate < 0)
 	{
 
-		Vec3 end = particle->position - static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedPosition();
+		Vec3 end = particle->positionInWorld - static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedPosition();
 		Vec3 perpendicular;
 		float divide = (float)_numberOfSegments + 1.0f;
 		for (size_t numDev = 0; numDev < _numberOfSegments; ++numDev)
@@ -346,6 +346,26 @@ void PUParticle3DBeamRender::destroyAll(void)
 
 	_allVisualData.clear();
 	_visualData.clear();
+}
+
+PUParticle3DBeamRender* PUParticle3DBeamRender::clone()
+{
+	auto br = PUParticle3DBeamRender::create(_texFile);
+	copyAttributesTo(br);
+	return br;
+}
+
+void PUParticle3DBeamRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
+	PUParticle3DBeamRender *beamRender = static_cast<PUParticle3DBeamRender*>(render);
+	beamRender->setUseVertexColours(_useVertexColours);
+	beamRender->setMaxChainElements(_maxChainElements);
+	beamRender->setUpdateInterval(_updateInterval);
+	beamRender->setDeviation(_deviation);
+	beamRender->setNumberOfSegments(_numberOfSegments);
+	beamRender->setJump(_jump);
+	beamRender->setTexCoordDirection(_texCoordDirection);
 }
 
 NS_CC_END

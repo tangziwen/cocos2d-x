@@ -75,4 +75,13 @@ PUParticle3DOnVelocityObserver* PUParticle3DOnVelocityObserver::create()
 	return pvo;
 }
 
+void PUParticle3DOnVelocityObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+
+	PUParticle3DOnVelocityObserver* onVelocityObserver = static_cast<PUParticle3DOnVelocityObserver*>(observer);
+	onVelocityObserver->_threshold = _threshold;
+	onVelocityObserver->_compare = _compare;
+}
+
 NS_CC_END

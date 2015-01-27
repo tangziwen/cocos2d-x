@@ -104,4 +104,12 @@ PUParticle3DSphereSurfaceEmitter* PUParticle3DSphereSurfaceEmitter::create()
     return pe;
 }
 
+void PUParticle3DSphereSurfaceEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
+{
+	PUParticle3DEmitter::copyAttributesTo(emitter);
+
+	PUParticle3DSphereSurfaceEmitter* sphereSurfaceEmitter = static_cast<PUParticle3DSphereSurfaceEmitter*>(emitter);
+	sphereSurfaceEmitter->_radius = _radius;
+}
+
 NS_CC_END

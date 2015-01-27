@@ -48,6 +48,8 @@ public:
     */
     void setRadius(float radius);
 
+	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DCollisionAvoidanceAffector();
     virtual ~PUParticle3DCollisionAvoidanceAffector();

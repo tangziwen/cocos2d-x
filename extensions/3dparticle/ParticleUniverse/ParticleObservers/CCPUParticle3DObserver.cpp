@@ -312,4 +312,33 @@ void PUParticle3DObserver::firstParticleUpdate( PUParticle3D *particle, float de
 
 }
 
+void PUParticle3DObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	// Copy attributes
+	observer->setName(_name);
+	observer->_particleTypeToObserve = _particleTypeToObserve;
+	observer->_particleTypeToObserveSet = _particleTypeToObserveSet;
+	observer->_particleSystem = _particleSystem;
+	observer->_observerScale = _observerScale;
+	observer->_observerInterval = _observerInterval;
+	observer->_observerIntervalRemainder = _observerIntervalRemainder;
+	observer->_observerIntervalSet = _observerIntervalSet;
+	observer->_observeUntilEvent = _observeUntilEvent;
+	observer->_eventHandlersExecuted = _eventHandlersExecuted;
+	observer->_enabled = _enabled;
+	observer->_originalEnabled = _originalEnabled;
+	observer->_originalEnabledSet = _originalEnabledSet;
+
+	// Copy event handlers
+	size_t i = 0;
+	PUParticle3DEventHandler* eventHandler = 0;
+	for(i = 0; i < getNumEventHandlers(); ++i)
+	{
+		eventHandler = getEventHandler(i);
+		PUParticle3DEventHandler *clonedEventHandler = PUParticle3DEventHandlerManager::Instance()->createEventHandler(eventHandler->getEventHandlerType());
+		eventHandler->copyAttributesTo(clonedEventHandler);
+		observer->addEventHandler(clonedEventHandler);
+	}
+}
+
 NS_CC_END

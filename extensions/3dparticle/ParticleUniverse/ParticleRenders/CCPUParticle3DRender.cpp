@@ -39,6 +39,11 @@
 
 NS_CC_BEGIN
 
+void PUParticle3DRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	render->_renderType = _renderType;
+}
+
 static bool compareParticle3D(PUParticle3D* left, PUParticle3D* right)
 {
     return left->depthInView > right->depthInView;
@@ -376,6 +381,27 @@ void PUParticle3DQuadRender::setType( Type type )
     }
 }
 
+void PUParticle3DQuadRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
+	PUParticle3DQuadRender *quadRender = static_cast<PUParticle3DQuadRender *>(render);
+	quadRender->_type = _type;
+	quadRender->_origin = _origin;
+	quadRender->_rotateType = _rotateType;
+	quadRender->_commonDir = _commonDir;
+	quadRender->_commonUp = _commonUp;
+	quadRender->_textureCoordsRows = _textureCoordsRows;
+	quadRender->_textureCoordsColumns = _textureCoordsColumns;
+	quadRender->_textureCoordsRowStep = _textureCoordsRowStep;
+	quadRender->_textureCoordsColStep = _textureCoordsColStep;
+}
+
+PUParticle3DQuadRender* PUParticle3DQuadRender::clone()
+{
+	auto render = PUParticle3DQuadRender::create(_texFile);
+	copyAttributesTo(render);
+	return render;
+}
 
 PUParticle3DModelRender* PUParticle3DModelRender::create( const std::string& modelFile, const std::string &texFile /*= ""*/ )
 {
@@ -445,6 +471,18 @@ PUParticle3DModelRender::~PUParticle3DModelRender()
 
 }
 
+void PUParticle3DModelRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
+}
+
+PUParticle3DModelRender* PUParticle3DModelRender::clone()
+{
+	auto mr = PUParticle3DModelRender::create(_modelFile, _texFile);
+	copyAttributesTo(mr);
+	return mr;
+}
+
 
 PUParticle3DEntityRender::PUParticle3DEntityRender()
 	: _meshCommand(nullptr)
@@ -474,6 +512,7 @@ void PUParticle3DEntityRender::initRender( const std::string &texFile )
 		if (tex)
 		{
 			_texture = tex;
+			_texFile = texFile;
 			glProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_3D_PARTICLE_TEXTURE);
 		}
 	}
@@ -506,6 +545,11 @@ void PUParticle3DEntityRender::setDepthWrite( bool isDepthWrite )
 {
 	Particle3DRender::setDepthWrite(isDepthWrite);
 	_meshCommand->setDepthWriteEnabled(_depthWrite);
+}
+
+void PUParticle3DEntityRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
 }
 
 PUParticle3DBoxRender::PUParticle3DBoxRender()
@@ -662,6 +706,13 @@ void PUParticle3DBoxRender::reBuildIndices(unsigned short count)
 	}
 }
 
+PUParticle3DBoxRender* PUParticle3DBoxRender::clone()
+{
+	auto render = PUParticle3DBoxRender::create(_texFile);
+	copyAttributesTo(render);
+	return render;
+}
+
 
 PUParticle3DSphereRender* PUParticle3DSphereRender::create( const std::string &texFile)
 {
@@ -798,6 +849,21 @@ PUParticle3DSphereRender::PUParticle3DSphereRender()
 PUParticle3DSphereRender::~PUParticle3DSphereRender()
 {
 
+}
+
+void PUParticle3DSphereRender::copyAttributesTo( PUParticle3DRender *render )
+{
+	PUParticle3DRender::copyAttributesTo(render);
+	PUParticle3DSphereRender *sphereRender = static_cast<PUParticle3DSphereRender *>(render);
+	sphereRender->_numberOfRings = _numberOfRings;
+	sphereRender->_numberOfSegments = _numberOfSegments;
+}
+
+PUParticle3DSphereRender* PUParticle3DSphereRender::clone()
+{
+	auto render = PUParticle3DSphereRender::create(_texFile);
+	copyAttributesTo(render);
+	return render;
 }
 
 NS_CC_END

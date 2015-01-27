@@ -114,4 +114,15 @@ void PUParticle3DBaseCollider::preUpdateAffector( float deltaTime )
     _velocityScale = deltaTime * (static_cast<PUParticleSystem3D *>(_particleSystem))->getParticleSystemScaleVelocity();
 }
 
+void PUParticle3DBaseCollider::copyAttributesTo( PUParticle3DAffector* affector )
+{
+	PUParticle3DAffector::copyAttributesTo(affector);
+
+	PUParticle3DBaseCollider* baseCollider = static_cast<PUParticle3DBaseCollider*>(affector);
+	baseCollider->_bouncyness = _bouncyness;
+	baseCollider->_friction = _friction;
+	baseCollider->_intersectionType = _intersectionType;
+	baseCollider->_collisionType = _collisionType;
+}
+
 NS_CC_END

@@ -103,4 +103,14 @@ PUParticle3DOnCountObserver* PUParticle3DOnCountObserver::create()
 	return pco;
 }
 
+void PUParticle3DOnCountObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+
+	PUParticle3DOnCountObserver* onCountObserver = static_cast<PUParticle3DOnCountObserver*>(observer);
+	onCountObserver->_count = _count;
+	onCountObserver->_threshold = _threshold;
+	onCountObserver->_compare = _compare;
+}
+
 NS_CC_END

@@ -866,4 +866,85 @@ Ref* PUParticle3DEmitter::getEmitsEntityPtr() const
 	return _emitsEntity;
 }
 
+void PUParticle3DEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
+{
+	emitter->setName(_name);
+	emitter->setEmitsName(_emitsName);
+	emitter->setEmitsType(_emitsType);
+	emitter->_particleDirection = _particleDirection;
+	emitter->_originalParticleDirection = _originalParticleDirection;
+	emitter->_particleOrientation = _particleOrientation;
+	emitter->_particleOrientationRangeStart = _particleOrientationRangeStart;
+	emitter->_particleOrientationRangeEnd = _particleOrientationRangeEnd;
+	emitter->_particleOrientationRangeSet = _particleOrientationRangeSet;
+	emitter->_isMarkedForEmission = _isMarkedForEmission;
+	emitter->_particleSystem = _particleSystem;
+	emitter->_autoDirection = _autoDirection;
+	emitter->_forceEmission = _forceEmission;
+	emitter->_originalForceEmission = _originalForceEmission;
+	emitter->_forceEmissionExecuted = _forceEmissionExecuted;
+	emitter->_originalForceEmissionExecuted = _originalForceEmissionExecuted;
+	emitter->_dynDurationSet = _dynDurationSet;
+	emitter->_dynRepeatDelaySet = _dynRepeatDelaySet;
+	emitter->_dynParticleAllDimensionsSet = _dynParticleAllDimensionsSet;
+	emitter->_dynParticleWidthSet = _dynParticleWidthSet;
+	emitter->_dynParticleHeightSet = _dynParticleHeightSet;
+	emitter->_dynParticleDepthSet = _dynParticleDepthSet;
+	emitter->_emitterScale = _emitterScale;
+	emitter->_particleColor = _particleColor;
+	emitter->_particleColorRangeStart = _particleColorRangeStart;
+	emitter->_particleColorRangeEnd = _particleColorRangeEnd;
+	emitter->_particleColorRangeSet = _particleColorRangeSet;
+	emitter->_particleTextureCoords = _particleTextureCoords;
+	emitter->_particleTextureCoordsRangeStart = _particleTextureCoordsRangeStart;
+	emitter->_particleTextureCoordsRangeEnd = _particleTextureCoordsRangeEnd;
+	emitter->_particleTextureCoordsRangeSet = _particleTextureCoordsRangeSet;
+	emitter->_keepLocal = _keepLocal;
+
+	// Copy Dyn. Emission rate if available
+	emitter->setDynEmissionRate(getDynEmissionRate()->clone());
+
+	// Copy Dyn. Total time to live if available
+	emitter->setDynTotalTimeToLive(getDynTotalTimeToLive()->clone());
+
+	// Copy Dyn. Velocity if available
+	emitter->setDynVelocity(getDynVelocity()->clone());
+
+	// Copy Dyn. Duration if available
+	if (_dynDurationSet)
+	{
+		emitter->setDynDuration(getDynDuration()->clone());
+	}
+
+	// Copy Dyn. RepeatDelay if available
+	if (_dynRepeatDelaySet)
+	{
+		emitter->setDynRepeatDelay(getDynRepeatDelay()->clone());
+	}
+
+	// Copy Dyn. Particle Mass if available
+	emitter->setDynParticleMass(getDynParticleMass()->clone());
+
+	// Copy Dyn. Angle if available
+	emitter->setDynAngle(getDynAngle()->clone());
+
+	// Copy Dyn. own width, height and depth if available
+	if (_dynParticleAllDimensionsSet)
+	{
+		emitter->setDynParticleAllDimensions(getDynParticleAllDimensions()->clone());
+	}
+	if (_dynParticleWidthSet)
+	{
+		emitter->setDynParticleWidth(getDynParticleWidth()->clone());
+	}
+	if (_dynParticleHeightSet)
+	{
+		emitter->setDynParticleHeight(getDynParticleHeight()->clone());
+	}
+	if (_dynParticleDepthSet)
+	{
+		emitter->setDynParticleDepth(getDynParticleDepth()->clone());
+	}
+}
+
 NS_CC_END

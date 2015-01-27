@@ -57,6 +57,8 @@ public:
 	const PUComparisionOperator getCompare(void) const {return _compare;};
 	void setCompare(PUComparisionOperator op){_compare = op;};
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DOnVelocityObserver(void);
 	virtual ~PUParticle3DOnVelocityObserver(void) {};

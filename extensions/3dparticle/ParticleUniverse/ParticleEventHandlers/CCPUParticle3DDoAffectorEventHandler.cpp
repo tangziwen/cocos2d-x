@@ -83,4 +83,12 @@ PUParticle3DDoAffectorEventHandler* PUParticle3DDoAffectorEventHandler::create()
 	return peh;
 }
 
+void PUParticle3DDoAffectorEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
+{
+	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+	PUParticle3DDoAffectorEventHandler* doAffectorEventHandler = static_cast<PUParticle3DDoAffectorEventHandler*>(eventHandler);
+	doAffectorEventHandler->setAffectorName(_affectorName);
+	doAffectorEventHandler->setPrePost(_prePost);
+}
+
 NS_CC_END

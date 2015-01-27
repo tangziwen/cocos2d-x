@@ -155,4 +155,16 @@ PUParticle3DRandomiser* PUParticle3DRandomiser::create()
     return pr;
 }
 
+void PUParticle3DRandomiser::copyAttributesTo( PUParticle3DAffector* affector )
+{
+	PUParticle3DAffector::copyAttributesTo(affector);
+
+	PUParticle3DRandomiser* randomiser = static_cast<PUParticle3DRandomiser*>(affector);
+	randomiser->_maxDeviationX = _maxDeviationX;
+	randomiser->_maxDeviationY = _maxDeviationY;
+	randomiser->_maxDeviationZ = _maxDeviationZ;
+	randomiser->setTimeStep(_timeStep); // Also sets time since last update to appropriate value
+	randomiser->_randomDirection = _randomDirection;
+}
+
 NS_CC_END

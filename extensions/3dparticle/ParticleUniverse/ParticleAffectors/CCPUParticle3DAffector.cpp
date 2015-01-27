@@ -190,4 +190,13 @@ float PUParticle3DAffector::getMass() const
     return _mass;
 }
 
+void PUParticle3DAffector::copyAttributesTo( PUParticle3DAffector* affector )
+{
+	affector->setName(_name);
+	affector->_isEnabled = _isEnabled;
+	affector->_particleSystem = _particleSystem;
+	affector->_affectorScale = _affectorScale;
+	affector->_affectSpecialisation = _affectSpecialisation;
+}
+
 NS_CC_END

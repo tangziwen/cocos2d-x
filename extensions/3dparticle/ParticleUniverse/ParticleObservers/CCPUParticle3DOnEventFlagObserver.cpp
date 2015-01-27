@@ -52,4 +52,12 @@ PUParticle3DOnEventFlagObserver* PUParticle3DOnEventFlagObserver::create()
 	return peo;
 }
 
+void PUParticle3DOnEventFlagObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+
+	PUParticle3DOnEventFlagObserver* onEventFlagObserver = static_cast<PUParticle3DOnEventFlagObserver*>(observer);
+	onEventFlagObserver->_eventFlag = _eventFlag;
+}
+
 NS_CC_END

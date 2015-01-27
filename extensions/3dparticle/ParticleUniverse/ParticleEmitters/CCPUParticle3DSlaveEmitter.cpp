@@ -148,4 +148,14 @@ PUParticle3DSlaveEmitter* PUParticle3DSlaveEmitter::create()
     return pe;
 }
 
+void PUParticle3DSlaveEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
+{
+	PUParticle3DEmitter::copyAttributesTo(emitter);
+
+	PUParticle3DSlaveEmitter* slaveEmitter = static_cast<PUParticle3DSlaveEmitter*>(emitter);
+	slaveEmitter->_masterTechniqueName = _masterTechniqueName;
+	slaveEmitter->_masterEmitterName = _masterEmitterName;
+	slaveEmitter->_masterEmitterNameSet = _masterEmitterNameSet;
+}
+
 NS_CC_END

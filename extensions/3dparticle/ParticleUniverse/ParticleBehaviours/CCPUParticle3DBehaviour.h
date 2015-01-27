@@ -36,7 +36,7 @@ NS_CC_BEGIN
 struct PUParticle3D;
 class PUParticleSystem3D;
 
-class CC_DLL PUParticle3DBehaviour : public Ref, public Clonable
+class CC_DLL PUParticle3DBehaviour : public Ref
 {
     friend class PUParticleSystem3D;
 public:
@@ -63,7 +63,8 @@ public:
 	*/
 	virtual void initParticleForExpiration(PUParticle3D* particle, float timeElapsed){/* No implementation */};
 
-	virtual PUParticle3DBehaviour* clone() const override;
+	virtual PUParticle3DBehaviour* clone();
+	virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
 
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DBehaviour(void);

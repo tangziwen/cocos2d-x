@@ -60,6 +60,8 @@ public:
 	float getThreshold(void) const {return _threshold;};
 	void setThreshold(float threshold){_threshold = threshold;};
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DOnRandomObserver(void);
 	virtual ~PUParticle3DOnRandomObserver(void) {};

@@ -421,12 +421,12 @@ void PURibbonTrail::resetAllTrails(void)
 void PURibbonTrail::update( float deltaTime )
 {
 	if (_needTimeUpdate){
-		//static float lastUpdateTime = 0.0f;
-		//if (1.0f < lastUpdateTime){
-			//timeUpdate(deltaTime);
-		//	lastUpdateTime = 0.0f;
-		//}
-		//lastUpdateTime += deltaTime;
+		static float lastUpdateTime = 0.0f;
+		if (0.5f < lastUpdateTime){
+			timeUpdate(deltaTime);
+			lastUpdateTime = 0.0f;
+		}
+		lastUpdateTime += deltaTime;
 	}
 
 	for (auto iter : _nodeToSegMap){

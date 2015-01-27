@@ -83,4 +83,12 @@ PUParticle3DDoScaleEventHandler* PUParticle3DDoScaleEventHandler::create()
 	return peh;
 }
 
+void PUParticle3DDoScaleEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
+{
+	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+	PUParticle3DDoScaleEventHandler* doScaleEventHandler = static_cast<PUParticle3DDoScaleEventHandler*>(eventHandler);
+	doScaleEventHandler->setScaleFraction(_scaleFraction);
+	doScaleEventHandler->setScaleType(_scaleType);
+}
+
 NS_CC_END

@@ -68,6 +68,8 @@ public:
 	bool isSinceStartSystem(void) const {return _sinceStartSystem;};
 	void setSinceStartSystem(bool sinceStartSystem){_sinceStartSystem = sinceStartSystem;};
 
+	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DOnTimeObserver(void);
 	virtual ~PUParticle3DOnTimeObserver(void) {};

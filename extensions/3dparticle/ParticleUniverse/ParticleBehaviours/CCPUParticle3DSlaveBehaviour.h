@@ -49,7 +49,8 @@ public:
 	*/
 	virtual void updateBehaviour(PUParticle3D *particle, float deltaTime);
 
-	virtual PUParticle3DSlaveBehaviour* clone() const override;
+	virtual PUParticle3DSlaveBehaviour* clone() override;
+	virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
 
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DSlaveBehaviour();

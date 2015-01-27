@@ -285,4 +285,15 @@ PUParticle3DBoxCollider* PUParticle3DBoxCollider::create()
     return pbc;
 }
 
+void PUParticle3DBoxCollider::copyAttributesTo( PUParticle3DAffector* affector )
+{
+	PUParticle3DBaseCollider::copyAttributesTo(affector);
+
+	PUParticle3DBoxCollider* boxCollider = static_cast<PUParticle3DBoxCollider*>(affector);
+	boxCollider->_width = _width;
+	boxCollider->_height = _height;
+	boxCollider->_depth = _depth;
+	boxCollider->_innerCollision = _innerCollision;
+}
+
 NS_CC_END

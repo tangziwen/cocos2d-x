@@ -45,4 +45,9 @@ PUParticle3DPointEmitter* PUParticle3DPointEmitter::create()
     return pe;
 }
 
+void PUParticle3DPointEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
+{
+	PUParticle3DEmitter::copyAttributesTo(emitter);
+}
+
 NS_CC_END

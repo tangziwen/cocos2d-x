@@ -63,4 +63,11 @@ PUParticle3DOnRandomObserver* PUParticle3DOnRandomObserver::create()
 	return pro;
 }
 
+void PUParticle3DOnRandomObserver::copyAttributesTo( PUParticle3DObserver* observer )
+{
+	PUParticle3DObserver::copyAttributesTo(observer);
+	PUParticle3DOnRandomObserver* onRandomObserver = static_cast<PUParticle3DOnRandomObserver*>(observer);
+	onRandomObserver->_threshold = _threshold;
+}
+
 NS_CC_END

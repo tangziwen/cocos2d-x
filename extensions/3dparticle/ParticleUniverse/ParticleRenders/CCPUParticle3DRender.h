@@ -42,6 +42,16 @@ public:
 	virtual void prepare(){};
 	virtual void unPrepare(){};
 	virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle){};
+
+	const std::string& getRenderType(void) const {return _renderType;};
+	void setRenderType(const std::string& observerType) {_renderType = observerType;};
+
+	virtual PUParticle3DRender* clone() = 0;
+	virtual void copyAttributesTo (PUParticle3DRender *render);
+
+protected:
+
+	std::string _renderType;
 };
 
 class CC_DLL PUParticle3DEntityRender : public PUParticle3DRender
@@ -50,6 +60,8 @@ public:
 
 	virtual void setDepthTest(bool isDepthTest);
 	virtual void setDepthWrite(bool isDepthWrite);
+
+	virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DEntityRender();
@@ -75,6 +87,8 @@ protected:
 
 	std::vector<VertexInfo> _vertices;
 	std::vector<unsigned short> _indices;
+
+	std::string _texFile;
 };
 
 class CC_DLL PUParticle3DQuadRender : public PUParticle3DEntityRender
@@ -130,6 +144,9 @@ public:
     unsigned int getNumTextureCoords();
 
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+	virtual PUParticle3DQuadRender* clone();
+	virtual void copyAttributesTo (PUParticle3DRender *render);
     
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DQuadRender();
@@ -143,6 +160,7 @@ protected:
     void fillTriangle(unsigned short index, unsigned short v0, unsigned short v1, unsigned short v2);
 
 protected:
+
     Type _type;
     Origin _origin;
     RotateType _rotateType;
@@ -162,6 +180,9 @@ public:
     static PUParticle3DModelRender* create(const std::string& modelFile, const std::string &texFile = "");
 
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+	virtual PUParticle3DModelRender* clone();
+	virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DModelRender();
@@ -183,6 +204,8 @@ public:
 
 	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
+	virtual PUParticle3DBoxRender* clone();
+
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DBoxRender();
 	virtual ~PUParticle3DBoxRender();
@@ -199,6 +222,9 @@ public:
 	static PUParticle3DSphereRender* create(const std::string &texFile = "");
 
 	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+
+	virtual PUParticle3DSphereRender* clone();
+	virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
 	PUParticle3DSphereRender();

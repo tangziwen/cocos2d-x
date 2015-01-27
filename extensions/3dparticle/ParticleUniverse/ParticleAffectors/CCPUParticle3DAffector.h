@@ -93,6 +93,8 @@ public:
     const std::string& getName(void) const {return _name;};
     void setName(const std::string& name) {_name = name;};
 
+	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DAffector();
     virtual ~PUParticle3DAffector();

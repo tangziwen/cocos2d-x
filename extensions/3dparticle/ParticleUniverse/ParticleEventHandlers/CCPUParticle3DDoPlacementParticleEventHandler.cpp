@@ -250,4 +250,23 @@ PUParticle3DDoPlacementParticleEventHandler* PUParticle3DDoPlacementParticleEven
 	return peh;
 }
 
+void PUParticle3DDoPlacementParticleEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
+{
+	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+	PUParticle3DDoPlacementParticleEventHandler* doPlacementParticleEventHandler = static_cast<PUParticle3DDoPlacementParticleEventHandler*>(eventHandler);
+	doPlacementParticleEventHandler->setForceEmitterName(_forceEmitterName);
+	doPlacementParticleEventHandler->setNumberOfParticles(_numberOfParticles);
+	doPlacementParticleEventHandler->_alwaysUsePosition = _alwaysUsePosition;
+	doPlacementParticleEventHandler->_inheritPosition = _inheritPosition;
+	doPlacementParticleEventHandler->_inheritDirection = _inheritDirection;
+	doPlacementParticleEventHandler->_inheritOrientation = _inheritOrientation;
+	doPlacementParticleEventHandler->_inheritTimeToLive = _inheritTimeToLive;
+	doPlacementParticleEventHandler->_inheritMass = _inheritMass;
+	doPlacementParticleEventHandler->_inheritTextureCoordinate = _inheritTextureCoordinate;
+	doPlacementParticleEventHandler->_inheritColour = _inheritColour;
+	doPlacementParticleEventHandler->_inheritParticleWidth = _inheritParticleWidth;
+	doPlacementParticleEventHandler->_inheritParticleHeight = _inheritParticleHeight;
+	doPlacementParticleEventHandler->_inheritParticleDepth = _inheritParticleDepth;
+}
+
 NS_CC_END

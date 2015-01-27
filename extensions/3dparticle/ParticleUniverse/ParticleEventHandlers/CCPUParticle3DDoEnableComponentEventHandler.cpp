@@ -153,4 +153,13 @@ PUParticle3DDoEnableComponentEventHandler* PUParticle3DDoEnableComponentEventHan
 	return peh;
 }
 
+void PUParticle3DDoEnableComponentEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
+{
+	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+	PUParticle3DDoEnableComponentEventHandler* doEnableComponentEventHandler = static_cast<PUParticle3DDoEnableComponentEventHandler*>(eventHandler);
+	doEnableComponentEventHandler->setComponentType(_componentType);
+	doEnableComponentEventHandler->setComponentName(_componentName);
+	doEnableComponentEventHandler->setComponentEnabled(_componentEnabled);
+}
+
 NS_CC_END

@@ -70,6 +70,7 @@ void PUParticle3DObserverTranslator::translate(PUScriptCompiler* compiler, PUAbs
 		//compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
 		return;
 	}
+	_observer->setObserverType(type);
 
 	if (parent && parent->context)
 	{
