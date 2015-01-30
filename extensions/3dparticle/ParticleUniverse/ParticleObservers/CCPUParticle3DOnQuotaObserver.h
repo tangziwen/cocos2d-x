@@ -39,24 +39,24 @@ class CC_DLL PUParticle3DOnQuotaObserver : public PUParticle3DObserver
 {
 public:
 
-	static PUParticle3DOnQuotaObserver* create();
+    static PUParticle3DOnQuotaObserver* create();
 
-	/** @copydoc ParticleObserver::_notifyStart */
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** @copydoc ParticleObserver::_notifyStart */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** @copydoc ParticleObserver::_notifyStart */
-	virtual void postUpdateObserver(float deltaTime) override;
+    /** @copydoc ParticleObserver::_notifyStart */
+    virtual void postUpdateObserver(float deltaTime) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnQuotaObserver(void) : PUParticle3DObserver(),
-		_result(false)
-	{
-	};
-	virtual ~PUParticle3DOnQuotaObserver(void) {};
+    PUParticle3DOnQuotaObserver(void) : PUParticle3DObserver(),
+        _result(false)
+    {
+    };
+    virtual ~PUParticle3DOnQuotaObserver(void) {};
 
 protected:
 
-	bool _result;
+    bool _result;
 };
 
 NS_CC_END

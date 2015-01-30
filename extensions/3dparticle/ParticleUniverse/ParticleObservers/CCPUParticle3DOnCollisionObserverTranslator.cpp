@@ -35,7 +35,7 @@ PUParticle3DOnCollisionObserverTranslator::PUParticle3DOnCollisionObserverTransl
 //-------------------------------------------------------------------------
 bool PUParticle3DOnCollisionObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnCollisionObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

@@ -47,7 +47,7 @@ public:
     PUDynamicAttribute* getDynAcceleration(void) const {return _dynAcceleration;};
     void setDynAcceleration(PUDynamicAttribute* dynAcceleration);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DJetAffector(void);

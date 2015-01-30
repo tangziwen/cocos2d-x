@@ -31,6 +31,7 @@
 #include "3dparticle/ParticleUniverse/CCPUParticle3DListener.h"
 #include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRender.h"
 #include "3dparticle/ParticleUniverse/ParticleRenders/CCPUParticle3DRibbonTrail.h"
+#include "3dparticle/ParticleUniverse/CCPUParticleSystem3D.h"
 #include <vector>
 
 NS_CC_BEGIN
@@ -39,36 +40,36 @@ class PUParticle3DRibbonTrailVisualData : public Ref
 {
 public:
 
-	//Constructor
-	PUParticle3DRibbonTrailVisualData (Node* sceneNode, PURibbonTrail* ribbonTrail) : 
-		node(sceneNode),
-		trail(ribbonTrail),
-		addedToTrail(false),
-		index(0){};
+    //Constructor
+    PUParticle3DRibbonTrailVisualData (Node* sceneNode, PURibbonTrail* ribbonTrail) : 
+        node(sceneNode),
+        trail(ribbonTrail),
+        addedToTrail(false),
+        index(0){};
 
-	Node* node;
-	bool addedToTrail;
-	PURibbonTrail* trail;
-	size_t index;
-	virtual void setVisible(bool visible)
-	{
-		if (visible)
-		{
-			if (!addedToTrail)
-			{
-				trail->addNode(node);
-				addedToTrail = true;
-			}
-		}
-		else
-		{
-			if (addedToTrail)
-			{
-				trail->removeNode(node);
-				addedToTrail = false;
-			}
-		}
-	};
+    Node* node;
+    bool addedToTrail;
+    PURibbonTrail* trail;
+    size_t index;
+    virtual void setVisible(bool visible)
+    {
+        if (visible)
+        {
+            if (!addedToTrail)
+            {
+                trail->addNode(node);
+                addedToTrail = true;
+            }
+        }
+        else
+        {
+            if (addedToTrail)
+            {
+                trail->removeNode(node);
+                addedToTrail = false;
+            }
+        }
+    };
 };
 
 // particle render for quad
@@ -76,78 +77,80 @@ class CC_DLL PUParticle3DRibbonTrailRender : public PUParticle3DRender, public P
 {
 public:
 
-	// Constants
-	static const bool DEFAULT_USE_VERTEX_COLOURS;
-	static const size_t DEFAULT_MAX_ELEMENTS;
-	static const float DEFAULT_LENGTH;
-	static const float DEFAULT_WIDTH;
-	static const bool DEFAULT_RANDOM_INITIAL_COLOUR;
-	static const Vec4 DEFAULT_INITIAL_COLOUR;
-	static const Vec4 DEFAULT_COLOUR_CHANGE;
+    // Constants
+    static const bool DEFAULT_USE_VERTEX_COLOURS;
+    static const size_t DEFAULT_MAX_ELEMENTS;
+    static const float DEFAULT_LENGTH;
+    static const float DEFAULT_WIDTH;
+    static const bool DEFAULT_RANDOM_INITIAL_COLOUR;
+    static const Vec4 DEFAULT_INITIAL_COLOUR;
+    static const Vec4 DEFAULT_COLOUR_CHANGE;
 
-	static PUParticle3DRibbonTrailRender* create(const std::string &texFile = "");
+    static PUParticle3DRibbonTrailRender* create(const std::string &texFile = "");
 
-	virtual void notifyRescaled(const Vec3& scale);
-	virtual void prepare();
-	virtual void unPrepare();
-	virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle);
+    virtual void notifyRescaled(const Vec3& scale);
+    virtual void prepare();
+    virtual void unPrepare();
+    virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle);
 
-	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
-	virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
-	virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
+    virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+    virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
+    virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
 
-	/** Getters and Setters
-	*/
-	bool isUseVertexColors(void) const;
-	void setUseVertexColors(bool useVertexColours);
+    /** Getters and Setters
+    */
+    bool isUseVertexColors(void) const;
+    void setUseVertexColors(bool useVertexColours);
 
-	size_t getMaxChainElements(void) const;
-	void setMaxChainElements(size_t maxChainElements);
+    size_t getMaxChainElements(void) const;
+    void setMaxChainElements(size_t maxChainElements);
 
-	float getTrailLength(void) const;
-	void setTrailLength(float trailLength);
+    float getTrailLength(void) const;
+    void setTrailLength(float trailLength);
 
-	float getTrailWidth(void) const;
-	void setTrailWidth(float trailWidth);
+    float getTrailWidth(void) const;
+    void setTrailWidth(float trailWidth);
 
-	bool isRandomInitialColor(void) const;
-	void setRandomInitialColor(bool randomInitialColour);
+    bool isRandomInitialColor(void) const;
+    void setRandomInitialColor(bool randomInitialColour);
 
-	const Vec4& getInitialColor(void) const;
-	void setInitialColor(const Vec4& initialColour);
+    const Vec4& getInitialColor(void) const;
+    void setInitialColor(const Vec4& initialColour);
 
-	const Vec4& getColorChange(void) const;
-	void setColorChange(const Vec4& colourChange);
+    const Vec4& getColorChange(void) const;
+    void setColorChange(const Vec4& colourChange);
 
-		/** Deletes all ChildSceneNodes en Entities.
-	*/
-	void destroyAll(void);
+        /** Deletes all ChildSceneNodes en Entities.
+    */
+    void destroyAll(void);
 
-	virtual PUParticle3DRibbonTrailRender* clone();
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DRibbonTrailRender* clone();
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DRibbonTrailRender();
-	virtual ~PUParticle3DRibbonTrailRender();
+    PUParticle3DRibbonTrailRender();
+    virtual ~PUParticle3DRibbonTrailRender();
+
+    void updateParticles(const ParticlePool &pool);
 
 protected:
 
-	std::vector<PUParticle3DRibbonTrailVisualData*> _allVisualData;
-	std::vector<PUParticle3DRibbonTrailVisualData*> _visualData;
-	size_t _quota;
-	PURibbonTrail* _trail;
-	std::string _ribbonTrailName;
-	bool _useVertexColours;
-	size_t _maxChainElements;
-	float _trailLength;
-	float _trailWidth;
-	bool _randomInitialColor;
-	bool _setLength;
-	bool _setWidth;
-	Vec4 _initialColor;
-	Vec4 _colorChange;
-	Node* _childNode;
-	std::string _texFile;
+    std::vector<PUParticle3DRibbonTrailVisualData*> _allVisualData;
+    std::vector<PUParticle3DRibbonTrailVisualData*> _visualData;
+    size_t _quota;
+    PURibbonTrail* _trail;
+    std::string _ribbonTrailName;
+    bool _useVertexColours;
+    size_t _maxChainElements;
+    float _trailLength;
+    float _trailWidth;
+    bool _randomInitialColor;
+    bool _setLength;
+    bool _setWidth;
+    Vec4 _initialColor;
+    Vec4 _colorChange;
+    Node* _childNode;
+    std::string _texFile;
 };
 
 

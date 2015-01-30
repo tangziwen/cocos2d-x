@@ -35,43 +35,43 @@ PUParticle3DOnCountObserverTranslator::PUParticle3DOnCountObserverTranslator()
 //-------------------------------------------------------------------------
 bool PUParticle3DOnCountObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnCountObserver* observer = static_cast<PUParticle3DOnCountObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnCountObserver* observer = static_cast<PUParticle3DOnCountObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONCOUNT_THRESHOLD])
-	{
-		// Property: count_threshold
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONCOUNT_THRESHOLD], 2))
-		{
-			std::string compareType;
-			unsigned int val = 0;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setCompare(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setCompare(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setCompare(CO_EQUALS);
-				}
-				++i;
-				if(getUInt(**i, &val))
-				{
-					observer->setThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONCOUNT_THRESHOLD])
+    {
+        // Property: count_threshold
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONCOUNT_THRESHOLD], 2))
+        {
+            std::string compareType;
+            unsigned int val = 0;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setCompare(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setCompare(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setCompare(CO_EQUALS);
+                }
+                ++i;
+                if(getUInt(**i, &val))
+                {
+                    observer->setThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnCountObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

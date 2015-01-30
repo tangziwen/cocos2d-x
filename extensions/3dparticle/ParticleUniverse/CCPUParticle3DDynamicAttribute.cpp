@@ -74,18 +74,18 @@ float PUDynamicAttributeFixed::getValue (float x)
 
 void PUDynamicAttributeFixed::copyAttributesTo( PUDynamicAttribute* dynamicAttribute )
 {
-	if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_FIXED)
-		return;
+    if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_FIXED)
+        return;
 
-	PUDynamicAttributeFixed* dynAttr = static_cast<PUDynamicAttributeFixed*>(dynamicAttribute);
-	dynAttr->_value = _value;
+    PUDynamicAttributeFixed* dynAttr = static_cast<PUDynamicAttributeFixed*>(dynamicAttribute);
+    dynAttr->_value = _value;
 }
 
 PUDynamicAttributeFixed* PUDynamicAttributeFixed::clone()
 {
-	auto af = new PUDynamicAttributeFixed();
-	this->copyAttributesTo(af);
-	return af;
+    auto af = new PUDynamicAttributeFixed();
+    this->copyAttributesTo(af);
+    return af;
 }
 
 //-----------------------------------------------------------------------
@@ -138,19 +138,19 @@ float PUDynamicAttributeRandom::getValue (float x)
 
 void PUDynamicAttributeRandom::copyAttributesTo( PUDynamicAttribute* dynamicAttribute )
 {
-	if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_RANDOM)
-		return;
+    if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_RANDOM)
+        return;
 
-	PUDynamicAttributeRandom* dynAttr = static_cast<PUDynamicAttributeRandom*>(dynamicAttribute);
-	dynAttr->_min = _min;
-	dynAttr->_max = _max;
+    PUDynamicAttributeRandom* dynAttr = static_cast<PUDynamicAttributeRandom*>(dynamicAttribute);
+    dynAttr->_min = _min;
+    dynAttr->_max = _max;
 }
 
 PUDynamicAttributeRandom* PUDynamicAttributeRandom::clone()
 {
-	auto ar = new PUDynamicAttributeRandom();
-	this->copyAttributesTo(ar);
-	return ar;
+    auto ar = new PUDynamicAttributeRandom();
+    this->copyAttributesTo(ar);
+    return ar;
 }
 
 //-----------------------------------------------------------------------
@@ -314,30 +314,30 @@ PUDynamicAttributeCurved::ControlPointList::iterator PUDynamicAttributeCurved::g
 
 void PUDynamicAttributeCurved::copyAttributesTo( PUDynamicAttribute* dynamicAttribute )
 {
-	if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_CURVED)
-		return;
+    if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_CURVED)
+        return;
 
-	PUDynamicAttributeCurved* dynAttr = static_cast<PUDynamicAttributeCurved*>(dynamicAttribute);
-	dynAttr->_interpolationType = _interpolationType;
-	dynAttr->_spline = _spline;
-	dynAttr->_range = _range;
+    PUDynamicAttributeCurved* dynAttr = static_cast<PUDynamicAttributeCurved*>(dynamicAttribute);
+    dynAttr->_interpolationType = _interpolationType;
+    dynAttr->_spline = _spline;
+    dynAttr->_range = _range;
 
-	// Copy controlpoints
-	PUDynamicAttributeCurved::ControlPointList::const_iterator it; // Need const_iterator here!
-	PUDynamicAttributeCurved::ControlPointList::const_iterator itEnd = _controlPoints.end();
-	for (it = _controlPoints.begin(); it != itEnd; ++it)
-	{
-		Vec2 controlPoint = *it;
-		dynAttr->_controlPoints.push_back(controlPoint);
-	}
-	dynAttr->processControlPoints();
+    // Copy controlpoints
+    PUDynamicAttributeCurved::ControlPointList::const_iterator it; // Need const_iterator here!
+    PUDynamicAttributeCurved::ControlPointList::const_iterator itEnd = _controlPoints.end();
+    for (it = _controlPoints.begin(); it != itEnd; ++it)
+    {
+        Vec2 controlPoint = *it;
+        dynAttr->_controlPoints.push_back(controlPoint);
+    }
+    dynAttr->processControlPoints();
 }
 
 PUDynamicAttributeCurved* PUDynamicAttributeCurved::clone()
 {
-	auto ac = new PUDynamicAttributeCurved();
-	this->copyAttributesTo(ac);
-	return ac;
+    auto ac = new PUDynamicAttributeCurved();
+    this->copyAttributesTo(ac);
+    return ac;
 }
 
 //-----------------------------------------------------------------------
@@ -434,22 +434,22 @@ float PUDynamicAttributeOscillate::getValue (float x)
 
 void PUDynamicAttributeOscillate::copyAttributesTo( PUDynamicAttribute* dynamicAttribute )
 {
-	if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_OSCILLATE)
-		return;
+    if (!dynamicAttribute || dynamicAttribute->getType() != PUDynamicAttribute::DAT_OSCILLATE)
+        return;
 
-	PUDynamicAttributeOscillate* dynAttr = static_cast<PUDynamicAttributeOscillate*>(dynamicAttribute);
-	dynAttr->_oscillationType = _oscillationType;
-	dynAttr->_frequency = _frequency;
-	dynAttr->_phase = _phase;
-	dynAttr->_base = _base;
-	dynAttr->_amplitude = _amplitude;
+    PUDynamicAttributeOscillate* dynAttr = static_cast<PUDynamicAttributeOscillate*>(dynamicAttribute);
+    dynAttr->_oscillationType = _oscillationType;
+    dynAttr->_frequency = _frequency;
+    dynAttr->_phase = _phase;
+    dynAttr->_base = _base;
+    dynAttr->_amplitude = _amplitude;
 }
 
 PUDynamicAttributeOscillate* PUDynamicAttributeOscillate::clone()
 {
-	auto ao = new PUDynamicAttributeOscillate();
-	this->copyAttributesTo(ao);
-	return ao;
+    auto ao = new PUDynamicAttributeOscillate();
+    this->copyAttributesTo(ao);
+    return ao;
 }
 
 //-----------------------------------------------------------------------

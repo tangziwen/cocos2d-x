@@ -35,43 +35,43 @@ PUParticle3DOnVelocityObserverTranslator::PUParticle3DOnVelocityObserverTranslat
 //-------------------------------------------------------------------------
 bool PUParticle3DOnVelocityObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnVelocityObserver* observer = static_cast<PUParticle3DOnVelocityObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnVelocityObserver* observer = static_cast<PUParticle3DOnVelocityObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONVELOCITY_THRESHOLD])
-	{
-		// Property: velocity_threshold
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONVELOCITY_THRESHOLD], 2))
-		{
-			std::string compareType;
-			float val = 0.0f;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setCompare(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setCompare(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setCompare(CO_EQUALS);
-				}
-				++i;
-				if(getFloat(**i, &val))
-				{
-					observer->setThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONVELOCITY_THRESHOLD])
+    {
+        // Property: velocity_threshold
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONVELOCITY_THRESHOLD], 2))
+        {
+            std::string compareType;
+            float val = 0.0f;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setCompare(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setCompare(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setCompare(CO_EQUALS);
+                }
+                ++i;
+                if(getFloat(**i, &val))
+                {
+                    observer->setThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnVelocityObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

@@ -33,62 +33,62 @@ const float PUParticle3DDoScaleEventHandler::DEFAULT_SCALE_FRACTION = 0.2f;
 
 //-----------------------------------------------------------------------
 PUParticle3DDoScaleEventHandler::PUParticle3DDoScaleEventHandler(void) : 
-	PUParticle3DEventHandler(),
-	_scaleFraction(DEFAULT_SCALE_FRACTION),
-	_scaleType(DEFAULT_SCALE_TYPE)
+    PUParticle3DEventHandler(),
+    _scaleFraction(DEFAULT_SCALE_FRACTION),
+    _scaleType(DEFAULT_SCALE_TYPE)
 {
 }
 //-----------------------------------------------------------------------
 const PUParticle3DDoScaleEventHandler::ScaleType& PUParticle3DDoScaleEventHandler::getScaleType(void) const
 {
-	return _scaleType;
+    return _scaleType;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DDoScaleEventHandler::setScaleType(const PUParticle3DDoScaleEventHandler::ScaleType& scaleType)
 {
-	_scaleType = scaleType;
+    _scaleType = scaleType;
 }
 //-----------------------------------------------------------------------
 const float PUParticle3DDoScaleEventHandler::getScaleFraction(void) const
 {
-	return _scaleFraction;
+    return _scaleFraction;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DDoScaleEventHandler::setScaleFraction(const float scaleFraction)
 {
-	_scaleFraction = scaleFraction;
+    _scaleFraction = scaleFraction;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DDoScaleEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return;
+    if (!particle)
+        return;
 
-	switch (_scaleType)
-	{
-	case ST_TIME_TO_LIVE:
-		particle->timeToLive -= timeElapsed * _scaleFraction * particle->timeToLive;
-		break;
+    switch (_scaleType)
+    {
+    case ST_TIME_TO_LIVE:
+        particle->timeToLive -= timeElapsed * _scaleFraction * particle->timeToLive;
+        break;
 
-	case ST_VELOCITY:
-		particle->direction += timeElapsed * _scaleFraction * particle->direction;
-		break;
-	}
+    case ST_VELOCITY:
+        particle->direction += timeElapsed * _scaleFraction * particle->direction;
+        break;
+    }
 }
 
 PUParticle3DDoScaleEventHandler* PUParticle3DDoScaleEventHandler::create()
 {
-	auto peh = new PUParticle3DDoScaleEventHandler();
-	peh->autorelease();
-	return peh;
+    auto peh = new PUParticle3DDoScaleEventHandler();
+    peh->autorelease();
+    return peh;
 }
 
 void PUParticle3DDoScaleEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
 {
-	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
-	PUParticle3DDoScaleEventHandler* doScaleEventHandler = static_cast<PUParticle3DDoScaleEventHandler*>(eventHandler);
-	doScaleEventHandler->setScaleFraction(_scaleFraction);
-	doScaleEventHandler->setScaleType(_scaleType);
+    PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+    PUParticle3DDoScaleEventHandler* doScaleEventHandler = static_cast<PUParticle3DDoScaleEventHandler*>(eventHandler);
+    doScaleEventHandler->setScaleFraction(_scaleFraction);
+    doScaleEventHandler->setScaleType(_scaleType);
 }
 
 NS_CC_END

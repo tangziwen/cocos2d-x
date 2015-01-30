@@ -39,56 +39,56 @@ class CC_DLL PUParticle3DRender : public Particle3DRender
 {
 public:
 
-	virtual void prepare(){};
-	virtual void unPrepare(){};
-	virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle){};
+    virtual void prepare(){};
+    virtual void unPrepare(){};
+    virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle){};
 
-	const std::string& getRenderType(void) const {return _renderType;};
-	void setRenderType(const std::string& observerType) {_renderType = observerType;};
+    const std::string& getRenderType(void) const {return _renderType;};
+    void setRenderType(const std::string& observerType) {_renderType = observerType;};
 
-	virtual PUParticle3DRender* clone() = 0;
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DRender* clone() = 0;
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 protected:
 
-	std::string _renderType;
+    std::string _renderType;
 };
 
 class CC_DLL PUParticle3DEntityRender : public PUParticle3DRender
 {
 public:
 
-	virtual void setDepthTest(bool isDepthTest);
-	virtual void setDepthWrite(bool isDepthWrite);
+    virtual void setDepthTest(bool isDepthTest);
+    virtual void setDepthWrite(bool isDepthWrite);
 
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DEntityRender();
-	virtual ~PUParticle3DEntityRender();
+    PUParticle3DEntityRender();
+    virtual ~PUParticle3DEntityRender();
 
 protected:
 
-	void initRender(const std::string &texFile);
+    void initRender(const std::string &texFile);
 
 protected:
 
-	struct VertexInfo
-	{
-		Vec3 position;
-		Vec2 uv;
-		Vec4 color;
-	};
-	MeshCommand* _meshCommand;
-	Texture2D*             _texture;
-	GLProgramState*        _glProgramState;
-	IndexBuffer*           _indexBuffer; //index buffer
-	VertexBuffer*          _vertexBuffer; // vertex buffer
+    struct VertexInfo
+    {
+        Vec3 position;
+        Vec2 uv;
+        Vec4 color;
+    };
+    MeshCommand* _meshCommand;
+    Texture2D*             _texture;
+    GLProgramState*        _glProgramState;
+    IndexBuffer*           _indexBuffer; //index buffer
+    VertexBuffer*          _vertexBuffer; // vertex buffer
 
-	std::vector<VertexInfo> _vertices;
-	std::vector<unsigned short> _indices;
+    std::vector<VertexInfo> _vertices;
+    std::vector<unsigned short> _indices;
 
-	std::string _texFile;
+    std::string _texFile;
 };
 
 class CC_DLL PUParticle3DQuadRender : public PUParticle3DEntityRender
@@ -145,8 +145,8 @@ public:
 
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
-	virtual PUParticle3DQuadRender* clone();
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DQuadRender* clone();
+    virtual void copyAttributesTo (PUParticle3DRender *render);
     
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DQuadRender();
@@ -181,8 +181,8 @@ public:
 
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
-	virtual PUParticle3DModelRender* clone();
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DModelRender* clone();
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DModelRender();
@@ -190,55 +190,55 @@ CC_CONSTRUCTOR_ACCESS:
 
 protected:
 
-	std::vector<Sprite3D *> _spriteList;
-	std::string _modelFile;
-	std::string _texFile;
-	Vec3 _spriteSize;
+    std::vector<Sprite3D *> _spriteList;
+    std::string _modelFile;
+    std::string _texFile;
+    Vec3 _spriteSize;
 };
 
 class CC_DLL PUParticle3DBoxRender : public PUParticle3DEntityRender
 {
 public:
 
-	static PUParticle3DBoxRender* create(const std::string &texFile = "");
+    static PUParticle3DBoxRender* create(const std::string &texFile = "");
 
-	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+    virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
-	virtual PUParticle3DBoxRender* clone();
+    virtual PUParticle3DBoxRender* clone();
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DBoxRender();
-	virtual ~PUParticle3DBoxRender();
+    PUParticle3DBoxRender();
+    virtual ~PUParticle3DBoxRender();
 
 protected:
 
-	void reBuildIndices(unsigned short count);
+    void reBuildIndices(unsigned short count);
 };
 
 class CC_DLL PUParticle3DSphereRender : public PUParticle3DEntityRender
 {
 public:
 
-	static PUParticle3DSphereRender* create(const std::string &texFile = "");
+    static PUParticle3DSphereRender* create(const std::string &texFile = "");
 
-	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+    virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
 
-	virtual PUParticle3DSphereRender* clone();
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DSphereRender* clone();
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DSphereRender();
-	virtual ~PUParticle3DSphereRender();
+    PUParticle3DSphereRender();
+    virtual ~PUParticle3DSphereRender();
 
 protected:
 
-	void buildBuffers(unsigned short count);
+    void buildBuffers(unsigned short count);
 
 protected:
 
-	unsigned short _numberOfRings;
-	unsigned short _numberOfSegments;
-	std::vector<VertexInfo> _vertexTemplate;
+    unsigned short _numberOfRings;
+    unsigned short _numberOfSegments;
+    std::vector<VertexInfo> _vertexTemplate;
 };
 
 NS_CC_END

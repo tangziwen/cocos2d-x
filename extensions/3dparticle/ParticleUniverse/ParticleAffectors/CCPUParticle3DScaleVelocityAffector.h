@@ -58,7 +58,7 @@ public:
     bool isStopAtFlip(void) const {return _stopAtFlip;};
     void setStopAtFlip(bool stopAtFlip){_stopAtFlip = stopAtFlip;};
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:	
     PUParticle3DScaleVelocityAffector(void);

@@ -35,7 +35,7 @@ PUParticle3DDoExpireEventHandlerTranslator::PUParticle3DDoExpireEventHandlerTran
 //-------------------------------------------------------------------------
 bool PUParticle3DDoExpireEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoExpireEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

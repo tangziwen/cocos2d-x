@@ -124,12 +124,12 @@ PUParticle3DVortexAffector* PUParticle3DVortexAffector::create()
 
 void PUParticle3DVortexAffector::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DAffector::copyAttributesTo(affector);
 
-	PUParticle3DVortexAffector* vortexAffector = static_cast<PUParticle3DVortexAffector*>(affector);
-	vortexAffector->_rotation = _rotation;
-	vortexAffector->_rotationVector = _rotationVector;
-	vortexAffector->setRotationSpeed(getRotationSpeed()->clone());
+    PUParticle3DVortexAffector* vortexAffector = static_cast<PUParticle3DVortexAffector*>(affector);
+    vortexAffector->_rotation = _rotation;
+    vortexAffector->_rotationVector = _rotationVector;
+    vortexAffector->setRotationSpeed(getRotationSpeed()->clone());
 }
 
 NS_CC_END

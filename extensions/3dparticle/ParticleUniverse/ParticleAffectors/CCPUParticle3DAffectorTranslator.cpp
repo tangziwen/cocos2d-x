@@ -150,22 +150,17 @@ void PUParticle3DAffectorTranslator::translate(PUScriptCompiler* compiler, PUAbs
             }
             else if (prop->name == token[TOKEN_AFFECTOR_EXCLUDE_EMITTER])
             {
-                //if (passValidatePropertyNoValues(compiler, prop, token[TOKEN_AFFECTOR_EXCLUDE_EMITTER]))
-                //{
-                //    for(AbstractNodeList::iterator j = prop->values.begin(); j != prop->values.end(); ++j)
-                //    {
-                //        String val;
-                //        if(getString(*j, &val))
-                //        {
-                //            mAffector->addEmitterToExclude(val);
-                //        }
-                //        else
-                //        {
-                //            compiler->addError(ScriptCompiler::CE_NUMBEREXPECTED, prop->file, prop->line,
-                //                               "PU Compiler: Error in exclude_emitter arguments");
-                //        }
-                //    }
-                //}
+                if (passValidatePropertyNoValues(compiler, prop, token[TOKEN_AFFECTOR_EXCLUDE_EMITTER]))
+                {
+                    for(PUAbstractNodeList::iterator j = prop->values.begin(); j != prop->values.end(); ++j)
+                    {
+                        std::string val;
+                        if(getString(**j, &val))
+                        {
+                            _affector->addEmitterToExclude(val);
+                        }
+                    }
+                }
             }
             else if (particleAffectorTranlator->translateChildProperty(compiler, *i))
             {

@@ -41,17 +41,17 @@ protected:
 
 public:
 
-	static PUParticle3DOnExpireObserver* create();
+    static PUParticle3DOnExpireObserver* create();
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnExpireObserver(void) : PUParticle3DObserver()
-	{
-	};
-	virtual ~PUParticle3DOnExpireObserver(void) {};
+    PUParticle3DOnExpireObserver(void) : PUParticle3DObserver()
+    {
+    };
+    virtual ~PUParticle3DOnExpireObserver(void) {};
 };
 
 NS_CC_END

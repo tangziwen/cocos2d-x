@@ -45,7 +45,7 @@ class Texture2D;
  */
 class CC_DLL Particle3DRender : public Ref
 {
-	friend class ParticleSystem3D;
+    friend class ParticleSystem3D;
 public:
 
     virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) = 0;
@@ -70,14 +70,15 @@ public:
 CC_CONSTRUCTOR_ACCESS:
     Particle3DRender()
         : _particleSystem(nullptr)
-		, _rendererScale(Vec3::ONE)
-		, _depthTest(true)
+        , _isVisible(true)
+        , _rendererScale(Vec3::ONE)
+        , _depthTest(true)
         , _depthWrite(false)
     {};
     virtual ~Particle3DRender(){};
     
 protected:
-	ParticleSystem3D *_particleSystem;
+    ParticleSystem3D *_particleSystem;
     bool  _isVisible;
     Vec3 _rendererScale;
     bool _depthTest;

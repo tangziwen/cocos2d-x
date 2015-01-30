@@ -29,16 +29,16 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 void PUParticle3DDoStopSystemEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
 {
-	ParticleSystem3D *parent = dynamic_cast<ParticleSystem3D *>(particleSystem->getParent());
-	if (parent)
-		parent->stopParticle();
+    ParticleSystem3D *parent = particleSystem->getParentParticleSystem();
+    if (parent)
+        parent->stopParticle();
 }
 
 PUParticle3DDoStopSystemEventHandler* PUParticle3DDoStopSystemEventHandler::create()
 {
-	auto peh = new PUParticle3DDoStopSystemEventHandler();
-	peh->autorelease();
-	return peh;
+    auto peh = new PUParticle3DDoStopSystemEventHandler();
+    peh->autorelease();
+    return peh;
 }
 
 NS_CC_END

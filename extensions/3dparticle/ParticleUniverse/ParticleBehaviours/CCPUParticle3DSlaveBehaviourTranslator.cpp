@@ -33,12 +33,12 @@ PUParticle3DSlaveBehaviourTranslator::PUParticle3DSlaveBehaviourTranslator()
 
 bool PUParticle3DSlaveBehaviourTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DSlaveBehaviourTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 NS_CC_END

@@ -55,7 +55,8 @@ public:
     const float getDepth(void) const;
     void setDepth(const float depth);
 
-	virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
+    virtual PUParticle3DBoxEmitter* clone();
+    virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DBoxEmitter(void);

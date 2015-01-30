@@ -38,16 +38,16 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DListener
 {
 public:
-	PUParticle3DListener();
-	virtual ~PUParticle3DListener();
+    PUParticle3DListener();
+    virtual ~PUParticle3DListener();
 
-	/*  Callback function, which is called as soon as a particle is emitted.
-	*/
-	virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) = 0;
+    /*  Callback function, which is called as soon as a particle is emitted.
+    */
+    virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) = 0;
 
-	/*  Callback function, which is called as soon as a particle is expired.
-	*/
-	virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) = 0;
+    /*  Callback function, which is called as soon as a particle is expired.
+    */
+    virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) = 0;
 };
 
 NS_CC_END

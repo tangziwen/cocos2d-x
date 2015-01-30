@@ -61,17 +61,17 @@ CC_CONSTRUCTOR_ACCESS:
 
 protected:
 
-	PUParticle3DOnClearObserverTranslator _onClearObserverTranslator;
-	PUParticle3DOnCollisionObserverTranslator _onCollisionObserverTranslator;
-	PUParticle3DOnCountObserverTranslator _onCountObserverTranslator;
-	PUParticle3DOnEmissionObserverTranslator _onEmissionObserverTranslator;
-	PUParticle3DOnEventFlagObserverTranslator _onEventFlagObserverTranslator;
-	PUParticle3DOnExpireObserverTranslator _onExpireObserverTranslator;
-	PUParticle3DOnPositionObserverTranslator _onPositionObserverTranslator;
-	PUParticle3DOnQuotaObserverTranslator _onQuotaObserverTranslator;
-	PUParticle3DOnRandomObserverTranslator _onRandomObserverTranslator;
-	PUParticle3DOnTimeObserverTranslator _onTimeObserverTranslator;
-	PUParticle3DOnVelocityObserverTranslator _onVelocityObserverTranslator;
+    PUParticle3DOnClearObserverTranslator _onClearObserverTranslator;
+    PUParticle3DOnCollisionObserverTranslator _onCollisionObserverTranslator;
+    PUParticle3DOnCountObserverTranslator _onCountObserverTranslator;
+    PUParticle3DOnEmissionObserverTranslator _onEmissionObserverTranslator;
+    PUParticle3DOnEventFlagObserverTranslator _onEventFlagObserverTranslator;
+    PUParticle3DOnExpireObserverTranslator _onExpireObserverTranslator;
+    PUParticle3DOnPositionObserverTranslator _onPositionObserverTranslator;
+    PUParticle3DOnQuotaObserverTranslator _onQuotaObserverTranslator;
+    PUParticle3DOnRandomObserverTranslator _onRandomObserverTranslator;
+    PUParticle3DOnTimeObserverTranslator _onTimeObserverTranslator;
+    PUParticle3DOnVelocityObserverTranslator _onVelocityObserverTranslator;
 };
 
 NS_CC_END

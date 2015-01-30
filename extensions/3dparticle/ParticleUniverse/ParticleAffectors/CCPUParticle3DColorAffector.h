@@ -69,7 +69,7 @@ public:
     */
     void setColorOperation (const ColorOperation& colorOperation);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DColorAffector();

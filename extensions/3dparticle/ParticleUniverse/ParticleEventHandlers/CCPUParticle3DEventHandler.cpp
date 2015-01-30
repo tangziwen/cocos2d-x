@@ -42,9 +42,9 @@ PUParticle3DEventHandler::~PUParticle3DEventHandler(  )
 
 void PUParticle3DEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
 {
-	eventHandler->setName(_name);
-	eventHandler->_parentObserver = _parentObserver;
-	eventHandler->_eventHandlerScale = _eventHandlerScale;
+    eventHandler->setName(_name);
+    eventHandler->_parentObserver = _parentObserver;
+    eventHandler->_eventHandlerScale = _eventHandlerScale;
 }
 
 NS_CC_END

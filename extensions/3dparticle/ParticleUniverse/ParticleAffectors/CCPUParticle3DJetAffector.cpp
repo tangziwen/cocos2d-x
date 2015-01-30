@@ -83,10 +83,10 @@ PUParticle3DJetAffector* PUParticle3DJetAffector::create()
 
 void PUParticle3DJetAffector::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DAffector::copyAttributesTo(affector);
 
-	PUParticle3DJetAffector* jetAffector = static_cast<PUParticle3DJetAffector*>(affector);
-	jetAffector->setDynAcceleration(getDynAcceleration()->clone());
+    PUParticle3DJetAffector* jetAffector = static_cast<PUParticle3DJetAffector*>(affector);
+    jetAffector->setDynAcceleration(getDynAcceleration()->clone());
 }
 
 NS_CC_END

@@ -31,17 +31,17 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 void PUParticle3DDoExpireEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return;
+    if (!particle)
+        return;
 
-	particle->timeToLive = 0.0f;
+    particle->timeToLive = 0.0f;
 }
 
 PUParticle3DDoExpireEventHandler* PUParticle3DDoExpireEventHandler::create()
 {
-	auto peh = new PUParticle3DDoExpireEventHandler();
-	peh->autorelease();
-	return peh;
+    auto peh = new PUParticle3DDoExpireEventHandler();
+    peh->autorelease();
+    return peh;
 }
 
 NS_CC_END

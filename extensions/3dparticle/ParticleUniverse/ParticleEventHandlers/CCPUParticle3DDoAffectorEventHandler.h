@@ -40,47 +40,47 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DDoAffectorEventHandler : public PUParticle3DEventHandler
 {
 public:
-	// Constants
-	static const bool DEFAULT_PRE_POST;
+    // Constants
+    static const bool DEFAULT_PRE_POST;
 
-	static PUParticle3DDoAffectorEventHandler* create();
+    static PUParticle3DDoAffectorEventHandler* create();
 
-	/** Get the indication whether pre- and postprocessing must be done.
-	*/
-	const bool getPrePost(void) const {return _prePost;};
+    /** Get the indication whether pre- and postprocessing must be done.
+    */
+    const bool getPrePost(void) const {return _prePost;};
 
-	/** Set the indication whether pre- and postprocessing must be done.
-	*/
-	void setPrePost(const bool prePost){_prePost = prePost;};
+    /** Set the indication whether pre- and postprocessing must be done.
+    */
+    void setPrePost(const bool prePost){_prePost = prePost;};
 
-	/** Get the name of the affector that must be enabled or disabled.
-	*/
-	const std::string& getAffectorName(void) const {return _affectorName;};
+    /** Get the name of the affector that must be enabled or disabled.
+    */
+    const std::string& getAffectorName(void) const {return _affectorName;};
 
-	/** Set the name of the affector.
-	*/
-	void setAffectorName(const std::string& affectorName){_affectorName = affectorName;};
+    /** Set the name of the affector.
+    */
+    void setAffectorName(const std::string& affectorName){_affectorName = affectorName;};
 
-	/** If the _handle() function of this class is invoked (by an Observer), it searches the 
-		ParticleAffector defined by the its name. 
-		The ParticleAffector is either part of the ParticleTechnique in which the 
-		DoAffectorEventHandler is defined, or if the Affector is not found, other 
-		ParticleTechniques are searched.
-	*/
-	virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** If the _handle() function of this class is invoked (by an Observer), it searches the 
+        ParticleAffector defined by the its name. 
+        The ParticleAffector is either part of the ParticleTechnique in which the 
+        DoAffectorEventHandler is defined, or if the Affector is not found, other 
+        ParticleTechniques are searched.
+    */
+    virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
-	virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
+    virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoAffectorEventHandler(void);
-	virtual ~PUParticle3DDoAffectorEventHandler(void) {};
+    PUParticle3DDoAffectorEventHandler(void);
+    virtual ~PUParticle3DDoAffectorEventHandler(void) {};
 
 protected:
-	// Identifies the name of affector
-	std::string _affectorName;
+    // Identifies the name of affector
+    std::string _affectorName;
 
-	// Determines whether the pre- and post processing activities must be executed also
-	bool _prePost;
+    // Determines whether the pre- and post processing activities must be executed also
+    bool _prePost;
 };
 
 NS_CC_END

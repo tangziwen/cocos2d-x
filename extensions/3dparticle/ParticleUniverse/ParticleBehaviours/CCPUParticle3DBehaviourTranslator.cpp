@@ -35,87 +35,88 @@ PUParticle3DBehaviourTranslator::PUParticle3DBehaviourTranslator()
 //-------------------------------------------------------------------------
 void PUParticle3DBehaviourTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode *node)
 {
-	PUObjectAbstractNode* obj = reinterpret_cast<PUObjectAbstractNode*>(node);
-	PUObjectAbstractNode* parent = obj->parent ? reinterpret_cast<PUObjectAbstractNode*>(obj->parent) : 0;
+    PUObjectAbstractNode* obj = reinterpret_cast<PUObjectAbstractNode*>(node);
+    PUObjectAbstractNode* parent = obj->parent ? reinterpret_cast<PUObjectAbstractNode*>(obj->parent) : 0;
 
-	// The name of the obj is the type of the Behaviour
-	std::string type;
-	if(!obj->name.empty())
-	{
-		type = obj->name;
-	}
-	else
-	{
-		//compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
-		return;
-	}
+    // The name of the obj is the type of the Behaviour
+    std::string type;
+    if(!obj->name.empty())
+    {
+        type = obj->name;
+    }
+    else
+    {
+        //compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
+        return;
+    }
 
-	//// Get the factory
-	//ParticleBehaviourFactory* behaviourFactory = ParticleSystemManager::getSingletonPtr()->getBehaviourFactory(type);
-	//if (!behaviourFactory)
-	//{
-	//	//compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
-	//	return;
-	//}
+    //// Get the factory
+    //ParticleBehaviourFactory* behaviourFactory = ParticleSystemManager::getSingletonPtr()->getBehaviourFactory(type);
+    //if (!behaviourFactory)
+    //{
+    //	//compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
+    //	return;
+    //}
 
-	PUScriptTranslator *particleBehaviourTranlator = PUParticle3DBehaviourManager::Instance()->getTranslator(type);
-	if (!particleBehaviourTranlator) return;
+    PUScriptTranslator *particleBehaviourTranlator = PUParticle3DBehaviourManager::Instance()->getTranslator(type);
+    if (!particleBehaviourTranlator) return;
 
-	// Create the Behaviour
-	_behaviour = PUParticle3DBehaviourManager::Instance()->createBehaviour(type);
-	if (!_behaviour)
-	{
-		//compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
-		return;
-	}
+    // Create the Behaviour
+    _behaviour = PUParticle3DBehaviourManager::Instance()->createBehaviour(type);
+    if (!_behaviour)
+    {
+        //compiler->addError(ScriptCompiler::CE_INVALIDPARAMETERS, obj->file, obj->line);
+        return;
+    }
 
-	if (parent && parent->context)
-	{
-		PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);
-		system->addBehaviourTemplate(_behaviour);
-	}
-	else
-	{
-		//// It is an alias
-		//_behaviour->setAliasName(parent->name);
-		//ParticleSystemManager::getSingletonPtr()->addAlias(mBehaviour);
-	}
+    _behaviour->setBehaviourType(type);
+    if (parent && parent->context)
+    {
+        PUParticleSystem3D* system = static_cast<PUParticleSystem3D*>(parent->context);
+        system->addBehaviourTemplate(_behaviour);
+    }
+    else
+    {
+        //// It is an alias
+        //_behaviour->setAliasName(parent->name);
+        //ParticleSystemManager::getSingletonPtr()->addAlias(mBehaviour);
+    }
 
-	// Set it in the context
-	obj->context = _behaviour;
+    // Set it in the context
+    obj->context = _behaviour;
 
-	// Run through properties
-	for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
-	{
-		// No properties of its own
-		if((*i)->type == ANT_PROPERTY)
-		{
-			PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>((*i));
-			if (particleBehaviourTranlator->translateChildProperty(compiler, *i))
-			{
-				// Parsed the property by another translator; do nothing
-			}
-			else
-			{
-				errorUnexpectedProperty(compiler, prop);
-			}
-		}
-		else if((*i)->type == ANT_OBJECT)
-		{
-			if (particleBehaviourTranlator->translateChildObject(compiler, *i))
-			{
-				// Parsed the object by another translator; do nothing
-			}
-			else
-			{
-				processNode(compiler, *i);
-			}
-		}
-		else
-		{
-			errorUnexpectedToken(compiler, *i);
-		}
-	}
+    // Run through properties
+    for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
+    {
+        // No properties of its own
+        if((*i)->type == ANT_PROPERTY)
+        {
+            PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>((*i));
+            if (particleBehaviourTranlator->translateChildProperty(compiler, *i))
+            {
+                // Parsed the property by another translator; do nothing
+            }
+            else
+            {
+                errorUnexpectedProperty(compiler, prop);
+            }
+        }
+        else if((*i)->type == ANT_OBJECT)
+        {
+            if (particleBehaviourTranlator->translateChildObject(compiler, *i))
+            {
+                // Parsed the object by another translator; do nothing
+            }
+            else
+            {
+                processNode(compiler, *i);
+            }
+        }
+        else
+        {
+            errorUnexpectedToken(compiler, *i);
+        }
+    }
 }
 
 NS_CC_END

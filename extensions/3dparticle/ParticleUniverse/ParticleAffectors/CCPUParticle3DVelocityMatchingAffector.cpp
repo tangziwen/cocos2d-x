@@ -118,9 +118,9 @@ PUParticle3DVelocityMatchingAffector* PUParticle3DVelocityMatchingAffector::crea
 
 void PUParticle3DVelocityMatchingAffector::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
-	PUParticle3DVelocityMatchingAffector* velocityMatchingAffector = static_cast<PUParticle3DVelocityMatchingAffector*>(affector);
-	velocityMatchingAffector->_radius = _radius;
+    PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DVelocityMatchingAffector* velocityMatchingAffector = static_cast<PUParticle3DVelocityMatchingAffector*>(affector);
+    velocityMatchingAffector->_radius = _radius;
 }
 
 NS_CC_END

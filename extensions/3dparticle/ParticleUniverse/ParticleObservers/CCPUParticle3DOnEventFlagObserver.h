@@ -38,29 +38,29 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DOnEventFlagObserver : public PUParticle3DObserver
 {
 protected:
-	unsigned int _eventFlag;
+    unsigned int _eventFlag;
 
 public:
 
-	static PUParticle3DOnEventFlagObserver* create();
+    static PUParticle3DOnEventFlagObserver* create();
 
-	// Constants
-	static const unsigned int DEFAULT_EVENT_FLAG;
+    // Constants
+    static const unsigned int DEFAULT_EVENT_FLAG;
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** 
-	*/
-	unsigned int getEventFlag(void) const {return _eventFlag;};
-	void setEventFlag(unsigned int eventFlag){_eventFlag = eventFlag;};
+    /** 
+    */
+    unsigned int getEventFlag(void) const {return _eventFlag;};
+    void setEventFlag(unsigned int eventFlag){_eventFlag = eventFlag;};
 
-	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+    virtual void copyAttributesTo (PUParticle3DObserver* observer);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnEventFlagObserver(void);
-	virtual ~PUParticle3DOnEventFlagObserver(void) {};
+    PUParticle3DOnEventFlagObserver(void);
+    virtual ~PUParticle3DOnEventFlagObserver(void) {};
 };
 
 NS_CC_END

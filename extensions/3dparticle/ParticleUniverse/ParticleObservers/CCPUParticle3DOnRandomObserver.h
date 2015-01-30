@@ -38,36 +38,36 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DOnRandomObserver : public PUParticle3DObserver
 {
 public:
-	// Constants
-	static const float DEFAULT_THRESHOLD;
+    // Constants
+    static const float DEFAULT_THRESHOLD;
 
-	static PUParticle3DOnRandomObserver* create();
+    static PUParticle3DOnRandomObserver* create();
 
-	/** See ParticleObserver::_preProcessParticles()
-	*/
-	virtual void preUpdateObserver(float deltaTime) override;
+    /** See ParticleObserver::_preProcessParticles()
+    */
+    virtual void preUpdateObserver(float deltaTime) override;
 
-	/** See ParticleObserver::_processParticle()
-	*/
-	virtual void updateObserver(PUParticle3D *particle, float deltaTime, bool firstParticle) override;
+    /** See ParticleObserver::_processParticle()
+    */
+    virtual void updateObserver(PUParticle3D *particle, float deltaTime, bool firstParticle) override;
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** 
-	*/
-	float getThreshold(void) const {return _threshold;};
-	void setThreshold(float threshold){_threshold = threshold;};
+    /** 
+    */
+    float getThreshold(void) const {return _threshold;};
+    void setThreshold(float threshold){_threshold = threshold;};
 
-	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+    virtual void copyAttributesTo (PUParticle3DObserver* observer);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnRandomObserver(void);
-	virtual ~PUParticle3DOnRandomObserver(void) {};
+    PUParticle3DOnRandomObserver(void);
+    virtual ~PUParticle3DOnRandomObserver(void) {};
 
 protected:
-	float _threshold; // Value between 0..1
+    float _threshold; // Value between 0..1
 };
 
 NS_CC_END

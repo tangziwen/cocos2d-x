@@ -38,7 +38,7 @@ public:
     // Constants
     static const Vec3 DEFAULT_NORMAL;
 
-	static PUParticle3DPlaneCollider* create();
+    static PUParticle3DPlaneCollider* create();
 
     virtual void notifyRescaled(const Vec3& scale) override;
     virtual void updatePUAffector(PUParticle3D *particle, float deltaTime) override;
@@ -55,11 +55,11 @@ public:
     */
     void calculateDirectionAfterCollision(PUParticle3D* particle, float timeElapsed);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:	
-	PUParticle3DPlaneCollider(void);
-	virtual ~PUParticle3DPlaneCollider(void);
+    PUParticle3DPlaneCollider(void);
+    virtual ~PUParticle3DPlaneCollider(void);
 
 protected:
     Vec3 _normal;

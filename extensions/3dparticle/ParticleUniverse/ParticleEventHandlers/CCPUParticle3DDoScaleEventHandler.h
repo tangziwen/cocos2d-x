@@ -39,48 +39,48 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DDoScaleEventHandler : public PUParticle3DEventHandler
 {
 public:
-	enum ScaleType
-	{
-		ST_TIME_TO_LIVE,
-		ST_VELOCITY
-	};
+    enum ScaleType
+    {
+        ST_TIME_TO_LIVE,
+        ST_VELOCITY
+    };
 
-	// Constants
-	static const ScaleType DEFAULT_SCALE_TYPE;
-	static const float DEFAULT_SCALE_FRACTION;
+    // Constants
+    static const ScaleType DEFAULT_SCALE_TYPE;
+    static const float DEFAULT_SCALE_FRACTION;
 
-	static PUParticle3DDoScaleEventHandler* create();
+    static PUParticle3DDoScaleEventHandler* create();
 
-	/** Returns the scale type
-	*/
-	const ScaleType& getScaleType(void) const;
+    /** Returns the scale type
+    */
+    const ScaleType& getScaleType(void) const;
 
-	/** Set the scale type. This scale type identifies to which attribute the scale factor is applied.
-	*/
-	void setScaleType(const ScaleType& scaleType);
+    /** Set the scale type. This scale type identifies to which attribute the scale factor is applied.
+    */
+    void setScaleType(const ScaleType& scaleType);
 
-	/** Returns the scale fraction
-	*/
-	const float getScaleFraction(void) const;
+    /** Returns the scale fraction
+    */
+    const float getScaleFraction(void) const;
 
-	/** Set the scale fraction. This scale fraction value is used to scale different attributes if the 
-		event handler is called.
-	*/
-	void setScaleFraction(const float scaleFraction);
+    /** Set the scale fraction. This scale fraction value is used to scale different attributes if the 
+        event handler is called.
+    */
+    void setScaleFraction(const float scaleFraction);
 
-	/** 
-	*/
-	virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
-	virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
+    virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoScaleEventHandler(void);
-	virtual ~PUParticle3DDoScaleEventHandler(void) {};
+    PUParticle3DDoScaleEventHandler(void);
+    virtual ~PUParticle3DDoScaleEventHandler(void) {};
 
 protected:
-	float _scaleFraction;
-	ScaleType _scaleType;
+    float _scaleFraction;
+    ScaleType _scaleType;
 };
 
 NS_CC_END

@@ -38,34 +38,34 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DOnVelocityObserver : public PUParticle3DObserver
 {
 public:
-	// Constants
-	static const float DEFAULT_VELOCITY_THRESHOLD;
+    // Constants
+    static const float DEFAULT_VELOCITY_THRESHOLD;
 
-	static PUParticle3DOnVelocityObserver* create();
+    static PUParticle3DOnVelocityObserver* create();
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** 
-	*/
-	float getThreshold(void) const {return _threshold;};
-	void setThreshold(float threshold){_threshold = threshold;};
+    /** 
+    */
+    float getThreshold(void) const {return _threshold;};
+    void setThreshold(float threshold){_threshold = threshold;};
 
-	/** 
-	*/
-	const PUComparisionOperator getCompare(void) const {return _compare;};
-	void setCompare(PUComparisionOperator op){_compare = op;};
+    /** 
+    */
+    const PUComparisionOperator getCompare(void) const {return _compare;};
+    void setCompare(PUComparisionOperator op){_compare = op;};
 
-	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+    virtual void copyAttributesTo (PUParticle3DObserver* observer);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnVelocityObserver(void);
-	virtual ~PUParticle3DOnVelocityObserver(void) {};
+    PUParticle3DOnVelocityObserver(void);
+    virtual ~PUParticle3DOnVelocityObserver(void) {};
 
 protected:
-	float _threshold;
-	PUComparisionOperator _compare;
+    float _threshold;
+    PUComparisionOperator _compare;
 
 };
 

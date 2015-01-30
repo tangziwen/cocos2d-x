@@ -42,56 +42,56 @@ class CC_DLL PUParticle3DDoEnableComponentEventHandler : public PUParticle3DEven
 {
 public:
 
-	static PUParticle3DDoEnableComponentEventHandler* create();
+    static PUParticle3DDoEnableComponentEventHandler* create();
 
-	/** Get the name of the component that must be enabled or disabled.
-	*/
-	const std::string& getComponentName(void) const {return _componentName;};
+    /** Get the name of the component that must be enabled or disabled.
+    */
+    const std::string& getComponentName(void) const {return _componentName;};
 
-	/** Set the name of the component that must be enabled or disables.
-	*/
-	void setComponentName(const std::string& componentName){_componentName = componentName;};
+    /** Set the name of the component that must be enabled or disables.
+    */
+    void setComponentName(const std::string& componentName){_componentName = componentName;};
 
-	/** Get the value that identifies whether the component must be enabled or disabled.
-	*/
-	bool isComponentEnabled(void) const {return _componentEnabled;};
+    /** Get the value that identifies whether the component must be enabled or disabled.
+    */
+    bool isComponentEnabled(void) const {return _componentEnabled;};
 
-	/** Set the value that identifies whether the component must be enabled or disabled.
-	*/
-	void setComponentEnabled(bool enabled){_componentEnabled = enabled;};
+    /** Set the value that identifies whether the component must be enabled or disabled.
+    */
+    void setComponentEnabled(bool enabled){_componentEnabled = enabled;};
 
-	/** Get the value that identifies whether the component must be enabled or disabled.
-	*/
-	PUComponentType getComponentType(void) const {return _componentType;};
+    /** Get the value that identifies whether the component must be enabled or disabled.
+    */
+    PUComponentType getComponentType(void) const {return _componentType;};
 
-	/** Set the value that identifies whether the component must be enabled or disabled.
-	*/
-	void setComponentType(PUComponentType componentType){_componentType = componentType;};
+    /** Set the value that identifies whether the component must be enabled or disabled.
+    */
+    void setComponentType(PUComponentType componentType){_componentType = componentType;};
 
-	/** If the _handle() function of this class is invoked (by an Observer), it searches the 
-		ParticleEmitter, ParticleAffector or ParticleTechnique defined by the its name. 
-		The ParticleEmitter/Affector is either part of the ParticleTechnique in which the 
-		DoEnableComponentEventHandler is defined, or if the ParticleEmitter/Affector is not 
-		found, other ParticleTechniques are searched.
-	*/
-	virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** If the _handle() function of this class is invoked (by an Observer), it searches the 
+        ParticleEmitter, ParticleAffector or ParticleTechnique defined by the its name. 
+        The ParticleEmitter/Affector is either part of the ParticleTechnique in which the 
+        DoEnableComponentEventHandler is defined, or if the ParticleEmitter/Affector is not 
+        found, other ParticleTechniques are searched.
+    */
+    virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
-	virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
+    virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoEnableComponentEventHandler(void);
-	virtual ~PUParticle3DDoEnableComponentEventHandler(void) {};
+    PUParticle3DDoEnableComponentEventHandler(void);
+    virtual ~PUParticle3DDoEnableComponentEventHandler(void) {};
 
 protected:
-	// Identifies the name of component
-	std::string _componentName;
+    // Identifies the name of component
+    std::string _componentName;
 
-	// Identifies the type of component
-	PUComponentType _componentType;
+    // Identifies the type of component
+    PUComponentType _componentType;
 
-	/** Determines whether the Component must be enabled or disabled.
-	*/
-	bool _componentEnabled;
+    /** Determines whether the Component must be enabled or disabled.
+    */
+    bool _componentEnabled;
 
 };
 

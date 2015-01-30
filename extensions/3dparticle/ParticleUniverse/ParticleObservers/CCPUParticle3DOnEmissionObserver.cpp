@@ -29,17 +29,17 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 bool PUParticle3DOnEmissionObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return false;
+    if (!particle)
+        return false;
 
-	return particle->hasEventFlags(PUParticle3D::PEF_EMITTED);
+    return particle->hasEventFlags(PUParticle3D::PEF_EMITTED);
 }
 
 PUParticle3DOnEmissionObserver* PUParticle3DOnEmissionObserver::create()
 {
-	auto peo = new PUParticle3DOnEmissionObserver();
-	peo->autorelease();
-	return peo;
+    auto peo = new PUParticle3DOnEmissionObserver();
+    peo->autorelease();
+    return peo;
 }
 
 NS_CC_END

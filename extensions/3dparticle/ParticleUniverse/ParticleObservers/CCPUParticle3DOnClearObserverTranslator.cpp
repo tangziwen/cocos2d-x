@@ -35,7 +35,7 @@ PUParticle3DOnClearObserverTranslator::PUParticle3DOnClearObserverTranslator()
 //-------------------------------------------------------------------------
 bool PUParticle3DOnClearObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnClearObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

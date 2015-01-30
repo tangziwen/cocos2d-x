@@ -30,49 +30,49 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 void PUParticle3DOnClearObserver::notifyStart (void)
 {
-	PUParticle3DObserver::notifyStart();
-	_continue = false;
+    PUParticle3DObserver::notifyStart();
+    _continue = false;
 }
 //-----------------------------------------------------------------------
 bool PUParticle3DOnClearObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	// This function always returns false, but is never called (but it must be implemented).
-	return false;
+    // This function always returns false, but is never called (but it must be implemented).
+    return false;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DOnClearObserver::updateObserver(PUParticle3D* particle, float timeElapsed, bool firstParticle)
 {
-	// Override the _processParticle() function, because we don't observe individual particles.
-	if (firstParticle)
-	{
-		// Only continue to validate if there was at least 1 particle emitted, otherwise the event-
-		// handlers are already called at the very start (when there are no particle yet).
-		_continue = true;
-	}
+    // Override the _processParticle() function, because we don't observe individual particles.
+    if (firstParticle)
+    {
+        // Only continue to validate if there was at least 1 particle emitted, otherwise the event-
+        // handlers are already called at the very start (when there are no particle yet).
+        _continue = true;
+    }
 }
 //-----------------------------------------------------------------------
 void PUParticle3DOnClearObserver::postUpdateObserver(float timeElapsed)
 {
-	if (_continue)
-	{
-		if (!(_particleSystem->getParticlePool().getActiveParticleList().size() > 0))
-		{
-			/** Handle the event. Use 0 as the particle pointer. This means that not all eventhandlers
-				are suitable. If they expect a particle (and most eventhandlers do), it could
-				result in an exception. Handlers such as the DoEnableComponentEventHandler and the
-				DoStopSystemEventHandler however can be used without any problem.
-			*/
-			handleEvent (0, timeElapsed);
-			_continue = false;
-		}
-	}
+    if (_continue)
+    {
+        if (static_cast<PUParticleSystem3D *>(_particleSystem)->getActiveParticleSize() <= 0)
+        {
+            /** Handle the event. Use 0 as the particle pointer. This means that not all eventhandlers
+                are suitable. If they expect a particle (and most eventhandlers do), it could
+                result in an exception. Handlers such as the DoEnableComponentEventHandler and the
+                DoStopSystemEventHandler however can be used without any problem.
+            */
+            handleEvent (0, timeElapsed);
+            _continue = false;
+        }
+    }
 }
 
 PUParticle3DOnClearObserver* PUParticle3DOnClearObserver::create()
 {
-	auto pco = new PUParticle3DOnClearObserver();
-	pco->autorelease();
-	return pco;
+    auto pco = new PUParticle3DOnClearObserver();
+    pco->autorelease();
+    return pco;
 }
 
 NS_CC_END

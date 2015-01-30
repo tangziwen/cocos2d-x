@@ -35,7 +35,7 @@ PUParticle3DDoFreezeEventHandlerTranslator::PUParticle3DDoFreezeEventHandlerTran
 //-------------------------------------------------------------------------
 bool PUParticle3DDoFreezeEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoFreezeEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

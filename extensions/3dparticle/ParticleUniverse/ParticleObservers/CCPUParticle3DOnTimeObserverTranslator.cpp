@@ -35,56 +35,56 @@ PUParticle3DOnTimeObserverTranslator::PUParticle3DOnTimeObserverTranslator()
 //-------------------------------------------------------------------------
 bool PUParticle3DOnTimeObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnTimeObserver* observer = static_cast<PUParticle3DOnTimeObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnTimeObserver* observer = static_cast<PUParticle3DOnTimeObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONTIME])
-	{
-		// Property: on_time
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONTIME], 2))
-		{
-			std::string compareType;
-			float val = 0.0f;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setCompare(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setCompare(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setCompare(CO_EQUALS);
-				}
-				++i;
-				if(getFloat(**i, &val))
-				{
-					observer->setThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
-	else if (prop->name == token[TOKEN_SINCE_START_SYSTEM])
-	{
-		// Property: since_start_system
-		if (passValidateProperty(compiler, prop, token[TOKEN_SINCE_START_SYSTEM], VAL_BOOL))
-		{
-			bool val;
-			if(getBoolean(*prop->values.front(), &val))
-			{
-				observer->setSinceStartSystem(val);
-				return true;
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONTIME])
+    {
+        // Property: on_time
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONTIME], 2))
+        {
+            std::string compareType;
+            float val = 0.0f;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setCompare(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setCompare(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setCompare(CO_EQUALS);
+                }
+                ++i;
+                if(getFloat(**i, &val))
+                {
+                    observer->setThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
+    else if (prop->name == token[TOKEN_SINCE_START_SYSTEM])
+    {
+        // Property: since_start_system
+        if (passValidateProperty(compiler, prop, token[TOKEN_SINCE_START_SYSTEM], VAL_BOOL))
+        {
+            bool val;
+            if(getBoolean(*prop->values.front(), &val))
+            {
+                observer->setSinceStartSystem(val);
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnTimeObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

@@ -39,16 +39,16 @@ class CC_DLL PUParticle3DOnEmissionObserver : public PUParticle3DObserver
 {
 public:
 
-	static PUParticle3DOnEmissionObserver* create();
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    static PUParticle3DOnEmissionObserver* create();
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnEmissionObserver(void) : PUParticle3DObserver()
-	{
-	};
-	virtual ~PUParticle3DOnEmissionObserver(void) {};
+    PUParticle3DOnEmissionObserver(void) : PUParticle3DObserver()
+    {
+    };
+    virtual ~PUParticle3DOnEmissionObserver(void) {};
 };
 
 NS_CC_END

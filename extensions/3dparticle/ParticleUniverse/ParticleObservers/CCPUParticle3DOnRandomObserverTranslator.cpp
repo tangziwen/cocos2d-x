@@ -35,25 +35,25 @@ PUParticle3DOnRandomObserverTranslator::PUParticle3DOnRandomObserverTranslator()
 //-------------------------------------------------------------------------
 bool PUParticle3DOnRandomObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnRandomObserver* observer = static_cast<PUParticle3DOnRandomObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnRandomObserver* observer = static_cast<PUParticle3DOnRandomObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONRANDOM_THRESHOLD])
-	{
-		// Property: random_threshold
-		if (passValidateProperty(compiler, prop, token[TOKEN_ONRANDOM_THRESHOLD], VAL_REAL))
-		{
-			float val = 0.0f;
-			if(getFloat(*prop->values.front(), &val))
-			{
-				observer->setThreshold(val);
-				return true;
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONRANDOM_THRESHOLD])
+    {
+        // Property: random_threshold
+        if (passValidateProperty(compiler, prop, token[TOKEN_ONRANDOM_THRESHOLD], VAL_REAL))
+        {
+            float val = 0.0f;
+            if(getFloat(*prop->values.front(), &val))
+            {
+                observer->setThreshold(val);
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnRandomObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

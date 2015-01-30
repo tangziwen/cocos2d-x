@@ -63,13 +63,13 @@ public:
     */
     virtual void handle(PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) = 0;
 
-	virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
+    virtual void copyAttributesTo (PUParticle3DEventHandler* eventHandler);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DEventHandler();
-	virtual ~PUParticle3DEventHandler();
+    PUParticle3DEventHandler();
+    virtual ~PUParticle3DEventHandler();
 
-	protected:
+    protected:
     // Observer to which the eventhandler is associated.
     PUParticle3DObserver* _parentObserver;
 

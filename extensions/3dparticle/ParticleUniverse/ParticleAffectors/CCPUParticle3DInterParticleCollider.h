@@ -67,7 +67,7 @@ public:
     */
     void setInterParticleCollisionResponse(InterParticleCollisionResponse interParticleCollisionResponse);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DInterParticleCollider(void);

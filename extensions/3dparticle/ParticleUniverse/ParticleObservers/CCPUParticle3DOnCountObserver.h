@@ -39,40 +39,40 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DOnCountObserver : public PUParticle3DObserver
 {
 protected:
-	unsigned int _count;
-	unsigned int _threshold;
-	PUComparisionOperator _compare;
+    unsigned int _count;
+    unsigned int _threshold;
+    PUComparisionOperator _compare;
 
 public:
 
-	static PUParticle3DOnCountObserver* create();
+    static PUParticle3DOnCountObserver* create();
 
-	// Constants
-	static const unsigned int DEFAULT_THRESHOLD;
-	static const PUComparisionOperator DEFAULT_COMPARE;
-	/** 
-	*/
-	virtual void notifyStart (void) override;
+    // Constants
+    static const unsigned int DEFAULT_THRESHOLD;
+    static const PUComparisionOperator DEFAULT_COMPARE;
+    /** 
+    */
+    virtual void notifyStart (void) override;
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** 
-	*/
-	unsigned int getThreshold(void) const {return _threshold;};
-	void setThreshold(unsigned int threshold){_threshold = threshold;};
+    /** 
+    */
+    unsigned int getThreshold(void) const {return _threshold;};
+    void setThreshold(unsigned int threshold){_threshold = threshold;};
 
-	/** 
-	*/
-	const PUComparisionOperator getCompare(void) const {return _compare;};
-	void setCompare(PUComparisionOperator op){_compare = op;};
+    /** 
+    */
+    const PUComparisionOperator getCompare(void) const {return _compare;};
+    void setCompare(PUComparisionOperator op){_compare = op;};
 
-	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+    virtual void copyAttributesTo (PUParticle3DObserver* observer);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnCountObserver(void);
-	virtual ~PUParticle3DOnCountObserver(void) {};
+    PUParticle3DOnCountObserver(void);
+    virtual ~PUParticle3DOnCountObserver(void) {};
 };
 
 NS_CC_END

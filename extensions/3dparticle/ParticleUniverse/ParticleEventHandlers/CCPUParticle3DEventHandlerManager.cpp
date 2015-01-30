@@ -50,41 +50,41 @@ PUParticle3DEventHandlerManager* PUParticle3DEventHandlerManager::Instance()
 
 PUScriptTranslator* PUParticle3DEventHandlerManager::getTranslator( const std::string &type )
 {
-	if (type == "DoAffector"){
-		return &_doAffectorEventHandlerTranslator;
-	}else if (type == "DoEnableComponent"){
-		return &_doEnableComponentEventHandlerTranslator;
-	}else if (type == "DoExpire"){
-		return &_doExpireEventHandlerTranslator;
-	}else if (type == "DoFreeze"){
-		return &_doFreezeEventHandlerTranslator;
-	}else if (type == "DoPlacementParticle"){
-		return &_doPlacementParticleEventHandlerTranslator;
-	}else if (type == "DoScale"){
-		return &_doScaleEventHandlerTranslator;
-	}else if (type == "DoStopSystem"){
-		return &_doStopSystemEventHandlerTranslator;
-	}
-	return nullptr;
+    if (type == "DoAffector"){
+        return &_doAffectorEventHandlerTranslator;
+    }else if (type == "DoEnableComponent"){
+        return &_doEnableComponentEventHandlerTranslator;
+    }else if (type == "DoExpire"){
+        return &_doExpireEventHandlerTranslator;
+    }else if (type == "DoFreeze"){
+        return &_doFreezeEventHandlerTranslator;
+    }else if (type == "DoPlacementParticle"){
+        return &_doPlacementParticleEventHandlerTranslator;
+    }else if (type == "DoScale"){
+        return &_doScaleEventHandlerTranslator;
+    }else if (type == "DoStopSystem"){
+        return &_doStopSystemEventHandlerTranslator;
+    }
+    return nullptr;
 }
 
 PUParticle3DEventHandler* PUParticle3DEventHandlerManager::createEventHandler( const std::string &type )
 {
-	if (type == "DoAffector"){
-		return PUParticle3DDoAffectorEventHandler::create();
-	}else if (type == "DoEnableComponent"){
-		return PUParticle3DDoEnableComponentEventHandler::create();
-	}else if (type == "DoExpire"){
-		return PUParticle3DDoExpireEventHandler::create();
-	}else if (type == "DoFreeze"){
-		return PUParticle3DDoFreezeEventHandler::create();
-	}else if (type == "DoPlacementParticle"){
-		return PUParticle3DDoPlacementParticleEventHandler::create();
-	}else if (type == "DoScale"){
-		return PUParticle3DDoScaleEventHandler::create();
-	}else if (type == "DoStopSystem"){
-		return PUParticle3DDoStopSystemEventHandler::create();
-	}
+    if (type == "DoAffector"){
+        return PUParticle3DDoAffectorEventHandler::create();
+    }else if (type == "DoEnableComponent"){
+        return PUParticle3DDoEnableComponentEventHandler::create();
+    }else if (type == "DoExpire"){
+        return PUParticle3DDoExpireEventHandler::create();
+    }else if (type == "DoFreeze"){
+        return PUParticle3DDoFreezeEventHandler::create();
+    }else if (type == "DoPlacementParticle"){
+        return PUParticle3DDoPlacementParticleEventHandler::create();
+    }else if (type == "DoScale"){
+        return PUParticle3DDoScaleEventHandler::create();
+    }else if (type == "DoStopSystem"){
+        return PUParticle3DDoStopSystemEventHandler::create();
+    }
     return nullptr;
 }
 

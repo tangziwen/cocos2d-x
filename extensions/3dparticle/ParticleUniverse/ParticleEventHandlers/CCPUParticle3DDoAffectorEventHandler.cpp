@@ -39,56 +39,55 @@ _prePost(DEFAULT_PRE_POST)
 //-----------------------------------------------------------------------
 void PUParticle3DDoAffectorEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
 {
-///** Search for the affector.
-//*/
-//ParticleTechnique* technique = 0;
-//ParticleAffector* affector = particleTechnique->getAffector(_affectorName);
-//if (!affector)
-//{
-//	// Search all techniques in this ParticleSystem for an affector with the correct name
-//	ParticleSystem* system = particleTechnique->getParentSystem();
-//	size_t size = system->getNumTechniques();
-//	for(size_t i = 0; i < size; ++i)
-//	{
-//		technique = system->getTechnique(i);
-//		affector = technique->getAffector(_affectorName);
-//		if (affector)
-//		{
-//			break;
-//		}
-//	}
-//}
+    /** Search for the affector.
+    */
+    PUParticleSystem3D* technique = 0;
+    PUParticle3DAffector* affector = particleSystem->getAffector(_affectorName);
+    if (!affector)
+    {
+        // Search all techniques in this ParticleSystem for an affector with the correct name
+        PUParticleSystem3D* system = particleSystem->getParentParticleSystem();
+        auto children = system->getChildren();
+        for(auto iter : children)
+        {
+            technique = static_cast<PUParticleSystem3D *>(iter);
+            affector = technique->getAffector(_affectorName);
+            if (affector)
+            {
+                break;
+            }
+        }
+    }
 
-	auto affector = particleSystem->getAffector(_affectorName);
-	if (affector)
-	{
-		// Call the affector even if it has enabled set to 'false'.
-		if (_prePost)
-		{
-			affector->preUpdateAffector(timeElapsed);
-			affector->updatePUAffector(particle, timeElapsed);
-			affector->postUpdateAffector(timeElapsed);
-		}
-		else
-		{
-			affector->updatePUAffector(particle, timeElapsed);
-		}
-	}
+    if (affector)
+    {
+        // Call the affector even if it has enabled set to 'false'.
+        if (_prePost)
+        {
+            affector->preUpdateAffector(timeElapsed);
+            affector->updatePUAffector(particle, timeElapsed);
+            affector->postUpdateAffector(timeElapsed);
+        }
+        else
+        {
+            affector->updatePUAffector(particle, timeElapsed);
+        }
+    }
 }
 
 PUParticle3DDoAffectorEventHandler* PUParticle3DDoAffectorEventHandler::create()
 {
-	auto peh = new PUParticle3DDoAffectorEventHandler();
-	peh->autorelease();
-	return peh;
+    auto peh = new PUParticle3DDoAffectorEventHandler();
+    peh->autorelease();
+    return peh;
 }
 
 void PUParticle3DDoAffectorEventHandler::copyAttributesTo( PUParticle3DEventHandler* eventHandler )
 {
-	PUParticle3DEventHandler::copyAttributesTo(eventHandler);
-	PUParticle3DDoAffectorEventHandler* doAffectorEventHandler = static_cast<PUParticle3DDoAffectorEventHandler*>(eventHandler);
-	doAffectorEventHandler->setAffectorName(_affectorName);
-	doAffectorEventHandler->setPrePost(_prePost);
+    PUParticle3DEventHandler::copyAttributesTo(eventHandler);
+    PUParticle3DDoAffectorEventHandler* doAffectorEventHandler = static_cast<PUParticle3DDoAffectorEventHandler*>(eventHandler);
+    doAffectorEventHandler->setAffectorName(_affectorName);
+    doAffectorEventHandler->setPrePost(_prePost);
 }
 
 NS_CC_END

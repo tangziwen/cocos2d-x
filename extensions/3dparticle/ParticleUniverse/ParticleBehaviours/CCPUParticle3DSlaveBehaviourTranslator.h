@@ -37,8 +37,8 @@ public:
     PUParticle3DSlaveBehaviourTranslator();
     virtual ~PUParticle3DSlaveBehaviourTranslator(){};
 
-	virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
-	virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
+    virtual bool translateChildProperty(PUScriptCompiler* compiler, PUAbstractNode *node);
+    virtual bool translateChildObject(PUScriptCompiler* compiler, PUAbstractNode *node);
 };
 
 NS_CC_END

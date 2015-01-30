@@ -31,17 +31,17 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 void PUParticle3DDoFreezeEventHandler::handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return;
+    if (!particle)
+        return;
 
-	particle->setFreezed(true);
+    particle->setFreezed(true);
 }
 
 PUParticle3DDoFreezeEventHandler* PUParticle3DDoFreezeEventHandler::create()
 {
-	auto peh = new PUParticle3DDoFreezeEventHandler();
-	peh->autorelease();
-	return peh;
+    auto peh = new PUParticle3DDoFreezeEventHandler();
+    peh->autorelease();
+    return peh;
 }
 
 NS_CC_END

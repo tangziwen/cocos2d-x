@@ -37,43 +37,43 @@ NS_CC_BEGIN
 
 class PUParticle3DBeamVisualData : public Ref
 {
-	public:
-		PUParticle3DBeamVisualData (size_t index, PUBillboardChain* billboardChain) : 
-			chainIndex(index),
-			timeSinceLastUpdate(0.0f),
-			billboardChain(billboardChain){};
+    public:
+        PUParticle3DBeamVisualData (size_t index, PUBillboardChain* billboardChain) : 
+            chainIndex(index),
+            timeSinceLastUpdate(0.0f),
+            billboardChain(billboardChain){};
 
-		// Set the chain visible or invisible (PU 1.4)
-		void setVisible(bool visible){/* No implementation */};
+        // Set the chain visible or invisible (PU 1.4)
+        void setVisible(bool visible){/* No implementation */};
 
-		/** The is no decent way to make the individual chains/elements invisible. The width of each element is set to 0 to make it invisible.
-			PU 1.4
-		*/
-		void setVisible(bool visible, float width)
-		{
-			if (!billboardChain)
-				return;
+        /** The is no decent way to make the individual chains/elements invisible. The width of each element is set to 0 to make it invisible.
+            PU 1.4
+        */
+        void setVisible(bool visible, float width)
+        {
+            if (!billboardChain)
+                return;
 
-			// Set width to 0 if not visible
-			width = visible ? width : 0;
-				
-			size_t max = billboardChain->getMaxChainElements();
-			PUBillboardChain::Element element;
-			for (size_t j = 0; j < max; j++)
-			{
-				PUBillboardChain::Element element;
-				element = billboardChain->getChainElement(chainIndex, j);
-				element.width = width;
-				billboardChain->updateChainElement(chainIndex, j, element);
-			}
-		}
+            // Set width to 0 if not visible
+            width = visible ? width : 0;
+                
+            size_t max = billboardChain->getMaxChainElements();
+            PUBillboardChain::Element element;
+            for (size_t j = 0; j < max; j++)
+            {
+                PUBillboardChain::Element element;
+                element = billboardChain->getChainElement(chainIndex, j);
+                element.width = width;
+                billboardChain->updateChainElement(chainIndex, j, element);
+            }
+        }
 
-		// Index of the chain
-		size_t chainIndex;
-		Vec3 half[100];
-		Vec3 destinationHalf[100];
-		float timeSinceLastUpdate;
-		PUBillboardChain* billboardChain;
+        // Index of the chain
+        size_t chainIndex;
+        Vec3 half[100];
+        Vec3 destinationHalf[100];
+        float timeSinceLastUpdate;
+        PUBillboardChain* billboardChain;
 };
 
 // particle render for quad
@@ -81,73 +81,73 @@ class CC_DLL PUParticle3DBeamRender : public PUParticle3DRender, public PUPartic
 {
 public:
 
-	// Constants
-	static const bool DEFAULT_USE_VERTEX_COLOURS;
-	static const size_t DEFAULT_MAX_ELEMENTS;
-	static const float DEFAULT_UPDATE_INTERVAL;
-	static const float DEFAULT_DEVIATION;
-	static const size_t DEFAULT_NUMBER_OF_SEGMENTS;
-	static const PUBillboardChain::TexCoordDirection DEFAULT_TEXTURE_DIRECTION;
+    // Constants
+    static const bool DEFAULT_USE_VERTEX_COLOURS;
+    static const size_t DEFAULT_MAX_ELEMENTS;
+    static const float DEFAULT_UPDATE_INTERVAL;
+    static const float DEFAULT_DEVIATION;
+    static const size_t DEFAULT_NUMBER_OF_SEGMENTS;
+    static const PUBillboardChain::TexCoordDirection DEFAULT_TEXTURE_DIRECTION;
 
-	static PUParticle3DBeamRender* create(const std::string &texFile = "");
+    static PUParticle3DBeamRender* create(const std::string &texFile = "");
 
-	virtual void prepare();
-	virtual void unPrepare();
-	virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle);
+    virtual void prepare();
+    virtual void unPrepare();
+    virtual void updateRender(PUParticle3D *particle, float deltaTime, bool firstParticle);
 
-	virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
-	virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
-	virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
+    virtual void render(Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem) override;
+    virtual void particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
+    virtual void particleExpired(PUParticleSystem3D* particleSystem, PUParticle3D* particle) override;
 
-		/** Getters and Setters
-	*/
-	bool isUseVertexColours(void) const;
-	void setUseVertexColours(bool useVertexColours);
+        /** Getters and Setters
+    */
+    bool isUseVertexColours(void) const;
+    void setUseVertexColours(bool useVertexColours);
 
-	size_t getMaxChainElements(void) const;
-	void setMaxChainElements(size_t maxChainElements);
+    size_t getMaxChainElements(void) const;
+    void setMaxChainElements(size_t maxChainElements);
 
-	float getUpdateInterval(void) const;
-	void setUpdateInterval(float updateInterval);
+    float getUpdateInterval(void) const;
+    void setUpdateInterval(float updateInterval);
 
-	float getDeviation(void) const;
-	void setDeviation(float deviation);
+    float getDeviation(void) const;
+    void setDeviation(float deviation);
 
-	size_t getNumberOfSegments(void) const;
-	void setNumberOfSegments(size_t numberOfSegments);
+    size_t getNumberOfSegments(void) const;
+    void setNumberOfSegments(size_t numberOfSegments);
 
-	bool isJump(void) const;
-	void setJump(bool jump);
+    bool isJump(void) const;
+    void setJump(bool jump);
 
-	PUBillboardChain::TexCoordDirection getTexCoordDirection(void) const;
-	void setTexCoordDirection(PUBillboardChain::TexCoordDirection texCoordDirection);
+    PUBillboardChain::TexCoordDirection getTexCoordDirection(void) const;
+    void setTexCoordDirection(PUBillboardChain::TexCoordDirection texCoordDirection);
 
-	/** Destroys the BillboarChain
-	*/
-	void destroyAll(void);
+    /** Destroys the BillboarChain
+    */
+    void destroyAll(void);
 
-	virtual PUParticle3DBeamRender* clone();
-	virtual void copyAttributesTo (PUParticle3DRender *render);
+    virtual PUParticle3DBeamRender* clone();
+    virtual void copyAttributesTo (PUParticle3DRender *render);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DBeamRender();
-	virtual ~PUParticle3DBeamRender();
+    PUParticle3DBeamRender();
+    virtual ~PUParticle3DBeamRender();
 
 protected:
 
-	std::string _texFile;
-	std::string _billboardChainName;
-	PUBillboardChain* _billboardChain;
-	std::vector<PUParticle3DBeamVisualData*> _allVisualData;
-	std::vector<PUParticle3DBeamVisualData*> _visualData;
-	size_t _quota;
-	bool _useVertexColours;
-	size_t _maxChainElements;
-	float _updateInterval;
-	float _deviation;
-	size_t _numberOfSegments;
-	bool _jump;
-	PUBillboardChain::TexCoordDirection _texCoordDirection;
+    std::string _texFile;
+    std::string _billboardChainName;
+    PUBillboardChain* _billboardChain;
+    std::vector<PUParticle3DBeamVisualData*> _allVisualData;
+    std::vector<PUParticle3DBeamVisualData*> _visualData;
+    size_t _quota;
+    bool _useVertexColours;
+    size_t _maxChainElements;
+    float _updateInterval;
+    float _deviation;
+    size_t _numberOfSegments;
+    bool _jump;
+    PUBillboardChain::TexCoordDirection _texCoordDirection;
 };
 
 

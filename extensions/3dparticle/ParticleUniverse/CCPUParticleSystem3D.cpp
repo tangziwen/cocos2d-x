@@ -86,35 +86,31 @@ void PUParticle3D::initForEmission()
     // Reset freeze flag
     freezed = false;
 
-	for (auto it : behaviours) {
-		it->initParticleForEmission(this);
-	}
+    for (auto it : behaviours) {
+        it->initParticleForEmission(this);
+    }
 }
 
 void PUParticle3D::initForExpiration( float timeElapsed )
 {
-	for (auto it : behaviours) {
-		it->initParticleForExpiration(this, timeElapsed);
-	}
-
-	if (particleType == PUParticle3D::PT_TECHNIQUE){
-		static_cast<PUParticleSystem3D *>(particleEntityPtr)->clearAllParticles();
-	}
+    for (auto it : behaviours) {
+        it->initParticleForExpiration(this, timeElapsed);
+    }
 }
 
 void PUParticle3D::process( float timeElapsed )
 {
-	timeFraction = (totalTimeToLive - timeToLive) / totalTimeToLive;
+    timeFraction = (totalTimeToLive - timeToLive) / totalTimeToLive;
 
-	for (auto it : behaviours) {
-		it->updateBehaviour(this, timeElapsed);
-	}
+    for (auto it : behaviours) {
+        it->updateBehaviour(this, timeElapsed);
+    }
 }
 
 PUParticle3D::PUParticle3D():
     //position(Vec3::ZERO),
-	particleEntityPtr(nullptr),
-	visualData(nullptr),
+    particleEntityPtr(nullptr),
+    visualData(nullptr),
     particleType(PT_VISUAL),
     direction(Vec3::ZERO),
     timeToLive(DEFAULT_TTL),
@@ -152,16 +148,20 @@ PUParticle3D::PUParticle3D():
 
 PUParticle3D::~PUParticle3D()
 {
-	for (auto it : behaviours) {
-		it->release();
-	}
+    for (auto it : behaviours) {
+        it->release();
+    }
+
+    //CC_SAFE_RELEASE(particleEntityPtr);
 }
 
 void PUParticle3D::copyBehaviours( const ParticleBehaviourList &list )
 {
-	for (auto it : list){
-		behaviours.push_back(it->clone());
-	}
+    for (auto it : list){
+        auto behaviour = it->clone();
+        behaviour->retain();
+        behaviours.push_back(behaviour);
+    }
 }
 
 //-----------------------------------------------------------------------
@@ -169,11 +169,16 @@ void PUParticle3D::copyBehaviours( const ParticleBehaviourList &list )
 const float PUParticleSystem3D::DEFAULT_WIDTH = 50;
 const float PUParticleSystem3D::DEFAULT_HEIGHT = 50;
 const float PUParticleSystem3D::DEFAULT_DEPTH = 50;
-const unsigned short PUParticleSystem3D::DEFAULT_PARTICLE_QUOTA = 500;
+const unsigned int PUParticleSystem3D::DEFAULT_PARTICLE_QUOTA = 500;
+const unsigned int PUParticleSystem3D::DEFAULT_EMITTED_EMITTER_QUOTA = 50;
+const unsigned int PUParticleSystem3D::DEFAULT_EMITTED_SYSTEM_QUOTA = 10;
 const float PUParticleSystem3D::DEFAULT_MAX_VELOCITY = 9999.0f;
 
 PUParticleSystem3D::PUParticleSystem3D()
-: _prepared(false)
+: _emittedEmitterQuota(DEFAULT_EMITTED_EMITTER_QUOTA)
+, _emittedSystemQuota(DEFAULT_EMITTED_SYSTEM_QUOTA)
+, _prepared(false)
+, _poolPrepared(false)
 , _particleSystemScaleVelocity(1.0f)
 , _defaultWidth(DEFAULT_WIDTH)
 , _defaultHeight(DEFAULT_HEIGHT)
@@ -181,6 +186,8 @@ PUParticleSystem3D::PUParticleSystem3D()
 , _maxVelocity(DEFAULT_MAX_VELOCITY)
 , _maxVelocitySet(false)
 , _isMarkedForEmission(false)
+, _timeElapsedSinceStart(0.0f)
+, _parentParticleSystem(nullptr)
 {
     _particleQuota = DEFAULT_PARTICLE_QUOTA;
 }
@@ -188,21 +195,45 @@ PUParticleSystem3D::~PUParticleSystem3D()
 {
     unPrepared();
 
+    _particlePool.removeAllDatas();
+
+    for (auto iter : _emittedEmitterParticlePool){
+        auto pool = iter.second;
+        PUParticle3D *particle = static_cast<PUParticle3D *>(pool.getFirst());
+        while (particle)
+        {
+            particle->particleEntityPtr->release();
+            particle = static_cast<PUParticle3D *>(pool.getNext());
+        }
+        iter.second.removeAllDatas();
+    }
+
+    for (auto iter : _emittedSystemParticlePool){
+        auto pool = iter.second;
+        PUParticle3D *particle = static_cast<PUParticle3D *>(pool.getFirst());
+        while (particle)
+        {
+            particle->particleEntityPtr->release();
+            particle = static_cast<PUParticle3D *>(pool.getNext());
+        }
+        iter.second.removeAllDatas();
+    }
+
     //release all emitters
     for (auto it : _emitters) {
         it->release();
     }
     _emitters.clear();
 
-	for (auto it : _observers){
-		it->release();
-	}
+    for (auto it : _observers){
+        it->release();
+    }
 
-	for (auto it : _behaviourTemplates) {
-		it->release();
-	}
+    for (auto it : _behaviourTemplates) {
+        it->release();
+    }
 
-	_observers.clear();
+    _observers.clear();
 }
 
 PUParticleSystem3D* PUParticleSystem3D::create()
@@ -265,12 +296,12 @@ void PUParticleSystem3D::startParticle()
             //    emitter->notifyStart();
             //}
 
-			if (_render)
-				_render->notifyStart();
+            if (_render)
+                _render->notifyStart();
 
-			for (auto &it : _observers){
-				it->notifyStart();
-			}
+            for (auto &it : _observers){
+                it->notifyStart();
+            }
 
             for (auto& it : _emitters) {
                 auto emitter = static_cast<PUParticle3DEmitter*>(it);
@@ -284,15 +315,16 @@ void PUParticleSystem3D::startParticle()
 
             scheduleUpdate();
             _state = State::RUNNING;
-            _timeElapsedSinceStart = 0.0f;
         }
     }
 
     for (auto iter : _children)
     {
         PUParticleSystem3D *system = dynamic_cast<PUParticleSystem3D *>(iter);
-        if (system)
+        if (system){
+            system->_parentParticleSystem = this;
             system->startParticle();
+        }
     }
 }
 
@@ -306,12 +338,12 @@ void PUParticleSystem3D::stopParticle()
             //    auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
             //    emitter->notifyStop();
             //}
-			if (_render)
-				_render->notifyStop();
+            if (_render)
+                _render->notifyStop();
 
-			for (auto &it : _observers){
-				it->notifyStop();
-			}
+            for (auto &it : _observers){
+                it->notifyStop();
+            }
 
             for (auto& it : _emitters) {
                 auto emitter = static_cast<PUParticle3DEmitter*>(it);
@@ -324,7 +356,7 @@ void PUParticleSystem3D::stopParticle()
             }
 
             unscheduleUpdate();
-            _particlePool.lockAllParticles();
+            unPrepared();
             _state = State::STOP;
         }
     }
@@ -404,18 +436,18 @@ void PUParticleSystem3D::update(float delta)
     if (_state != State::RUNNING || _isMarkedForEmission)
         return;
 
-	forceUpdate(delta);
+    forceUpdate(delta);
 }
 
 void PUParticleSystem3D::forceUpdate( float delta )
 {
-	prepared();
-	emitParticles(delta);
-	preUpdator(delta);
-	updator(delta);
-	postUpdator(delta);
+    prepared();
+    emitParticles(delta);
+    preUpdator(delta);
+    updator(delta);
+    postUpdator(delta);
 
-	_timeElapsedSinceStart += delta;
+    _timeElapsedSinceStart += delta;
 }
 
 float PUParticleSystem3D::getParticleSystemScaleVelocity() const
@@ -439,12 +471,12 @@ void PUParticleSystem3D::prepared()
         //    emitter->prepare();
         //}
 
-		if (_render)
-			static_cast<PUParticle3DRender *>(_render)->prepare();
+        if (_render)
+            static_cast<PUParticle3DRender *>(_render)->prepare();
 
-		for (auto it : _behaviourTemplates) {
-			it->prepare();
-		}
+        for (auto it : _behaviourTemplates) {
+            it->prepare();
+        }
 
         for (auto it : _emitters) {
             //if (it->isEnabled())
@@ -456,15 +488,54 @@ void PUParticleSystem3D::prepared()
                 (static_cast<PUParticle3DAffector*>(it))->prepare();
         }
         
-        for (unsigned short i = 0; i < _particleQuota; ++i){
-			auto p = new PUParticle3D();
-			p->copyBehaviours(_behaviourTemplates);
-            _particlePool.addParticle(p);
+        if (!_poolPrepared){
+            for (auto it : _emitters) {
+                //if (it->isEnabled())
+                PUParticle3DEmitter *emitter = static_cast<PUParticle3DEmitter*>(it);
+                if (emitter->getEmitsType() == PUParticle3D::PT_EMITTER){
+                    PUParticle3DEmitter *emitted = static_cast<PUParticle3DEmitter*>(emitter->getEmitsEntityPtr());
+                    for (unsigned int i = 0; i < _emittedEmitterQuota; ++i){
+                        auto p = new PUParticle3D();
+                        p->particleType = PUParticle3D::PT_EMITTER;
+                        p->particleEntityPtr = emitted->clone();
+                        p->particleEntityPtr->retain();
+                        p->autorelease();
+                        p->copyBehaviours(_behaviourTemplates);
+                        _emittedEmitterParticlePool[emitted->getName()].addData(p);
+                    }
+                }
+                else if (emitter->getEmitsType() == PUParticle3D::PT_TECHNIQUE){
+                    PUParticleSystem3D *emitted = static_cast<PUParticleSystem3D*>(emitter->getEmitsEntityPtr());
+                    for (unsigned int i = 0; i < _emittedSystemQuota; ++i){
+                        PUParticleSystem3D *clonePS = emitted->clone();
+                        auto p = new PUParticle3D();
+                        p->particleType = PUParticle3D::PT_TECHNIQUE;
+                        p->particleEntityPtr = clonePS;
+                        p->particleEntityPtr->retain();
+                        p->autorelease();
+                        p->copyBehaviours(_behaviourTemplates);
+                        _emittedSystemParticlePool[emitted->getName()].addData(p);
+                        clonePS->prepared();
+                    }
+                    //emitted->stopParticle();
+                }
+
+            }
+
+            for (unsigned int i = 0; i < _particleQuota; ++i){
+                auto p = new PUParticle3D();
+                p->autorelease();
+                p->copyBehaviours(_behaviourTemplates);
+                _particlePool.addData(p);
+            }
+            _poolPrepared = true;
         }
+
         _prepared = true;
+        _timeElapsedSinceStart = 0.0f;
     }
 
-	notifyRescaled();
+    notifyRescaled();
 }
 
 void PUParticleSystem3D::unPrepared()
@@ -475,12 +546,12 @@ void PUParticleSystem3D::unPrepared()
     //    emitter->unPrepare();
     //}
 
-	if (_render)
-		static_cast<PUParticle3DRender *>(_render)->unPrepare();
+    if (_render)
+        static_cast<PUParticle3DRender *>(_render)->unPrepare();
 
-	for (auto it : _behaviourTemplates) {
-		it->unPrepare();
-	}
+    for (auto it : _behaviourTemplates) {
+        it->unPrepare();
+    }
 
     for (auto it : _emitters) {
         if (it->isEnabled())
@@ -492,7 +563,15 @@ void PUParticleSystem3D::unPrepared()
             (static_cast<PUParticle3DAffector*>(it))->unPrepare();
     }
 
-    _particlePool.removeAllParticles(true);
+    _particlePool.lockAllDatas();
+    for (auto &iter : _emittedEmitterParticlePool){
+        iter.second.lockAllDatas();
+    }
+
+    for (auto &iter : _emittedSystemParticlePool){
+        iter.second.lockAllDatas();
+    }
+    _prepared = false;
 }
 
 void PUParticleSystem3D::preUpdator( float elapsedTime )
@@ -521,115 +600,25 @@ void PUParticleSystem3D::preUpdator( float elapsedTime )
         }
     }
 
-	for (auto it : _observers){
-		if (it->isEnabled()){
-			it->preUpdateObserver(elapsedTime);
-		}
-	}
+    for (auto it : _observers){
+        if (it->isEnabled()){
+            it->preUpdateObserver(elapsedTime);
+        }
+    }
 }
 
 void PUParticleSystem3D::updator( float elapsedTime )
 {
-    bool firstActiveParticle = true; // The first non-expired particle
-    PUParticle3D *particle = static_cast<PUParticle3D *>(_particlePool.getFirst());
-    Mat4 ltow = getNodeToWorldTransform();
-    Vec3 scl;
-    Quaternion rot;
-    ltow.decompose(&scl, &rot, nullptr);
-    while (particle){
+    bool firstActiveParticle = true;
+    bool firstParticle = true;
+    processParticle(_particlePool, firstActiveParticle, firstParticle, elapsedTime);
 
-        if (!isExpired(particle, elapsedTime)){
-            particle->process(elapsedTime);
+    for (auto &iter : _emittedEmitterParticlePool){
+        processParticle(iter.second, firstActiveParticle, firstParticle, elapsedTime);
+    }
 
-            //if (_emitter && _emitter->isEnabled())
-            //    _emitter->updateEmitter(particle, elapsedTime);
-
-            for (auto it : _emitters) {
-                if (it->isEnabled() && !it->isMarkedForEmission()){
-                    (static_cast<PUParticle3DEmitter*>(it))->updateEmitter(particle, elapsedTime);
-                }
-            }
-
-            for (auto& it : _affectors) {
-                if (it->isEnabled()){
-                    if (firstActiveParticle)
-                            (static_cast<PUParticle3DAffector*>(it))->firstParticleUpdate(particle, elapsedTime);
-                        (static_cast<PUParticle3DAffector*>(it))->updatePUAffector(particle, elapsedTime);
-                }
-            }
-
-			if (_render)
-				static_cast<PUParticle3DRender *>(_render)->updateRender(particle, elapsedTime, firstActiveParticle);
-
-			if (_isEnabled && particle->particleType != PUParticle3D::PT_VISUAL){
-				if (particle->particleType == PUParticle3D::PT_EMITTER){
-					auto emitter = static_cast<PUParticle3DEmitter *>(particle->particleEntityPtr);
-					emitter->setLocalPosition(particle->position);
-					executeEmitParticles(emitter, emitter->calculateRequestedParticles(elapsedTime), elapsedTime);
-				}else if (particle->particleType == PUParticle3D::PT_TECHNIQUE){
-					auto system = static_cast<PUParticleSystem3D *>(particle->particleEntityPtr);
-					system->setPosition3D(particle->position);
-					system->setRotationQuat(particle->orientation);
-					//system->setScaleX(scl.x);system->setScaleY(scl.y);system->setScaleZ(scl.z);
-					system->forceUpdate(elapsedTime);
-				}
-			}
-
-            // Keep latest position
-            particle->latestPosition = particle->position;
-
-            if (_maxVelocitySet && particle->calculateVelocity() > _maxVelocity)
-            {
-                particle->direction *= (_maxVelocity / particle->direction.length());
-            }
-
-            // Update the position with the direction.
-            particle->position += (particle->direction * _particleSystemScaleVelocity * elapsedTime);
-            particle->positionInWorld = particle->position;
-            particle->orientationInWorld = particle->orientation;
-            particle->widthInWorld = particle->width;
-            particle->heightInWorld = particle->height;
-            particle->depthInWorld = particle->depth;
-
-            bool keepLocal = _keepLocal;
-            PUParticleSystem3D *parent = dynamic_cast<PUParticleSystem3D *>(getParent());
-            if (parent) keepLocal = keepLocal || parent->isKeepLocal();
-
-            if (keepLocal){
-                ltow.transformPoint(particle->positionInWorld, &particle->positionInWorld);
-                Vec3 ori;
-                ltow.transformVector(Vec3(particle->orientation.x, particle->orientation.y, particle->orientation.z), &ori);
-                particle->orientationInWorld.x = ori.x; particle->orientationInWorld.y = ori.y; particle->orientationInWorld.z = ori.z;
-                particle->widthInWorld = scl.x * particle->width;
-                particle->heightInWorld = scl.y * particle->height;
-                particle->depthInWorld = scl.z * particle->depth;
-            }
-        }
-        else{
-			initParticleForExpiration(particle, elapsedTime);
-            _particlePool.lockLatestParticle();
-        }
-
-		for (auto it : _observers){
-			if (it->isEnabled()){
-				it->updateObserver(particle, elapsedTime, firstActiveParticle);
-			}
-		}
-
-        if (particle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
-        {
-            particle->setEventFlags(0);
-            particle->addEventFlags(PUParticle3D::PEF_EXPIRED);
-        }
-        else
-        {
-            particle->setEventFlags(0);
-        }
-
-        particle->timeToLive -= elapsedTime;
-
-        firstActiveParticle = false;
-        particle = static_cast<PUParticle3D *>(_particlePool.getNext());
+    for (auto &iter : _emittedSystemParticlePool){
+        processParticle(iter.second, firstActiveParticle, firstParticle, elapsedTime);
     }
 }
 
@@ -655,11 +644,11 @@ void PUParticleSystem3D::postUpdator( float elapsedTime )
         }
     }
 
-	for (auto it : _observers){
-		if (it->isEnabled()){
-			it->postUpdateObserver(elapsedTime);
-		}
-	}
+    for (auto it : _observers){
+        if (it->isEnabled()){
+            it->postUpdateObserver(elapsedTime);
+        }
+    }
 }
 
 void PUParticleSystem3D::emitParticles( float elapsedTime )
@@ -670,10 +659,10 @@ void PUParticleSystem3D::emitParticles( float elapsedTime )
         //auto emitter = static_cast<PUParticle3DEmitter*>(_emitter);
         auto emitter = iter;
         //emitter->notifyRescaled(scale);
-		if (!iter->isMarkedForEmission()){
-			unsigned short requested = emitter->calculateRequestedParticles(elapsedTime);
-			executeEmitParticles(emitter, requested, elapsedTime);
-		}
+        if (!iter->isMarkedForEmission()){
+            unsigned short requested = emitter->calculateRequestedParticles(elapsedTime);
+            executeEmitParticles(emitter, requested, elapsedTime);
+        }
     }
 
 }
@@ -722,8 +711,7 @@ bool PUParticleSystem3D::isExpired( PUParticle3D* particle, float timeElapsed )
 
 cocos2d::Vec3 PUParticleSystem3D::getDerivedPosition()
 {
-    PUParticleSystem3D *parent = dynamic_cast<PUParticleSystem3D *>(getParent());
-    if (parent && parent->isKeepLocal()) return Vec3::ZERO; 
+    if (_parentParticleSystem && _parentParticleSystem->isKeepLocal()) return Vec3::ZERO; 
     if (_keepLocal) return Vec3::ZERO;
 
     Mat4 mat = getNodeToWorldTransform();
@@ -732,8 +720,7 @@ cocos2d::Vec3 PUParticleSystem3D::getDerivedPosition()
 
 cocos2d::Quaternion PUParticleSystem3D::getDerivedOrientation()
 {
-    PUParticleSystem3D *parent = dynamic_cast<PUParticleSystem3D *>(getParent());
-    if (parent && parent->isKeepLocal()) return Quaternion(); 
+    if (_parentParticleSystem && _parentParticleSystem->isKeepLocal()) return Quaternion(); 
     if (_keepLocal) return Quaternion();
     Quaternion q;
     Mat4 mat = getNodeToWorldTransform();
@@ -743,8 +730,7 @@ cocos2d::Quaternion PUParticleSystem3D::getDerivedOrientation()
 
 cocos2d::Vec3 PUParticleSystem3D::getDerivedScale()
 {
-    PUParticleSystem3D *parent = dynamic_cast<PUParticleSystem3D *>(getParent());
-    if (parent && parent->isKeepLocal()) return Vec3::ONE; 
+    if (_parentParticleSystem && _parentParticleSystem->isKeepLocal()) return Vec3::ONE; 
     if (_keepLocal) return Vec3::ONE;
     Vec3 s;
     Mat4 mat = getNodeToWorldTransform();
@@ -806,143 +792,162 @@ PUParticle3DEmitter* PUParticleSystem3D::getEmitter( const std::string &name )
 
 void PUParticleSystem3D::addListener( PUParticle3DListener *listener )
 {
-	auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
-	if (iter == _listeners.end()){
-		_listeners.push_back(listener);
-	}
+    auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+    if (iter == _listeners.end()){
+        _listeners.push_back(listener);
+    }
 }
 
 void PUParticleSystem3D::removeListener( PUParticle3DListener *listener )
 {
-	auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
-	if (iter != _listeners.end()){
-		_listeners.erase(iter);
-	}
+    auto iter = std::find(_listeners.begin(), _listeners.end(), listener);
+    if (iter != _listeners.end()){
+        _listeners.erase(iter);
+    }
 }
 
 void PUParticleSystem3D::forceEmission( PUParticle3DEmitter* emitter, unsigned requested )
 {
-	// Fast rejection: Don't emit if the technique is not enabled
-	if (!_isEnabled)
-		return;
+    // Fast rejection: Don't emit if the technique is not enabled
+    if (!_isEnabled)
+        return;
 
-	executeEmitParticles(emitter, requested, 0);
+    executeEmitParticles(emitter, requested, 0);
 }
 
 void PUParticleSystem3D::executeEmitParticles( PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime )
 {
-	Vec3 scale = getDerivedScale();
-	Mat4 rotMat;
-	Mat4::createRotation(getDerivedOrientation(), &rotMat);
-	float timePoint = 0.0f;
-	float timeInc = elapsedTime / requested;
-	for (unsigned short i = 0; i < requested; ++i)
-	{
-		PUParticle3D *particle = static_cast<PUParticle3D *>(_particlePool.createParticle());
-		if (particle){
-			particle->particleType = emitter->getEmitsType();
-			particle->particleEntityPtr = emitter->getEmitsEntityPtr();
-			particle->initForEmission();
-			emitter->initParticleForEmission(particle);
+    if (emitter->getEmitsType() == PUParticle3D::PT_VISUAL){
+        emitParticles(_particlePool, emitter, requested, elapsedTime);
+    }else if (emitter->getEmitsType() == PUParticle3D::PT_EMITTER){
+        emitParticles(_emittedEmitterParticlePool[emitter->getEmitsName()], emitter, requested, elapsedTime);
+    }else if (emitter->getEmitsType() == PUParticle3D::PT_TECHNIQUE){
+        emitParticles(_emittedSystemParticlePool[emitter->getEmitsName()], emitter, requested, elapsedTime);
+    }
+}
 
-			particle->direction = (rotMat * Vec3(particle->direction.x * scale.x, particle->direction.y * scale.y, particle->direction.z * scale.z));
-			particle->originalDirection = (rotMat * Vec3(particle->originalDirection.x * scale.x, particle->originalDirection.y * scale.y, particle->originalDirection.z * scale.z));
+void PUParticleSystem3D::emitParticles( ParticlePool &pool, PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime )
+{
+    Vec3 scale = getDerivedScale();
+    Mat4 rotMat;
+    Mat4::createRotation(getDerivedOrientation(), &rotMat);
+    float timePoint = 0.0f;
+    float timeInc = elapsedTime / requested;
+    Ref *emittedPtr = nullptr;
+    for (unsigned short i = 0; i < requested; ++i)
+    {
+        PUParticle3D *particle = static_cast<PUParticle3D *>(pool.createData());
+        if (!particle) 
+            return;
 
-			for (auto& it : _affectors) {
-				if (it->isEnabled())
-				{
-					(static_cast<PUParticle3DAffector*>(it))->notifyRescaled(scale);
-					(static_cast<PUParticle3DAffector*>(it))->initParticleForEmission(particle);
-				}
-			}
+        particle->initForEmission();
+        emitter->initParticleForEmission(particle);
 
-			initParticleForEmission(particle);
+        particle->direction = (rotMat * Vec3(particle->direction.x * scale.x, particle->direction.y * scale.y, particle->direction.z * scale.z));
+        particle->originalDirection = (rotMat * Vec3(particle->originalDirection.x * scale.x, particle->originalDirection.y * scale.y, particle->originalDirection.z * scale.z));
 
-			particle->position += (particle->direction * _particleSystemScaleVelocity * timePoint);
-			// Increment time fragment
-			timePoint += timeInc;
-		}
-	}
+        for (auto& it : _affectors) {
+            if (it->isEnabled())
+            {
+                (static_cast<PUParticle3DAffector*>(it))->notifyRescaled(scale);
+                (static_cast<PUParticle3DAffector*>(it))->initParticleForEmission(particle);
+            }
+        }
+
+        initParticleForEmission(particle);
+
+        particle->position += (particle->direction * _particleSystemScaleVelocity * timePoint);
+        // Increment time fragment
+        timePoint += timeInc;
+    }
 }
 
 void PUParticleSystem3D::addObserver( PUParticle3DObserver *observer )
 {
-	auto iter = std::find(_observers.begin(), _observers.end(), observer);
-	if (iter == _observers.end()){
-		observer->retain();
-		observer->_particleSystem = this;
-		_observers.push_back(observer);
-	}
+    auto iter = std::find(_observers.begin(), _observers.end(), observer);
+    if (iter == _observers.end()){
+        observer->retain();
+        observer->_particleSystem = this;
+        _observers.push_back(observer);
+    }
 }
 
 PUParticle3DObserver* PUParticleSystem3D::getObserver( const std::string &name )
 {
-	for (auto iter : _observers){
-		auto po = static_cast<PUParticle3DObserver *>(iter);
-		if (po->getName() == name)
-			return po;
-	}
+    for (auto iter : _observers){
+        auto po = static_cast<PUParticle3DObserver *>(iter);
+        if (po->getName() == name)
+            return po;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void PUParticleSystem3D::notifyRescaled()
 {
-	Vec3 scale = getDerivedScale();
+    Vec3 scale = getDerivedScale();
 
-	if (_render)
-		_render->notifyRescaled(scale);
+    if (_render)
+        _render->notifyRescaled(scale);
 
-	for (auto it : _emitters) {
-		(static_cast<PUParticle3DEmitter*>(it))->notifyRescaled(scale);
-	}
+    for (auto it : _emitters) {
+        (static_cast<PUParticle3DEmitter*>(it))->notifyRescaled(scale);
+    }
 
-	for (auto it : _affectors) {
-		(static_cast<PUParticle3DAffector*>(it))->notifyRescaled(scale);
-	}
+    for (auto it : _affectors) {
+        (static_cast<PUParticle3DAffector*>(it))->notifyRescaled(scale);
+    }
 
-	for (auto it : _observers){
-		it->notifyRescaled(scale);
-	}
+    for (auto it : _observers){
+        it->notifyRescaled(scale);
+    }
+
 }
 
 void PUParticleSystem3D::initParticleForExpiration( PUParticle3D* particle, float timeElapsed )
 {
-	particle->initForExpiration(timeElapsed);
+    if (particle->particleType == PUParticle3D::PT_EMITTER){
+        PUParticle3DEmitter *emitter = static_cast<PUParticle3DEmitter *>(particle->particleEntityPtr);
+        emitter->unPrepare();
+    }else if (particle->particleType == PUParticle3D::PT_TECHNIQUE){
+        PUParticleSystem3D *system = static_cast<PUParticleSystem3D *>(particle->particleEntityPtr);
+        system->unPrepared();
+    }
 
-	for (auto it : _listeners){
-		it->particleExpired(this, particle);
-	}
+    particle->initForExpiration(timeElapsed);
 
-	///** Externs are also called to perform expiration activities. If needed, affectors and emitters may be added, but at the moment
-	//	there is no reason for (and we don´t want to waste cpu resources).
-	//*/
-	//if (!mExterns.empty())
-	//{
-	//	ExternIterator itExtern;
-	//	ExternIterator itExternEnd = mExterns.end();
-	//	for (itExtern = mExterns.begin(); itExtern != itExternEnd; ++itExtern)
-	//	{
-	//		(*itExtern)->_initParticleForExpiration(particle);
-	//	}
-	//}
+    for (auto it : _listeners){
+        it->particleExpired(this, particle);
+    }
+    ///** Externs are also called to perform expiration activities. If needed, affectors and emitters may be added, but at the moment
+    //	there is no reason for (and we don´t want to waste cpu resources).
+    //*/
+    //if (!mExterns.empty())
+    //{
+    //	ExternIterator itExtern;
+    //	ExternIterator itExternEnd = mExterns.end();
+    //	for (itExtern = mExterns.begin(); itExtern != itExternEnd; ++itExtern)
+    //	{
+    //		(*itExtern)->_initParticleForExpiration(particle);
+    //	}
+    //}
 }
 
 void PUParticleSystem3D::initParticleForEmission( PUParticle3D* particle )
 {
-	for (auto it : _listeners){
-		it->particleEmitted(this, particle);
-	}
+    for (auto it : _listeners){
+        it->particleEmitted(this, particle);
+    }
 }
 
 void PUParticleSystem3D::addBehaviourTemplate( PUParticle3DBehaviour *behaviour )
 {
-	auto iter = std::find(_behaviourTemplates.begin(), _behaviourTemplates.end(), behaviour);
-	if (iter == _behaviourTemplates.end()){
-		behaviour->retain();
-		behaviour->_particleSystem = this;
-		_behaviourTemplates.push_back(behaviour);
-	}
+    auto iter = std::find(_behaviourTemplates.begin(), _behaviourTemplates.end(), behaviour);
+    if (iter == _behaviourTemplates.end()){
+        behaviour->retain();
+        behaviour->_particleSystem = this;
+        _behaviourTemplates.push_back(behaviour);
+    }
 }
 
 
@@ -957,51 +962,263 @@ void PUParticleSystem3D::convertToUnixStylePath( std::string &path )
 
 void PUParticleSystem3D::clearAllParticles()
 {
-	_particlePool.lockAllParticles();
+    _particlePool.lockAllDatas();
+    for (auto &iter : _emittedEmitterParticlePool){
+        iter.second.lockAllDatas();
+    }
+
+    for (auto &iter : _emittedSystemParticlePool){
+        iter.second.lockAllDatas();
+    }
 }
 
 void PUParticleSystem3D::copyAttributesTo( PUParticleSystem3D* system )
 {
-	system->_state = _state;
+    system->removeAllEmitter();
+    system->removeAllAffector();
+    system->removerAllObserver();
+    system->removeAllBehaviourTemplate();
+    system->removeAllListener();
+    system->_particlePool.removeAllDatas();
+    for (auto iter : system->_emittedEmitterParticlePool){
+        iter.second.removeAllDatas();
+    }
 
-	PUParticle3DEmitter *copyEmitter = PUParticle3DEmitterManager::Instance()->createEmitter(static_cast<PUParticle3DEmitter *>(_emitter)->getEmitterType());
-	static_cast<PUParticle3DEmitter *>(_emitter)->copyAttributesTo(copyEmitter);
-	system->_emitter = copyEmitter;
-	
-	system->_render = static_cast<PUParticle3DRender *>(_render)->clone();
-	system->_particleQuota = _particleQuota;
-	system->_blend = _blend;
-	system->_keepLocal = _keepLocal;
-	system->_isEnabled = _isEnabled;
+    for (auto iter : system->_emittedSystemParticlePool){
+        iter.second.removeAllDatas();
+    }
 
-	for (auto iter : _affectors){
-		PUParticle3DAffector *affector = static_cast<PUParticle3DAffector *>(iter);
-		PUParticle3DAffector *copy = PUParticle3DAffectorManager::Instance()->createAffector(affector->getAffectorType());
-		affector->copyAttributesTo(copy);
-		system->addAffector(copy);
-	}
+    system->setName(_name);
+    system->_state = _state;
+    system->setRender(static_cast<PUParticle3DRender *>(_render)->clone());
+    system->_particleQuota = _particleQuota;
+    system->_blend = _blend;
+    system->_keepLocal = _keepLocal;
+    system->_isEnabled = _isEnabled;
 
-	for (auto iter : _emitters){
-		PUParticle3DEmitter *emitter = static_cast<PUParticle3DEmitter *>(iter);
-		PUParticle3DEmitter *copy = PUParticle3DEmitterManager::Instance()->createEmitter(emitter->getEmitterType());
-		emitter->copyAttributesTo(copy);
-		system->addEmitter(copy);
-	}
+    for (auto iter : _affectors){
+        PUParticle3DAffector *affector = static_cast<PUParticle3DAffector *>(iter);
+        PUParticle3DAffector *copy = PUParticle3DAffectorManager::Instance()->createAffector(affector->getAffectorType());
+        affector->copyAttributesTo(copy);
+        system->addAffector(copy);
+    }
 
-	for (auto iter : _observers){
-		PUParticle3DObserver *observer = static_cast<PUParticle3DObserver *>(iter);
-		PUParticle3DObserver *copy = PUParticle3DObserverManager::Instance()->createObserver(observer->getObserverType());
-		observer->copyAttributesTo(copy);
-		system->addObserver(copy);
-	}
+    for (auto iter : _emitters){
+        PUParticle3DEmitter *emitter = static_cast<PUParticle3DEmitter *>(iter);
+        PUParticle3DEmitter *copy = PUParticle3DEmitterManager::Instance()->createEmitter(emitter->getEmitterType());
+        emitter->copyAttributesTo(copy);
+        system->addEmitter(copy);
+    }
 
-	system->_particleSystemScaleVelocity = _particleSystemScaleVelocity;
-	system->_defaultWidth = _defaultWidth;
-	system->_defaultHeight = _defaultHeight;
-	system->_defaultDepth = _defaultDepth;
-	system->_maxVelocity = _maxVelocity;
-	system->_maxVelocitySet = _maxVelocitySet;
-	system->_matName = _matName;
+    for (auto iter : _observers){
+        PUParticle3DObserver *observer = static_cast<PUParticle3DObserver *>(iter);
+        PUParticle3DObserver *copy = PUParticle3DObserverManager::Instance()->createObserver(observer->getObserverType());
+        observer->copyAttributesTo(copy);
+        system->addObserver(copy);
+    }
+
+    for (auto iter : _behaviourTemplates){
+        PUParticle3DBehaviour *behaviour = static_cast<PUParticle3DBehaviour *>(iter);
+        PUParticle3DBehaviour *copy = behaviour->clone();
+        system->addBehaviourTemplate(copy);
+    }
+
+    system->_emittedEmitterQuota = _emittedEmitterQuota;
+    system->_emittedSystemQuota = _emittedSystemQuota;
+    system->_prepared = false;
+    system->_particleSystemScaleVelocity = _particleSystemScaleVelocity;
+    system->_defaultWidth = _defaultWidth;
+    system->_defaultHeight = _defaultHeight;
+    system->_defaultDepth = _defaultDepth;
+    system->_maxVelocity = _maxVelocity;
+    system->_maxVelocitySet = _maxVelocitySet;
+    system->_matName = _matName;
+    system->_isMarkedForEmission = _isMarkedForEmission;
+    system->_parentParticleSystem = _parentParticleSystem;
+}
+
+PUParticleSystem3D* PUParticleSystem3D::clone()
+{
+    auto ps = PUParticleSystem3D::create();
+    copyAttributesTo(ps);
+    return ps;
+}
+
+void PUParticleSystem3D::removeAllEmitter()
+{
+    for (auto iter : _emitters){
+        iter->release();
+    }
+    _emitters.clear();
+}
+
+void PUParticleSystem3D::removerAllObserver()
+{
+    for (auto iter : _observers){
+        iter->release();
+    }
+    _observers.clear();
+}
+
+void PUParticleSystem3D::removeAllBehaviourTemplate()
+{
+    for (auto iter : _behaviourTemplates){
+        iter->release();
+    }
+    _behaviourTemplates.clear();
+}
+
+void PUParticleSystem3D::removeAllListener()
+{
+    _listeners.clear();
+}
+
+void PUParticleSystem3D::draw( Renderer *renderer, const Mat4 &transform, uint32_t flags )
+{
+    if (_render)
+        _render->render(renderer, transform, this);
+
+    if (!_emittedSystemParticlePool.empty())
+    {
+        for (auto iter : _emittedSystemParticlePool){
+            PUParticle3D *particle = static_cast<PUParticle3D *>(iter.second.getFirst());
+            while (particle)
+            {
+                static_cast<PUParticleSystem3D *>(particle->particleEntityPtr)->draw(renderer, transform, flags);
+                particle = static_cast<PUParticle3D *>(iter.second.getNext());
+            }
+        }
+    }
+}
+
+void PUParticleSystem3D::processParticle( ParticlePool &pool, bool &firstActiveParticle, bool &firstParticle, float elapsedTime )
+{
+    PUParticle3D *particle = static_cast<PUParticle3D *>(pool.getFirst());
+    Mat4 ltow = getNodeToWorldTransform();
+    Vec3 scl;
+    Quaternion rot;
+    ltow.decompose(&scl, &rot, nullptr);
+    while (particle){
+
+        if (!isExpired(particle, elapsedTime)){
+            particle->process(elapsedTime);
+
+            //if (_emitter && _emitter->isEnabled())
+            //    _emitter->updateEmitter(particle, elapsedTime);
+
+            for (auto it : _emitters) {
+                if (it->isEnabled() && !it->isMarkedForEmission()){
+                    (static_cast<PUParticle3DEmitter*>(it))->updateEmitter(particle, elapsedTime);
+                }
+            }
+
+            for (auto& it : _affectors) {
+                if (it->isEnabled()){
+                    (static_cast<PUParticle3DAffector*>(it))->process(particle, elapsedTime, firstActiveParticle);
+                }
+            }
+
+            if (_render)
+                static_cast<PUParticle3DRender *>(_render)->updateRender(particle, elapsedTime, firstActiveParticle);
+
+            if (_isEnabled && particle->particleType != PUParticle3D::PT_VISUAL){
+                if (particle->particleType == PUParticle3D::PT_EMITTER){
+                    auto emitter = static_cast<PUParticle3DEmitter *>(particle->particleEntityPtr);
+                    emitter->setLocalPosition(particle->position);
+                    executeEmitParticles(emitter, emitter->calculateRequestedParticles(elapsedTime), elapsedTime);
+                }else if (particle->particleType == PUParticle3D::PT_TECHNIQUE){
+                    auto system = static_cast<PUParticleSystem3D *>(particle->particleEntityPtr);
+                    system->setPosition3D(particle->position);
+                    system->setRotationQuat(particle->orientation);
+                    system->setScaleX(scl.x);system->setScaleY(scl.y);system->setScaleZ(scl.z);
+                    system->forceUpdate(elapsedTime);
+                }
+            }
+
+            // Keep latest position
+            particle->latestPosition = particle->position;
+
+            if (_maxVelocitySet && particle->calculateVelocity() > _maxVelocity)
+            {
+                particle->direction *= (_maxVelocity / particle->direction.length());
+            }
+
+            // Update the position with the direction.
+            particle->position += (particle->direction * _particleSystemScaleVelocity * elapsedTime);
+            particle->positionInWorld = particle->position;
+            particle->orientationInWorld = particle->orientation;
+            particle->widthInWorld = particle->width;
+            particle->heightInWorld = particle->height;
+            particle->depthInWorld = particle->depth;
+
+            bool keepLocal = _keepLocal;
+            PUParticleSystem3D *parent = dynamic_cast<PUParticleSystem3D *>(getParent());
+            if (parent) keepLocal = keepLocal || parent->isKeepLocal();
+
+            if (keepLocal){
+                ltow.transformPoint(particle->positionInWorld, &particle->positionInWorld);
+                Vec3 ori;
+                ltow.transformVector(Vec3(particle->orientation.x, particle->orientation.y, particle->orientation.z), &ori);
+                particle->orientationInWorld.x = ori.x; particle->orientationInWorld.y = ori.y; particle->orientationInWorld.z = ori.z;
+                particle->widthInWorld = scl.x * particle->width;
+                particle->heightInWorld = scl.y * particle->height;
+                particle->depthInWorld = scl.z * particle->depth;
+            }
+
+            firstActiveParticle = false;
+        }
+        else{
+            initParticleForExpiration(particle, elapsedTime);
+            pool.lockLatestData();
+        }
+
+        for (auto it : _observers){
+            if (it->isEnabled()){
+                it->updateObserver(particle, elapsedTime, firstParticle);
+            }
+        }
+
+        if (particle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
+        {
+            particle->setEventFlags(0);
+            particle->addEventFlags(PUParticle3D::PEF_EXPIRED);
+        }
+        else
+        {
+            particle->setEventFlags(0);
+        }
+
+        particle->timeToLive -= elapsedTime;
+        firstParticle = false;
+        particle = static_cast<PUParticle3D *>(pool.getNext());
+    }
+}
+
+unsigned int PUParticleSystem3D::getActiveParticleSize()
+{
+    unsigned int sz = 0;
+    sz += _particlePool.getActiveDataList().size();
+
+    if (!_emittedEmitterParticlePool.empty()){
+        for (auto iter : _emittedEmitterParticlePool){
+            sz += iter.second.getActiveDataList().size();
+        }
+    }
+
+    if (_emittedSystemParticlePool.empty()) 
+        return sz;
+
+    for (auto iter : _emittedSystemParticlePool){
+        auto pool = iter.second;
+        sz += pool.getActiveDataList().size();
+        PUParticle3D *particle = static_cast<PUParticle3D *>(pool.getFirst());
+        while (particle)
+        {
+            sz += static_cast<PUParticleSystem3D*>(particle->particleEntityPtr)->getActiveParticleSize();
+            particle = static_cast<PUParticle3D *>(pool.getNext());
+        }
+    }
+    return sz;
 }
 
 NS_CC_END

@@ -33,91 +33,91 @@ const bool PUParticle3DOnTimeObserver::DEFAULT_SINCE_START_SYSTEM = false;
 
 static bool almostEquals(float a, float b, float epsilon = std::numeric_limits<float>::epsilon())
 {
-	return fabs(a - b) <= ( (fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * epsilon); 
+    return fabs(a - b) <= ( (fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * epsilon); 
 };
 
 //-----------------------------------------------------------------------
 PUParticle3DOnTimeObserver::PUParticle3DOnTimeObserver(void) : PUParticle3DObserver(),
-	_threshold(DEFAULT_THRESHOLD),
-	_compare(CO_GREATER_THAN),
-	_sinceStartSystem(DEFAULT_SINCE_START_SYSTEM)
+    _threshold(DEFAULT_THRESHOLD),
+    _compare(CO_GREATER_THAN),
+    _sinceStartSystem(DEFAULT_SINCE_START_SYSTEM)
 {
 };
 //-----------------------------------------------------------------------
 void PUParticle3DOnTimeObserver::preUpdateObserver(float deltaTime)
 {
-	// Call parent
-	PUParticle3DObserver::preUpdateObserver(deltaTime);
+    // Call parent
+    PUParticle3DObserver::preUpdateObserver(deltaTime);
 
-	// Also observe if there are no particles emitted, because some of the event handlers do not only
-	// perform an action on a particle.
-	if (_particleSystem->getParticlePool().getActiveParticleList().size() == 0)
-	{
-		handleObserve(0, deltaTime);
-	}
+    // Also observe if there are no particles emitted, because some of the event handlers do not only
+    // perform an action on a particle.
+    if (static_cast<PUParticleSystem3D *>(_particleSystem)->getActiveParticleSize() <= 0)
+    {
+        handleObserve(0, deltaTime);
+    }
 }
 //-----------------------------------------------------------------------
 bool PUParticle3DOnTimeObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	if (_compare == CO_GREATER_THAN)
-	{
-		if (_sinceStartSystem)
-		{
-			// Validate whether time since start of the particle system > threshold
-			return (_particleSystem->getTimeElapsedSinceStart() > _threshold);
-		}
-		else
-		{
-			// Validate whether time since start of the particle emission > threshold
-			return (particle && (particle->totalTimeToLive - particle->timeToLive) > _threshold);
-		}
-	}
-	else if (_compare == CO_LESS_THAN)
-	{
-		if (_sinceStartSystem)
-		{
-			// Validate whether time since start of the particle system < threshold
-			return (_particleSystem->getTimeElapsedSinceStart() < _threshold);
-		}
-		else
-		{
-			// Validate whether time since start of the particle emission < threshold
-			return (particle && (particle->totalTimeToLive - particle->timeToLive) < _threshold);
-		}
-	}
-	else
-	{
-		// Equals
-		if (_sinceStartSystem)
-		{
-			// Validate whether time since start of the particle system == threshold
-			return almostEquals(_particleSystem->getTimeElapsedSinceStart(), _threshold, 0.01f);
-		}
-		else
-		{
-			// Validate whether time since start of the particle emission == threshold
-			return particle && almostEquals((particle->totalTimeToLive - particle->timeToLive), _threshold, 0.01f);
-		}
-	}
+    if (_compare == CO_GREATER_THAN)
+    {
+        if (_sinceStartSystem)
+        {
+            // Validate whether time since start of the particle system > threshold
+            return (_particleSystem->getTimeElapsedSinceStart() > _threshold);
+        }
+        else
+        {
+            // Validate whether time since start of the particle emission > threshold
+            return (particle && (particle->totalTimeToLive - particle->timeToLive) > _threshold);
+        }
+    }
+    else if (_compare == CO_LESS_THAN)
+    {
+        if (_sinceStartSystem)
+        {
+            // Validate whether time since start of the particle system < threshold
+            return (_particleSystem->getTimeElapsedSinceStart() < _threshold);
+        }
+        else
+        {
+            // Validate whether time since start of the particle emission < threshold
+            return (particle && (particle->totalTimeToLive - particle->timeToLive) < _threshold);
+        }
+    }
+    else
+    {
+        // Equals
+        if (_sinceStartSystem)
+        {
+            // Validate whether time since start of the particle system == threshold
+            return almostEquals(_particleSystem->getTimeElapsedSinceStart(), _threshold, 0.01f);
+        }
+        else
+        {
+            // Validate whether time since start of the particle emission == threshold
+            return particle && almostEquals((particle->totalTimeToLive - particle->timeToLive), _threshold, 0.01f);
+        }
+    }
 
-	return false;
+    return false;
 }
 
 PUParticle3DOnTimeObserver* PUParticle3DOnTimeObserver::create()
 {
-	auto pto = new PUParticle3DOnTimeObserver();
-	pto->autorelease();
-	return pto;
+    auto pto = new PUParticle3DOnTimeObserver();
+    pto->autorelease();
+    return pto;
 }
 
 void PUParticle3DOnTimeObserver::copyAttributesTo( PUParticle3DObserver* observer )
 {
-	PUParticle3DObserver::copyAttributesTo(observer);
+    PUParticle3DObserver::copyAttributesTo(observer);
 
-	PUParticle3DOnTimeObserver* onTimeObserver = static_cast<PUParticle3DOnTimeObserver*>(observer);
-	onTimeObserver->_threshold = _threshold;
-	onTimeObserver->_compare = _compare;
-	onTimeObserver->_sinceStartSystem = _sinceStartSystem;
+    PUParticle3DOnTimeObserver* onTimeObserver = static_cast<PUParticle3DOnTimeObserver*>(observer);
+    onTimeObserver->_threshold = _threshold;
+    onTimeObserver->_compare = _compare;
+    onTimeObserver->_sinceStartSystem = _sinceStartSystem;
 }
 
 NS_CC_END

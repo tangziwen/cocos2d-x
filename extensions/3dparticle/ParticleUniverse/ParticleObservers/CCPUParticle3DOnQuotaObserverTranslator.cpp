@@ -35,7 +35,7 @@ PUParticle3DOnQuotaObserverTranslator::PUParticle3DOnQuotaObserverTranslator()
 //-------------------------------------------------------------------------
 bool PUParticle3DOnQuotaObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnQuotaObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

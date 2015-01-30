@@ -54,7 +54,7 @@ public:
     ForceApplication getForceApplication() const;
     void setForceApplication(ForceApplication forceApplication);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DBaseForceAffector();

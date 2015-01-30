@@ -133,11 +133,11 @@ PUParticle3DColorAffector* PUParticle3DColorAffector::create()
 
 void PUParticle3DColorAffector::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DAffector::copyAttributesTo(affector);
 
-	PUParticle3DColorAffector* colourAffector = static_cast<PUParticle3DColorAffector*>(affector);
-	colourAffector->_colorMap = _colorMap;
-	colourAffector->_colorOperation = _colorOperation;
+    PUParticle3DColorAffector* colourAffector = static_cast<PUParticle3DColorAffector*>(affector);
+    colourAffector->_colorMap = _colorMap;
+    colourAffector->_colorOperation = _colorOperation;
 }
 
 NS_CC_END

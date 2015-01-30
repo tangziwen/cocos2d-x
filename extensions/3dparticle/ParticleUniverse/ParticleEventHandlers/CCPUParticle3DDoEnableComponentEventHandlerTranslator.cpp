@@ -35,53 +35,53 @@ PUParticle3DDoEnableComponentEventHandlerTranslator::PUParticle3DDoEnableCompone
 //-------------------------------------------------------------------------
 bool PUParticle3DDoEnableComponentEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
-	PUParticle3DDoEnableComponentEventHandler* handler = static_cast<PUParticle3DDoEnableComponentEventHandler*>(evt);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
+    PUParticle3DDoEnableComponentEventHandler* handler = static_cast<PUParticle3DDoEnableComponentEventHandler*>(evt);
 
-	if (prop->name == token[TOKEN_DOENABLE_COMPONENT])
-	{
-		// Property: enable_component
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_DOENABLE_COMPONENT], 3))
-		{
-			std::string componentType;
-			std::string name;
-			bool enabled = true;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &componentType))
-			{
-				if (componentType == token[TOKEN_DOENABLE_EMITTER_COMPONENT])
-				{
-					handler->setComponentType(CT_EMITTER);
-				}
-				else if (componentType == token[TOKEN_DOENABLE_AFFECTOR_COMPONENT])
-				{
-					handler->setComponentType(CT_AFFECTOR);
-				}
-				else if (componentType == token[TOKEN_DOENABLE_OBSERVER_COMPONENT])
-				{
-					handler->setComponentType(CT_OBSERVER);
-				}
-				else if (componentType == token[TOKEN_DOENABLE_TECHNIQUE_COMPONENT])
-				{
-					handler->setComponentType(CT_TECHNIQUE);
-				}
-				++i;
-				if(getString(**i, &name))
-				{
-					handler->setComponentName(name);
-					++i;
-					if (getBoolean(**i, &enabled))
-					{
-						handler->setComponentEnabled(enabled);
-						return true;
-					}
-				}
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_DOENABLE_COMPONENT])
+    {
+        // Property: enable_component
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_DOENABLE_COMPONENT], 3))
+        {
+            std::string componentType;
+            std::string name;
+            bool enabled = true;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &componentType))
+            {
+                if (componentType == token[TOKEN_DOENABLE_EMITTER_COMPONENT])
+                {
+                    handler->setComponentType(CT_EMITTER);
+                }
+                else if (componentType == token[TOKEN_DOENABLE_AFFECTOR_COMPONENT])
+                {
+                    handler->setComponentType(CT_AFFECTOR);
+                }
+                else if (componentType == token[TOKEN_DOENABLE_OBSERVER_COMPONENT])
+                {
+                    handler->setComponentType(CT_OBSERVER);
+                }
+                else if (componentType == token[TOKEN_DOENABLE_TECHNIQUE_COMPONENT])
+                {
+                    handler->setComponentType(CT_TECHNIQUE);
+                }
+                ++i;
+                if(getString(**i, &name))
+                {
+                    handler->setComponentName(name);
+                    ++i;
+                    if (getBoolean(**i, &enabled))
+                    {
+                        handler->setComponentEnabled(enabled);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoEnableComponentEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

@@ -62,7 +62,6 @@ private:
         //ObserverTranslator mObserverTranslator;
         //ParticleEventHandlerTranslator mParticleEventHandlerTranslator;
         //ExternTranslator mExternTranslator;
-    
 
 public:
     

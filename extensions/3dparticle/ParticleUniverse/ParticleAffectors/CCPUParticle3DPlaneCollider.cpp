@@ -175,9 +175,9 @@ PUParticle3DPlaneCollider* PUParticle3DPlaneCollider::create()
 
 void PUParticle3DPlaneCollider::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DBaseCollider::copyAttributesTo(affector);
-	PUParticle3DPlaneCollider* planeCollider = static_cast<PUParticle3DPlaneCollider*>(affector);
-	planeCollider->setNormal(_normal);
+    PUParticle3DBaseCollider::copyAttributesTo(affector);
+    PUParticle3DPlaneCollider* planeCollider = static_cast<PUParticle3DPlaneCollider*>(affector);
+    planeCollider->setNormal(_normal);
 }
 
 NS_CC_END

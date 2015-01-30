@@ -41,44 +41,44 @@ class CC_DLL PUParticle3DBehaviour : public Ref
     friend class PUParticleSystem3D;
 public:
 
-	/** Todo
-	*/
-	const std::string& getBehaviourType(void) const {return _behaviourType;};
-	void setBehaviourType(const std::string& behaviourType) {_behaviourType = behaviourType;};
+    /** Todo
+    */
+    const std::string& getBehaviourType(void) const {return _behaviourType;};
+    void setBehaviourType(const std::string& behaviourType) {_behaviourType = behaviourType;};
 
-	/** Notify that the Behaviour is rescaled.
-	*/
-	virtual void notifyRescaled(const Vec3& scale){_behaviourScale = scale;};
+    /** Notify that the Behaviour is rescaled.
+    */
+    virtual void notifyRescaled(const Vec3& scale){_behaviourScale = scale;};
 
-	virtual void prepare() {};
-	virtual void unPrepare() {};
+    virtual void prepare() {};
+    virtual void unPrepare() {};
 
-	virtual void updateBehaviour(PUParticle3D *particle, float deltaTime) {};
+    virtual void updateBehaviour(PUParticle3D *particle, float deltaTime) {};
 
-	/** Perform initialising activities as soon as the particle with which the ParticleBehaviour is
-		associated, is emitted.
-	*/
-	virtual void initParticleForEmission(PUParticle3D* particle){/* No implementation */};
-	/** Perform some action if a particle expires.
-	*/
-	virtual void initParticleForExpiration(PUParticle3D* particle, float timeElapsed){/* No implementation */};
+    /** Perform initialising activities as soon as the particle with which the ParticleBehaviour is
+        associated, is emitted.
+    */
+    virtual void initParticleForEmission(PUParticle3D* particle){/* No implementation */};
+    /** Perform some action if a particle expires.
+    */
+    virtual void initParticleForExpiration(PUParticle3D* particle, float timeElapsed){/* No implementation */};
 
-	virtual PUParticle3DBehaviour* clone();
-	virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
+    virtual PUParticle3DBehaviour* clone();
+    virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DBehaviour(void);
-	virtual ~PUParticle3DBehaviour(void);
+    PUParticle3DBehaviour(void);
+    virtual ~PUParticle3DBehaviour(void);
 
 protected:
-	PUParticleSystem3D* _particleSystem;
+    PUParticleSystem3D* _particleSystem;
 
-	// Type of behaviour
-	std::string _behaviourType;
+    // Type of behaviour
+    std::string _behaviourType;
 
-	/** Although the scale is on a Particle System level, the behaviour can also be scaled.
-	*/
-	Vec3 _behaviourScale;
+    /** Although the scale is on a Particle System level, the behaviour can also be scaled.
+    */
+    Vec3 _behaviourScale;
 };
 
 NS_CC_END

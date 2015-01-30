@@ -102,6 +102,9 @@ void PUParticle3DBaseCollider::populateAlignedBox( AABB& box, const Vec3& positi
 
 void PUParticle3DBaseCollider::calculateRotationSpeedAfterCollision( PUParticle3D* particle )
 {
+    if (particle->particleType != PUParticle3D::PT_VISUAL)
+        return;
+
     float signedFriction = CCRANDOM_0_1() > 0.5 ? -(_friction - 1) : (_friction - 1);
 
     particle->rotationSpeed *= signedFriction;
@@ -116,13 +119,13 @@ void PUParticle3DBaseCollider::preUpdateAffector( float deltaTime )
 
 void PUParticle3DBaseCollider::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DAffector::copyAttributesTo(affector);
 
-	PUParticle3DBaseCollider* baseCollider = static_cast<PUParticle3DBaseCollider*>(affector);
-	baseCollider->_bouncyness = _bouncyness;
-	baseCollider->_friction = _friction;
-	baseCollider->_intersectionType = _intersectionType;
-	baseCollider->_collisionType = _collisionType;
+    PUParticle3DBaseCollider* baseCollider = static_cast<PUParticle3DBaseCollider*>(affector);
+    baseCollider->_bouncyness = _bouncyness;
+    baseCollider->_friction = _friction;
+    baseCollider->_intersectionType = _intersectionType;
+    baseCollider->_collisionType = _collisionType;
 }
 
 NS_CC_END

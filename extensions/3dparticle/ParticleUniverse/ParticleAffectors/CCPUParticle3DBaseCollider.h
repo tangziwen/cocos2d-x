@@ -115,7 +115,7 @@ public:
     */
     void calculateRotationSpeedAfterCollision(PUParticle3D* particle);
 
-	virtual void copyAttributesTo (PUParticle3DAffector* affector);
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DBaseCollider();

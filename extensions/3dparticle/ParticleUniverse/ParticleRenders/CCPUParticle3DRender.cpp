@@ -41,7 +41,12 @@ NS_CC_BEGIN
 
 void PUParticle3DRender::copyAttributesTo( PUParticle3DRender *render )
 {
-	render->_renderType = _renderType;
+    render->_particleSystem = _particleSystem;
+    render->_isVisible = _isVisible;
+    render->_rendererScale = _rendererScale;
+    render->_depthTest = _depthTest;
+    render->_depthWrite = _depthWrite;
+    render->_renderType = _renderType;
 }
 
 static bool compareParticle3D(PUParticle3D* left, PUParticle3D* right)
@@ -74,7 +79,7 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
         _indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 6 * particleSystem->getParticleQuota());
         _indexBuffer->retain();
     }
-    ParticlePool::PoolList activeParticleList = particlePool.getActiveParticleList();
+    const ParticlePool::PoolList &activeParticleList = particlePool.getActiveDataList();
     if (_vertices.size() < activeParticleList.size() * 4)
     {
         _vertices.resize(activeParticleList.size() * 4);
@@ -118,101 +123,99 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
     for (auto iter : activeParticleList)
     {
         auto particle = static_cast<PUParticle3D *>(iter);
-        if (particle->particleType == PUParticle3D::PT_VISUAL){
-            determineUVCoords(particle);
-            if (_type == ORIENTED_SELF){
-                Vec3 direction;
-                transform.transformVector(particle->direction, &direction);
-                up = direction;
-                up.normalize();
-                Vec3::cross(direction, backward, &right);
-                right.normalize();
-            }else if (_type == PERPENDICULAR_SELF){
-                Vec3 direction;
-                transform.transformVector(particle->direction, &direction);
-                direction.normalize();
-                //up = PUParticle3DUtil::perpendicular(direction);
-                //up.normalize();
-                Vec3::cross(_commonUp, direction, &right);
-                right.normalize();
-                Vec3::cross(direction, right, &up);
-                up.normalize();
-                backward = direction;
-            }else if (_type == ORIENTED_SHAPE){
-                up = Vec3(particle->orientationInWorld.x, particle->orientationInWorld.y, particle->orientationInWorld.z);
-                up.normalize();
-                Vec3::cross(up, backward, &right);
-                right.normalize();
-            }
-            Vec3 halfwidth = particle->widthInWorld * 0.5f * right;
-            Vec3 halfheight = particle->heightInWorld * 0.5f * up;
-            //transform.transformPoint(particle->position, &position);
-            position = particle->positionInWorld;
-
-            if (_rotateType == TEXTURE_COORDS){
-                float costheta = cosf(-particle->zRotation);
-                float sintheta = sinf(-particle->zRotation);
-                Vec2 texOffset = particle->lb_uv + 0.5f * (particle->rt_uv - particle->lb_uv);
-                Vec2 val;
-                val = Vec2((particle->lb_uv.x - texOffset.x), (particle->lb_uv.y - texOffset.y));
-                val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-                fillVertex(vertexindex, (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
-
-                val = Vec2(particle->rt_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y);
-                val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-                fillVertex(vertexindex + 1, (position + (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
-
-                val = Vec2(particle->lb_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
-                val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-                fillVertex(vertexindex + 2, (position + (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
-
-                val = Vec2(particle->rt_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
-                val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-                fillVertex(vertexindex + 3, (position + (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
-            }else{
-                Mat4::createRotation(backward, -particle->zRotation, &pRotMat);
-                fillVertex(vertexindex    , (position + pRotMat * (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, particle->lb_uv);
-                fillVertex(vertexindex + 1, (position + pRotMat * (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(particle->rt_uv.x, particle->lb_uv.y));
-                fillVertex(vertexindex + 2, (position + pRotMat * (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(particle->lb_uv.x, particle->rt_uv.y));
-                fillVertex(vertexindex + 3, (position + pRotMat * (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, particle->rt_uv);
-            }
-
-            fillTriangle(index, vertexindex, vertexindex + 1, vertexindex + 3);
-            fillTriangle(index + 3, vertexindex, vertexindex + 3, vertexindex + 2);
-
-            //_posuvcolors[vertexindex].position = (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
-            //_posuvcolors[vertexindex].color = particle->color;
-            //_posuvcolors[vertexindex].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
-
-            //val = Vec2(particle->rt_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y);
-            //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-            //_posuvcolors[vertexindex + 1].position = (position + (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
-            //_posuvcolors[vertexindex + 1].color = particle->color;
-            //_posuvcolors[vertexindex + 1].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
-            //
-            //val = Vec2(particle->lb_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
-            //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-            //_posuvcolors[vertexindex + 2].position = (position + (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
-            //_posuvcolors[vertexindex + 2].color = particle->color;
-            //_posuvcolors[vertexindex + 2].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
-            //
-            //val = Vec2(particle->rt_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
-            //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
-            //_posuvcolors[vertexindex + 3].position = (position + (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
-            //_posuvcolors[vertexindex + 3].color = particle->color;
-            //_posuvcolors[vertexindex + 3].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
-            //
-            //
-            //_indexData[index] = vertexindex;
-            //_indexData[index + 1] = vertexindex + 1;
-            //_indexData[index + 2] = vertexindex + 3;
-            //_indexData[index + 3] = vertexindex;
-            //_indexData[index + 4] = vertexindex + 3;
-            //_indexData[index + 5] = vertexindex + 2;
-        
-            index += 6;
-            vertexindex += 4;
+        determineUVCoords(particle);
+        if (_type == ORIENTED_SELF){
+            Vec3 direction;
+            transform.transformVector(particle->direction, &direction);
+            up = direction;
+            up.normalize();
+            Vec3::cross(direction, backward, &right);
+            right.normalize();
+        }else if (_type == PERPENDICULAR_SELF){
+            Vec3 direction;
+            transform.transformVector(particle->direction, &direction);
+            direction.normalize();
+            //up = PUParticle3DUtil::perpendicular(direction);
+            //up.normalize();
+            Vec3::cross(_commonUp, direction, &right);
+            right.normalize();
+            Vec3::cross(direction, right, &up);
+            up.normalize();
+            backward = direction;
+        }else if (_type == ORIENTED_SHAPE){
+            up = Vec3(particle->orientationInWorld.x, particle->orientationInWorld.y, particle->orientationInWorld.z);
+            up.normalize();
+            Vec3::cross(up, backward, &right);
+            right.normalize();
         }
+        Vec3 halfwidth = particle->widthInWorld * 0.5f * right;
+        Vec3 halfheight = particle->heightInWorld * 0.5f * up;
+        //transform.transformPoint(particle->position, &position);
+        position = particle->positionInWorld;
+
+        if (_rotateType == TEXTURE_COORDS){
+            float costheta = cosf(-particle->zRotation);
+            float sintheta = sinf(-particle->zRotation);
+            Vec2 texOffset = particle->lb_uv + 0.5f * (particle->rt_uv - particle->lb_uv);
+            Vec2 val;
+            val = Vec2((particle->lb_uv.x - texOffset.x), (particle->lb_uv.y - texOffset.y));
+            val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+            fillVertex(vertexindex, (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
+
+            val = Vec2(particle->rt_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y);
+            val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+            fillVertex(vertexindex + 1, (position + (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
+
+            val = Vec2(particle->lb_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
+            val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+            fillVertex(vertexindex + 2, (position + (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
+
+            val = Vec2(particle->rt_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
+            val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+            fillVertex(vertexindex + 3, (position + (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(val.x + texOffset.x, val.y + texOffset.y));
+        }else{
+            Mat4::createRotation(backward, -particle->zRotation, &pRotMat);
+            fillVertex(vertexindex    , (position + pRotMat * (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, particle->lb_uv);
+            fillVertex(vertexindex + 1, (position + pRotMat * (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(particle->rt_uv.x, particle->lb_uv.y));
+            fillVertex(vertexindex + 2, (position + pRotMat * (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, Vec2(particle->lb_uv.x, particle->rt_uv.y));
+            fillVertex(vertexindex + 3, (position + pRotMat * (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY)), particle->color, particle->rt_uv);
+        }
+
+        fillTriangle(index, vertexindex, vertexindex + 1, vertexindex + 3);
+        fillTriangle(index + 3, vertexindex, vertexindex + 3, vertexindex + 2);
+
+        //_posuvcolors[vertexindex].position = (position + (- halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
+        //_posuvcolors[vertexindex].color = particle->color;
+        //_posuvcolors[vertexindex].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
+
+        //val = Vec2(particle->rt_uv.x - texOffset.x, particle->lb_uv.y - texOffset.y);
+        //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+        //_posuvcolors[vertexindex + 1].position = (position + (halfwidth - halfheight + halfwidth * offsetX + halfheight * offsetY));
+        //_posuvcolors[vertexindex + 1].color = particle->color;
+        //_posuvcolors[vertexindex + 1].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
+        //
+        //val = Vec2(particle->lb_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
+        //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+        //_posuvcolors[vertexindex + 2].position = (position + (- halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
+        //_posuvcolors[vertexindex + 2].color = particle->color;
+        //_posuvcolors[vertexindex + 2].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
+        //
+        //val = Vec2(particle->rt_uv.x - texOffset.x, particle->rt_uv.y - texOffset.y);
+        //val = Vec2(val.x * costheta - val.y * sintheta, val.x * sintheta + val.y * costheta);
+        //_posuvcolors[vertexindex + 3].position = (position + (halfwidth + halfheight + halfwidth * offsetX + halfheight * offsetY));
+        //_posuvcolors[vertexindex + 3].color = particle->color;
+        //_posuvcolors[vertexindex + 3].uv = Vec2(val.x + texOffset.x, val.y + texOffset.y);
+        //
+        //
+        //_indexData[index] = vertexindex;
+        //_indexData[index + 1] = vertexindex + 1;
+        //_indexData[index + 2] = vertexindex + 3;
+        //_indexData[index + 3] = vertexindex;
+        //_indexData[index + 4] = vertexindex + 3;
+        //_indexData[index + 5] = vertexindex + 2;
+        
+        index += 6;
+        vertexindex += 4;
 
     }
     
@@ -383,24 +386,24 @@ void PUParticle3DQuadRender::setType( Type type )
 
 void PUParticle3DQuadRender::copyAttributesTo( PUParticle3DRender *render )
 {
-	PUParticle3DRender::copyAttributesTo(render);
-	PUParticle3DQuadRender *quadRender = static_cast<PUParticle3DQuadRender *>(render);
-	quadRender->_type = _type;
-	quadRender->_origin = _origin;
-	quadRender->_rotateType = _rotateType;
-	quadRender->_commonDir = _commonDir;
-	quadRender->_commonUp = _commonUp;
-	quadRender->_textureCoordsRows = _textureCoordsRows;
-	quadRender->_textureCoordsColumns = _textureCoordsColumns;
-	quadRender->_textureCoordsRowStep = _textureCoordsRowStep;
-	quadRender->_textureCoordsColStep = _textureCoordsColStep;
+    PUParticle3DRender::copyAttributesTo(render);
+    PUParticle3DQuadRender *quadRender = static_cast<PUParticle3DQuadRender *>(render);
+    quadRender->_type = _type;
+    quadRender->_origin = _origin;
+    quadRender->_rotateType = _rotateType;
+    quadRender->_commonDir = _commonDir;
+    quadRender->_commonUp = _commonUp;
+    quadRender->_textureCoordsRows = _textureCoordsRows;
+    quadRender->_textureCoordsColumns = _textureCoordsColumns;
+    quadRender->_textureCoordsRowStep = _textureCoordsRowStep;
+    quadRender->_textureCoordsColStep = _textureCoordsColStep;
 }
 
 PUParticle3DQuadRender* PUParticle3DQuadRender::clone()
 {
-	auto render = PUParticle3DQuadRender::create(_texFile);
-	copyAttributesTo(render);
-	return render;
+    auto render = PUParticle3DQuadRender::create(_texFile);
+    copyAttributesTo(render);
+    return render;
 }
 
 PUParticle3DModelRender* PUParticle3DModelRender::create( const std::string& modelFile, const std::string &texFile /*= ""*/ )
@@ -433,7 +436,7 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
 
 
     const ParticlePool& particlePool = particleSystem->getParticlePool();
-    ParticlePool::PoolList activeParticleList = particlePool.getActiveParticleList();
+    ParticlePool::PoolList activeParticleList = particlePool.getActiveDataList();
     Mat4 mat;
     Mat4 rotMat;
     Mat4 sclMat;
@@ -443,21 +446,19 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
     for (auto iter : activeParticleList)
     {
         auto particle = static_cast<PUParticle3D *>(iter);
-        if (particle->particleType == PUParticle3D::PT_VISUAL){
-            q *= particle->orientation;
-            Mat4::createRotation(q, &rotMat);
-            sclMat.m[0] = particle->widthInWorld / _spriteSize.x;
-            sclMat.m[5]  = particle->heightInWorld / _spriteSize.y; 
-            sclMat.m[10] = particle->depthInWorld / _spriteSize.z;
-            mat = rotMat * sclMat;
-            mat.m[12] = particle->positionInWorld.x;
-            mat.m[13] = particle->positionInWorld.y;
-            mat.m[14] = particle->positionInWorld.z;
-            _spriteList[index]->setColor(Color3B(particle->color.x * 255, particle->color.y * 255, particle->color.z * 255));
-            _spriteList[index]->setOpacity(particle->color.w * 255);
-            _spriteList[index]->draw(renderer, mat, 0);
-            ++index;
-        }
+        q *= particle->orientation;
+        Mat4::createRotation(q, &rotMat);
+        sclMat.m[0] = particle->widthInWorld / _spriteSize.x;
+        sclMat.m[5]  = particle->heightInWorld / _spriteSize.y; 
+        sclMat.m[10] = particle->depthInWorld / _spriteSize.z;
+        mat = rotMat * sclMat;
+        mat.m[12] = particle->positionInWorld.x;
+        mat.m[13] = particle->positionInWorld.y;
+        mat.m[14] = particle->positionInWorld.z;
+        _spriteList[index]->setColor(Color3B(particle->color.x * 255, particle->color.y * 255, particle->color.z * 255));
+        _spriteList[index]->setOpacity(particle->color.w * 255);
+        _spriteList[index]->draw(renderer, mat, 0);
+        ++index;
     }
 }
 
@@ -473,83 +474,83 @@ PUParticle3DModelRender::~PUParticle3DModelRender()
 
 void PUParticle3DModelRender::copyAttributesTo( PUParticle3DRender *render )
 {
-	PUParticle3DRender::copyAttributesTo(render);
+    PUParticle3DRender::copyAttributesTo(render);
 }
 
 PUParticle3DModelRender* PUParticle3DModelRender::clone()
 {
-	auto mr = PUParticle3DModelRender::create(_modelFile, _texFile);
-	copyAttributesTo(mr);
-	return mr;
+    auto mr = PUParticle3DModelRender::create(_modelFile, _texFile);
+    copyAttributesTo(mr);
+    return mr;
 }
 
 
 PUParticle3DEntityRender::PUParticle3DEntityRender()
-	: _meshCommand(nullptr)
-	, _texture(nullptr)
-	, _glProgramState(nullptr)
-	, _vertexBuffer(nullptr)
-	, _indexBuffer(nullptr)
+    : _meshCommand(nullptr)
+    , _texture(nullptr)
+    , _glProgramState(nullptr)
+    , _vertexBuffer(nullptr)
+    , _indexBuffer(nullptr)
 {
 
 }
 
 PUParticle3DEntityRender::~PUParticle3DEntityRender()
 {
-	CC_SAFE_DELETE(_meshCommand);
-	//CC_SAFE_RELEASE(_texture);
-	CC_SAFE_RELEASE(_glProgramState);
-	CC_SAFE_RELEASE(_vertexBuffer);
-	CC_SAFE_RELEASE(_indexBuffer);
+    CC_SAFE_DELETE(_meshCommand);
+    //CC_SAFE_RELEASE(_texture);
+    CC_SAFE_RELEASE(_glProgramState);
+    CC_SAFE_RELEASE(_vertexBuffer);
+    CC_SAFE_RELEASE(_indexBuffer);
 }
 
 void PUParticle3DEntityRender::initRender( const std::string &texFile )
 {
-	GLProgram* glProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_3D_PARTICLE_COLOR);
-	if (!texFile.empty())
-	{
-		auto tex = Director::getInstance()->getTextureCache()->addImage(texFile);
-		if (tex)
-		{
-			_texture = tex;
-			_texFile = texFile;
-			glProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_3D_PARTICLE_TEXTURE);
-		}
-	}
-	auto glProgramState = GLProgramState::create(glProgram);
-	glProgramState->retain();
+    GLProgram* glProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_3D_PARTICLE_COLOR);
+    if (!texFile.empty())
+    {
+        auto tex = Director::getInstance()->getTextureCache()->addImage(texFile);
+        if (tex)
+        {
+            _texture = tex;
+            _texFile = texFile;
+            glProgram = GLProgramCache::getInstance()->getGLProgram(GLProgram::SHADER_3D_PARTICLE_TEXTURE);
+        }
+    }
+    auto glProgramState = GLProgramState::create(glProgram);
+    glProgramState->retain();
 
-	GLsizei stride = sizeof(VertexInfo);
+    GLsizei stride = sizeof(VertexInfo);
 
-	glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_POSITION], 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, position));
-	glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_TEX_COORD], 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, uv));
-	glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_COLOR], 4, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, color));
+    glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_POSITION], 3, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, position));
+    glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_TEX_COORD], 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, uv));
+    glProgramState->setVertexAttribPointer(s_attributeNames[GLProgram::VERTEX_ATTRIB_COLOR], 4, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offsetof(VertexInfo, color));
 
-	_glProgramState = glProgramState;
+    _glProgramState = glProgramState;
 
-	_meshCommand = new MeshCommand();
-	_meshCommand->setTransparent(true);
-	_meshCommand->setDepthTestEnabled(_depthTest);
-	_meshCommand->setDepthWriteEnabled(_depthWrite);
-	_meshCommand->setCullFace(GL_BACK);
-	_meshCommand->setCullFaceEnabled(true);
+    _meshCommand = new MeshCommand();
+    _meshCommand->setTransparent(true);
+    _meshCommand->setDepthTestEnabled(_depthTest);
+    _meshCommand->setDepthWriteEnabled(_depthWrite);
+    _meshCommand->setCullFace(GL_BACK);
+    _meshCommand->setCullFaceEnabled(true);
 }
 
 void PUParticle3DEntityRender::setDepthTest( bool isDepthTest )
 {
-	Particle3DRender::setDepthTest(isDepthTest);
-	_meshCommand->setDepthTestEnabled(_depthTest);
+    Particle3DRender::setDepthTest(isDepthTest);
+    _meshCommand->setDepthTestEnabled(_depthTest);
 }
 
 void PUParticle3DEntityRender::setDepthWrite( bool isDepthWrite )
 {
-	Particle3DRender::setDepthWrite(isDepthWrite);
-	_meshCommand->setDepthWriteEnabled(_depthWrite);
+    Particle3DRender::setDepthWrite(isDepthWrite);
+    _meshCommand->setDepthWriteEnabled(_depthWrite);
 }
 
 void PUParticle3DEntityRender::copyAttributesTo( PUParticle3DRender *render )
 {
-	PUParticle3DRender::copyAttributesTo(render);
+    PUParticle3DRender::copyAttributesTo(render);
 }
 
 PUParticle3DBoxRender::PUParticle3DBoxRender()
@@ -563,285 +564,281 @@ PUParticle3DBoxRender::~PUParticle3DBoxRender()
 
 PUParticle3DBoxRender* PUParticle3DBoxRender::create( const std::string &texFile )
 {
-	auto br = new PUParticle3DBoxRender();
-	br->autorelease();
-	br->initRender(texFile);
-	return br;
+    auto br = new PUParticle3DBoxRender();
+    br->autorelease();
+    br->initRender(texFile);
+    return br;
 }
 
 void PUParticle3DBoxRender::render( Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem )
 {
-	//batch and generate draw
-	const ParticlePool &particlePool = particleSystem->getParticlePool();
-	if (!_isVisible || particlePool.empty())
-		return;
+    //batch and generate draw
+    const ParticlePool &particlePool = particleSystem->getParticlePool();
+    if (!_isVisible || particlePool.empty())
+        return;
 
-	auto camera = Camera::getVisitingCamera();
-	auto cameraMat = camera->getNodeToWorldTransform();
-	const Mat4 &viewMat = cameraMat.getInversed();
-	Vec3 backward(cameraMat.m[8], cameraMat.m[9], cameraMat.m[10]);
+    auto camera = Camera::getVisitingCamera();
+    auto cameraMat = camera->getNodeToWorldTransform();
+    const Mat4 &viewMat = cameraMat.getInversed();
+    Vec3 backward(cameraMat.m[8], cameraMat.m[9], cameraMat.m[10]);
 
-	if (_vertexBuffer == nullptr && _indexBuffer == nullptr){
-		GLsizei stride = sizeof(VertexInfo);
-		_vertexBuffer = VertexBuffer::create(stride, 8 * particleSystem->getParticleQuota());
-		_vertexBuffer->retain();
-		_vertices.resize(8 * particleSystem->getParticleQuota());
+    if (_vertexBuffer == nullptr && _indexBuffer == nullptr){
+        GLsizei stride = sizeof(VertexInfo);
+        _vertexBuffer = VertexBuffer::create(stride, 8 * particleSystem->getParticleQuota());
+        _vertexBuffer->retain();
+        _vertices.resize(8 * particleSystem->getParticleQuota());
 
-		_indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 36 * particleSystem->getParticleQuota());
-		_indexBuffer->retain();
-		_indices.resize(36 * particleSystem->getParticleQuota());
-		reBuildIndices(particleSystem->getParticleQuota());
-	}
+        _indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 36 * particleSystem->getParticleQuota());
+        _indexBuffer->retain();
+        _indices.resize(36 * particleSystem->getParticleQuota());
+        reBuildIndices(particleSystem->getParticleQuota());
+    }
 
-	unsigned int vertexindex = 0;
-	unsigned int index = 0;
-	Mat4 texRot;
-	Vec3 val;
-	for (auto iter : particlePool.getActiveParticleList())
-	{
-		auto particle = static_cast<PUParticle3D *>(iter);
-		if (particle->particleType == PUParticle3D::PT_VISUAL){
-			float halfHeight = particle->heightInWorld * 0.5f;
-			float halfWidth = particle->widthInWorld * 0.5f;
-			float halfDepth = particle->depthInWorld * 0.5f;
-			Mat4::createRotation(backward, particle->zRotation, &texRot);
-			val = texRot * Vec3(0.0f, 0.75f, 0.0);
-			_vertices[vertexindex + 0].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, halfDepth);
-			_vertices[vertexindex + 0].color = particle->color;
-			_vertices[vertexindex + 0].uv.x = val.x; _vertices[vertexindex + 0].uv.y = val.y; 
-			val = texRot * Vec3(0.0f, 0.25f, 0.0);
-			_vertices[vertexindex + 1].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, halfDepth);
-			_vertices[vertexindex + 1].color = particle->color;
-			_vertices[vertexindex + 1].uv.x = val.x; _vertices[vertexindex + 1].uv.y = val.y;
-			val = texRot * Vec3(0.5f, 0.25f, 0.0);
-			_vertices[vertexindex + 2].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, halfDepth);
-			_vertices[vertexindex + 2].color = particle->color;
-			_vertices[vertexindex + 2].uv.x = val.x; _vertices[vertexindex + 2].uv.y = val.y;
-			val = texRot * Vec3(0.5f, 0.75f, 0.0);
-			_vertices[vertexindex + 3].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, halfDepth);
-			_vertices[vertexindex + 3].color = particle->color;
-			_vertices[vertexindex + 3].uv.x = val.x; _vertices[vertexindex + 3].uv.y = val.y;
+    unsigned int vertexindex = 0;
+    unsigned int index = 0;
+    Mat4 texRot;
+    Vec3 val;
+    for (auto iter : particlePool.getActiveDataList())
+    {
+        auto particle = static_cast<PUParticle3D *>(iter);
+        float halfHeight = particle->heightInWorld * 0.5f;
+        float halfWidth = particle->widthInWorld * 0.5f;
+        float halfDepth = particle->depthInWorld * 0.5f;
+        Mat4::createRotation(backward, particle->zRotation, &texRot);
+        val = texRot * Vec3(0.0f, 0.75f, 0.0);
+        _vertices[vertexindex + 0].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, halfDepth);
+        _vertices[vertexindex + 0].color = particle->color;
+        _vertices[vertexindex + 0].uv.x = val.x; _vertices[vertexindex + 0].uv.y = val.y; 
+        val = texRot * Vec3(0.0f, 0.25f, 0.0);
+        _vertices[vertexindex + 1].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, halfDepth);
+        _vertices[vertexindex + 1].color = particle->color;
+        _vertices[vertexindex + 1].uv.x = val.x; _vertices[vertexindex + 1].uv.y = val.y;
+        val = texRot * Vec3(0.5f, 0.25f, 0.0);
+        _vertices[vertexindex + 2].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, halfDepth);
+        _vertices[vertexindex + 2].color = particle->color;
+        _vertices[vertexindex + 2].uv.x = val.x; _vertices[vertexindex + 2].uv.y = val.y;
+        val = texRot * Vec3(0.5f, 0.75f, 0.0);
+        _vertices[vertexindex + 3].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, halfDepth);
+        _vertices[vertexindex + 3].color = particle->color;
+        _vertices[vertexindex + 3].uv.x = val.x; _vertices[vertexindex + 3].uv.y = val.y;
 
-			val = texRot * Vec3(0.0f, 0.0f, 0.0);
-			_vertices[vertexindex + 4].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, -halfDepth);
-			_vertices[vertexindex + 4].color = particle->color;
-			_vertices[vertexindex + 4].uv.x = val.x; _vertices[vertexindex + 4].uv.y = val.y;
-			val = texRot * Vec3(0.0f, 1.0f, 0.0);
-			_vertices[vertexindex + 5].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, -halfDepth);
-			_vertices[vertexindex + 5].color = particle->color;
-			_vertices[vertexindex + 5].uv.x = val.x; _vertices[vertexindex + 5].uv.y = val.y;
-			val = texRot * Vec3(0.5f, 1.0f, 0.0);
-			_vertices[vertexindex + 6].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, -halfDepth);
-			_vertices[vertexindex + 6].color = particle->color;
-			_vertices[vertexindex + 6].uv.x = val.x; _vertices[vertexindex + 6].uv.y = val.y;
-			val = texRot * Vec3(0.5f, 0.0f, 0.0);
-			_vertices[vertexindex + 7].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, -halfDepth);
-			_vertices[vertexindex + 7].color = particle->color;
-			_vertices[vertexindex + 7].uv.x = val.x; _vertices[vertexindex + 7].uv.y = val.y;
+        val = texRot * Vec3(0.0f, 0.0f, 0.0);
+        _vertices[vertexindex + 4].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, -halfDepth);
+        _vertices[vertexindex + 4].color = particle->color;
+        _vertices[vertexindex + 4].uv.x = val.x; _vertices[vertexindex + 4].uv.y = val.y;
+        val = texRot * Vec3(0.0f, 1.0f, 0.0);
+        _vertices[vertexindex + 5].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, -halfDepth);
+        _vertices[vertexindex + 5].color = particle->color;
+        _vertices[vertexindex + 5].uv.x = val.x; _vertices[vertexindex + 5].uv.y = val.y;
+        val = texRot * Vec3(0.5f, 1.0f, 0.0);
+        _vertices[vertexindex + 6].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, -halfDepth);
+        _vertices[vertexindex + 6].color = particle->color;
+        _vertices[vertexindex + 6].uv.x = val.x; _vertices[vertexindex + 6].uv.y = val.y;
+        val = texRot * Vec3(0.5f, 0.0f, 0.0);
+        _vertices[vertexindex + 7].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, -halfDepth);
+        _vertices[vertexindex + 7].color = particle->color;
+        _vertices[vertexindex + 7].uv.x = val.x; _vertices[vertexindex + 7].uv.y = val.y;
 
-			vertexindex += 8;
-			index += 36;
-		}
-	}
+        vertexindex += 8;
+        index += 36;
+    }
 
-	if (!_vertices.empty() && !_indices.empty()){
-		_vertexBuffer->updateVertices(&_vertices[0], vertexindex/* * sizeof(_posuvcolors[0])*/, 0);
-		_indexBuffer->updateIndices(&_indices[0], index/* * sizeof(unsigned short)*/, 0);
-		float depthZ = -(viewMat.m[2] * transform.m[12] + viewMat.m[6] * transform.m[13] + viewMat.m[10] * transform.m[14] + viewMat.m[14]);
+    if (!_vertices.empty() && !_indices.empty()){
+        _vertexBuffer->updateVertices(&_vertices[0], vertexindex/* * sizeof(_posuvcolors[0])*/, 0);
+        _indexBuffer->updateIndices(&_indices[0], index/* * sizeof(unsigned short)*/, 0);
+        float depthZ = -(viewMat.m[2] * transform.m[12] + viewMat.m[6] * transform.m[13] + viewMat.m[10] * transform.m[14] + viewMat.m[14]);
 
-		GLuint texId = (_texture ? _texture->getName() : 0);
-		_meshCommand->init(depthZ, texId, _glProgramState, particleSystem->getBlendFunc(), _vertexBuffer->getVBO(), _indexBuffer->getVBO(), GL_TRIANGLES, GL_UNSIGNED_SHORT, index, transform);
-		renderer->addCommand(_meshCommand);
-	}
+        GLuint texId = (_texture ? _texture->getName() : 0);
+        _meshCommand->init(depthZ, texId, _glProgramState, particleSystem->getBlendFunc(), _vertexBuffer->getVBO(), _indexBuffer->getVBO(), GL_TRIANGLES, GL_UNSIGNED_SHORT, index, transform);
+        renderer->addCommand(_meshCommand);
+    }
 }
 
 void PUParticle3DBoxRender::reBuildIndices(unsigned short count)
 {
-	unsigned short vertexIndex = 0;
-	for (unsigned short i = 0; i < 36 * count;){
-		//front
-		_indices[i++] = vertexIndex + 0;
-		_indices[i++] = vertexIndex + 2;
-		_indices[i++] = vertexIndex + 3;
-		_indices[i++] = vertexIndex + 0;
-		_indices[i++] = vertexIndex + 1;
-		_indices[i++] = vertexIndex + 2;
-		//right
-		_indices[i++] = vertexIndex + 1;
-		_indices[i++] = vertexIndex + 7;
-		_indices[i++] = vertexIndex + 2;
-		_indices[i++] = vertexIndex + 1;
-		_indices[i++] = vertexIndex + 4;
-		_indices[i++] = vertexIndex + 7;
-		//back
-		_indices[i++] = vertexIndex + 4;
-		_indices[i++] = vertexIndex + 6;
-		_indices[i++] = vertexIndex + 7;
-		_indices[i++] = vertexIndex + 4;
-		_indices[i++] = vertexIndex + 5;
-		_indices[i++] = vertexIndex + 6;
-		//left
-		_indices[i++] = vertexIndex + 5;
-		_indices[i++] = vertexIndex + 3;
-		_indices[i++] = vertexIndex + 6;
-		_indices[i++] = vertexIndex + 5;
-		_indices[i++] = vertexIndex + 0;
-		_indices[i++] = vertexIndex + 3;
-		//top
-		_indices[i++] = vertexIndex + 3;
-		_indices[i++] = vertexIndex + 7;
-		_indices[i++] = vertexIndex + 6;
-		_indices[i++] = vertexIndex + 3;
-		_indices[i++] = vertexIndex + 2;
-		_indices[i++] = vertexIndex + 7;
-		//bottom
-		_indices[i++] = vertexIndex + 5;
-		_indices[i++] = vertexIndex + 1;
-		_indices[i++] = vertexIndex + 0;
-		_indices[i++] = vertexIndex + 5;
-		_indices[i++] = vertexIndex + 4;
-		_indices[i++] = vertexIndex + 1;
+    unsigned short vertexIndex = 0;
+    for (unsigned short i = 0; i < 36 * count;){
+        //front
+        _indices[i++] = vertexIndex + 0;
+        _indices[i++] = vertexIndex + 2;
+        _indices[i++] = vertexIndex + 3;
+        _indices[i++] = vertexIndex + 0;
+        _indices[i++] = vertexIndex + 1;
+        _indices[i++] = vertexIndex + 2;
+        //right
+        _indices[i++] = vertexIndex + 1;
+        _indices[i++] = vertexIndex + 7;
+        _indices[i++] = vertexIndex + 2;
+        _indices[i++] = vertexIndex + 1;
+        _indices[i++] = vertexIndex + 4;
+        _indices[i++] = vertexIndex + 7;
+        //back
+        _indices[i++] = vertexIndex + 4;
+        _indices[i++] = vertexIndex + 6;
+        _indices[i++] = vertexIndex + 7;
+        _indices[i++] = vertexIndex + 4;
+        _indices[i++] = vertexIndex + 5;
+        _indices[i++] = vertexIndex + 6;
+        //left
+        _indices[i++] = vertexIndex + 5;
+        _indices[i++] = vertexIndex + 3;
+        _indices[i++] = vertexIndex + 6;
+        _indices[i++] = vertexIndex + 5;
+        _indices[i++] = vertexIndex + 0;
+        _indices[i++] = vertexIndex + 3;
+        //top
+        _indices[i++] = vertexIndex + 3;
+        _indices[i++] = vertexIndex + 7;
+        _indices[i++] = vertexIndex + 6;
+        _indices[i++] = vertexIndex + 3;
+        _indices[i++] = vertexIndex + 2;
+        _indices[i++] = vertexIndex + 7;
+        //bottom
+        _indices[i++] = vertexIndex + 5;
+        _indices[i++] = vertexIndex + 1;
+        _indices[i++] = vertexIndex + 0;
+        _indices[i++] = vertexIndex + 5;
+        _indices[i++] = vertexIndex + 4;
+        _indices[i++] = vertexIndex + 1;
 
-		vertexIndex += 8;
-	}
+        vertexIndex += 8;
+    }
 }
 
 PUParticle3DBoxRender* PUParticle3DBoxRender::clone()
 {
-	auto render = PUParticle3DBoxRender::create(_texFile);
-	copyAttributesTo(render);
-	return render;
+    auto render = PUParticle3DBoxRender::create(_texFile);
+    copyAttributesTo(render);
+    return render;
 }
 
 
 PUParticle3DSphereRender* PUParticle3DSphereRender::create( const std::string &texFile)
 {
-	auto sr = new PUParticle3DSphereRender();
-	sr->autorelease();
-	sr->initRender(texFile);
-	return sr;
+    auto sr = new PUParticle3DSphereRender();
+    sr->autorelease();
+    sr->initRender(texFile);
+    return sr;
 }
 
 void PUParticle3DSphereRender::render( Renderer* renderer, const Mat4 &transform, ParticleSystem3D* particleSystem )
 {
-	//batch and generate draw
-	const ParticlePool &particlePool = particleSystem->getParticlePool();
-	if (!_isVisible || particlePool.empty())
-		return;
+    //batch and generate draw
+    const ParticlePool &particlePool = particleSystem->getParticlePool();
+    if (!_isVisible || particlePool.empty())
+        return;
 
-	auto camera = Camera::getVisitingCamera();
-	auto cameraMat = camera->getNodeToWorldTransform();
-	const Mat4 &viewMat = cameraMat.getInversed();
-	Vec3 backward(cameraMat.m[8], cameraMat.m[9], cameraMat.m[10]);
+    auto camera = Camera::getVisitingCamera();
+    auto cameraMat = camera->getNodeToWorldTransform();
+    const Mat4 &viewMat = cameraMat.getInversed();
+    Vec3 backward(cameraMat.m[8], cameraMat.m[9], cameraMat.m[10]);
 
-	unsigned int vertexCount = (_numberOfRings + 1) * (_numberOfSegments + 1);
-	unsigned int indexCount = 6 * _numberOfRings * (_numberOfSegments + 1);
-	if (_vertexBuffer == nullptr && _indexBuffer == nullptr){
-		GLsizei stride = sizeof(VertexInfo);
-		_vertexBuffer = VertexBuffer::create(stride, vertexCount * particleSystem->getParticleQuota());
-		_vertexBuffer->retain();
-		_vertices.resize(vertexCount * particleSystem->getParticleQuota());
+    unsigned int vertexCount = (_numberOfRings + 1) * (_numberOfSegments + 1);
+    unsigned int indexCount = 6 * _numberOfRings * (_numberOfSegments + 1);
+    if (_vertexBuffer == nullptr && _indexBuffer == nullptr){
+        GLsizei stride = sizeof(VertexInfo);
+        _vertexBuffer = VertexBuffer::create(stride, vertexCount * particleSystem->getParticleQuota());
+        _vertexBuffer->retain();
+        _vertices.resize(vertexCount * particleSystem->getParticleQuota());
 
-		_indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, indexCount * particleSystem->getParticleQuota());
-		_indexBuffer->retain();
-		_indices.resize(indexCount * particleSystem->getParticleQuota());
+        _indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, indexCount * particleSystem->getParticleQuota());
+        _indexBuffer->retain();
+        _indices.resize(indexCount * particleSystem->getParticleQuota());
 
-		buildBuffers(particleSystem->getParticleQuota());
-	}
+        buildBuffers(particleSystem->getParticleQuota());
+    }
 
-	unsigned int vertexindex = 0;
-	unsigned int index = 0;
+    unsigned int vertexindex = 0;
+    unsigned int index = 0;
 
-	Mat4 mat;
-	Mat4 rotMat;
-	Mat4 sclMat;
-	Mat4 texRot;
-	Vec3 val;
-	for (auto iter : particlePool.getActiveParticleList())
-	{
-		auto particle = static_cast<PUParticle3D *>(iter);
-		if (particle->particleType == PUParticle3D::PT_VISUAL){
-			float radius = particle->widthInWorld * 0.5f;
-			Mat4::createRotation(particle->orientation, &rotMat);
-			Mat4::createScale(radius, radius, radius, &sclMat);
-			Mat4::createRotation(backward, particle->zRotation, &texRot);
-			mat = rotMat * sclMat;
-			mat.m[12] = particle->positionInWorld.x;
-			mat.m[13] = particle->positionInWorld.y;
-			mat.m[14] = particle->positionInWorld.z;
+    Mat4 mat;
+    Mat4 rotMat;
+    Mat4 sclMat;
+    Mat4 texRot;
+    Vec3 val;
+    for (auto iter : particlePool.getActiveDataList())
+    {
+        auto particle = static_cast<PUParticle3D *>(iter);
+        float radius = particle->widthInWorld * 0.5f;
+        Mat4::createRotation(particle->orientation, &rotMat);
+        Mat4::createScale(radius, radius, radius, &sclMat);
+        Mat4::createRotation(backward, particle->zRotation, &texRot);
+        mat = rotMat * sclMat;
+        mat.m[12] = particle->positionInWorld.x;
+        mat.m[13] = particle->positionInWorld.y;
+        mat.m[14] = particle->positionInWorld.z;
 
-			for (unsigned int i = 0; i < vertexCount; ++i){
-				val = texRot * Vec3(_vertexTemplate[vertexindex + i].uv.x, _vertexTemplate[vertexindex + i].uv.y, 0.0f);
-				mat.transformPoint(_vertexTemplate[vertexindex + i].position, &_vertices[vertexindex + i].position);
-				_vertices[vertexindex + i].color = particle->color;
-				_vertices[vertexindex + i].uv.x = val.x; _vertices[vertexindex + i].uv.y = val.y;
-			}
-			vertexindex += vertexCount;
-			index += indexCount;
-		}
-	}
+        for (unsigned int i = 0; i < vertexCount; ++i){
+            val = texRot * Vec3(_vertexTemplate[vertexindex + i].uv.x, _vertexTemplate[vertexindex + i].uv.y, 0.0f);
+            mat.transformPoint(_vertexTemplate[vertexindex + i].position, &_vertices[vertexindex + i].position);
+            _vertices[vertexindex + i].color = particle->color;
+            _vertices[vertexindex + i].uv.x = val.x; _vertices[vertexindex + i].uv.y = val.y;
+        }
+        vertexindex += vertexCount;
+        index += indexCount;
+    }
 
-	if (!_vertices.empty() && !_indices.empty()){
-		_vertexBuffer->updateVertices(&_vertices[0], vertexindex/* * sizeof(_posuvcolors[0])*/, 0);
-		_indexBuffer->updateIndices(&_indices[0], index/* * sizeof(unsigned short)*/, 0);
-		float depthZ = -(viewMat.m[2] * transform.m[12] + viewMat.m[6] * transform.m[13] + viewMat.m[10] * transform.m[14] + viewMat.m[14]);
+    if (!_vertices.empty() && !_indices.empty()){
+        _vertexBuffer->updateVertices(&_vertices[0], vertexindex/* * sizeof(_posuvcolors[0])*/, 0);
+        _indexBuffer->updateIndices(&_indices[0], index/* * sizeof(unsigned short)*/, 0);
+        float depthZ = -(viewMat.m[2] * transform.m[12] + viewMat.m[6] * transform.m[13] + viewMat.m[10] * transform.m[14] + viewMat.m[14]);
 
-		GLuint texId = (_texture ? _texture->getName() : 0);
-		_meshCommand->init(depthZ, texId, _glProgramState, particleSystem->getBlendFunc(), _vertexBuffer->getVBO(), _indexBuffer->getVBO(), GL_TRIANGLES, GL_UNSIGNED_SHORT, index, transform);
-		renderer->addCommand(_meshCommand);
-	}
+        GLuint texId = (_texture ? _texture->getName() : 0);
+        _meshCommand->init(depthZ, texId, _glProgramState, particleSystem->getBlendFunc(), _vertexBuffer->getVBO(), _indexBuffer->getVBO(), GL_TRIANGLES, GL_UNSIGNED_SHORT, index, transform);
+        renderer->addCommand(_meshCommand);
+    }
 }
 
 void PUParticle3DSphereRender::buildBuffers( unsigned short count )
 {
-	float stepRingAngle = (M_PI / _numberOfRings);
-	float stepSegmentAngle = (2.0 * M_PI / _numberOfSegments);
+    float stepRingAngle = (M_PI / _numberOfRings);
+    float stepSegmentAngle = (2.0 * M_PI / _numberOfSegments);
 
-	unsigned short vertexIndex = 0;
-	unsigned short index = 0;
+    unsigned short vertexIndex = 0;
+    unsigned short index = 0;
 
-	for (unsigned short i = 0; i < count; ++i){
-		for(unsigned int ring = 0; ring <= _numberOfRings; ring++)
-		{
-			float r0 = sinf (ring * stepRingAngle);
-			float y0 = cosf (ring * stepRingAngle);
+    for (unsigned short i = 0; i < count; ++i){
+        for(unsigned int ring = 0; ring <= _numberOfRings; ring++)
+        {
+            float r0 = sinf (ring * stepRingAngle);
+            float y0 = cosf (ring * stepRingAngle);
 
-			for(unsigned int segment = 0; segment <= _numberOfSegments; segment++)
-			{
-				VertexInfo vi;
-				float x0 = r0 * sinf(segment * stepSegmentAngle);
-				float z0 = r0 * cosf(segment * stepSegmentAngle);
+            for(unsigned int segment = 0; segment <= _numberOfSegments; segment++)
+            {
+                VertexInfo vi;
+                float x0 = r0 * sinf(segment * stepSegmentAngle);
+                float z0 = r0 * cosf(segment * stepSegmentAngle);
 
-				// Vertex
-				vi.position = Vec3(x0, y0, z0);
+                // Vertex
+                vi.position = Vec3(x0, y0, z0);
 
-				// Colour
-				vi.color = Vec4::ONE;
+                // Colour
+                vi.color = Vec4::ONE;
 
-				// Texture Coordinates
-				vi.uv.x = (float) segment / (float) _numberOfSegments;
-				vi.uv.y = 1.0f - (float) ring / (float) _numberOfRings;
+                // Texture Coordinates
+                vi.uv.x = (float) segment / (float) _numberOfSegments;
+                vi.uv.y = 1.0f - (float) ring / (float) _numberOfRings;
 
-				if (ring != _numberOfRings)
-				{
-					// each vertex (except the last) has six indices pointing to it
-					_indices[index++] = vertexIndex + _numberOfSegments + 1;
-					_indices[index++] = vertexIndex;
-					_indices[index++] = vertexIndex + _numberOfSegments;
-					_indices[index++] = vertexIndex + _numberOfSegments + 1;
-					_indices[index++] = vertexIndex + 1;
-					_indices[index++] = vertexIndex;
-				}
-				++vertexIndex;
-				_vertexTemplate.push_back(vi);
-			}
-		}
-	}
+                if (ring != _numberOfRings)
+                {
+                    // each vertex (except the last) has six indices pointing to it
+                    _indices[index++] = vertexIndex + _numberOfSegments + 1;
+                    _indices[index++] = vertexIndex;
+                    _indices[index++] = vertexIndex + _numberOfSegments;
+                    _indices[index++] = vertexIndex + _numberOfSegments + 1;
+                    _indices[index++] = vertexIndex + 1;
+                    _indices[index++] = vertexIndex;
+                }
+                ++vertexIndex;
+                _vertexTemplate.push_back(vi);
+            }
+        }
+    }
 }
 
 PUParticle3DSphereRender::PUParticle3DSphereRender()
-	: _numberOfRings(16)
-	, _numberOfSegments(16)
+    : _numberOfRings(16)
+    , _numberOfSegments(16)
 {
 
 }
@@ -853,17 +850,17 @@ PUParticle3DSphereRender::~PUParticle3DSphereRender()
 
 void PUParticle3DSphereRender::copyAttributesTo( PUParticle3DRender *render )
 {
-	PUParticle3DRender::copyAttributesTo(render);
-	PUParticle3DSphereRender *sphereRender = static_cast<PUParticle3DSphereRender *>(render);
-	sphereRender->_numberOfRings = _numberOfRings;
-	sphereRender->_numberOfSegments = _numberOfSegments;
+    PUParticle3DRender::copyAttributesTo(render);
+    PUParticle3DSphereRender *sphereRender = static_cast<PUParticle3DSphereRender *>(render);
+    sphereRender->_numberOfRings = _numberOfRings;
+    sphereRender->_numberOfSegments = _numberOfSegments;
 }
 
 PUParticle3DSphereRender* PUParticle3DSphereRender::clone()
 {
-	auto render = PUParticle3DSphereRender::create(_texFile);
-	copyAttributesTo(render);
-	return render;
+    auto render = PUParticle3DSphereRender::create(_texFile);
+    copyAttributesTo(render);
+    return render;
 }
 
 NS_CC_END

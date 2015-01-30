@@ -41,20 +41,20 @@ class CC_DLL PUParticle3DSlaveBehaviour : public PUParticle3DBehaviour
 {
 public:
 
-	static PUParticle3DSlaveBehaviour* create();
+    static PUParticle3DSlaveBehaviour* create();
 
-	PUParticle3D* masterParticle;
+    PUParticle3D* masterParticle;
 
-	/** See ParticleBehaviour.
-	*/
-	virtual void updateBehaviour(PUParticle3D *particle, float deltaTime);
+    /** See ParticleBehaviour.
+    */
+    virtual void updateBehaviour(PUParticle3D *particle, float deltaTime);
 
-	virtual PUParticle3DSlaveBehaviour* clone() override;
-	virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
+    virtual PUParticle3DSlaveBehaviour* clone() override;
+    virtual void copyAttributesTo (PUParticle3DBehaviour* behaviour);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DSlaveBehaviour();
-	virtual ~PUParticle3DSlaveBehaviour();
+    PUParticle3DSlaveBehaviour();
+    virtual ~PUParticle3DSlaveBehaviour();
 };
 
 NS_CC_END

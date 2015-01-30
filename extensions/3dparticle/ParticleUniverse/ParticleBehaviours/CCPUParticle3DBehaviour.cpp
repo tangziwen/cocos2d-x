@@ -41,17 +41,17 @@ PUParticle3DBehaviour::~PUParticle3DBehaviour( void )
 
 PUParticle3DBehaviour* PUParticle3DBehaviour::clone()
 {
-	auto pb = new PUParticle3DBehaviour;
-	pb->autorelease();
-	copyAttributesTo(pb);
-	return pb;
+    auto pb = new PUParticle3DBehaviour;
+    pb->autorelease();
+    copyAttributesTo(pb);
+    return pb;
 }
 
 void PUParticle3DBehaviour::copyAttributesTo( PUParticle3DBehaviour* behaviour )
 {
-	behaviour->_particleSystem = _particleSystem;
-	behaviour->_behaviourType = _behaviourType;
-	behaviour->_behaviourScale = _behaviourScale;
+    behaviour->_particleSystem = _particleSystem;
+    behaviour->_behaviourType = _behaviourType;
+    behaviour->_behaviourScale = _behaviourScale;
 }
 
 NS_CC_END

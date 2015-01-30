@@ -32,70 +32,70 @@ const Vec3 PUParticle3DOnPositionObserver::DEFAULT_POSITION_THRESHOLD(0, 0, 0);
 
 //-----------------------------------------------------------------------
 PUParticle3DOnPositionObserver::PUParticle3DOnPositionObserver(void) : 
-	PUParticle3DObserver(),
-	_positionXThreshold(DEFAULT_POSITION_THRESHOLD.x),
-	_positionYThreshold(DEFAULT_POSITION_THRESHOLD.y),
-	_positionZThreshold(DEFAULT_POSITION_THRESHOLD.z),
-	_comparePositionX(CO_LESS_THAN),
-	_comparePositionY(CO_LESS_THAN),
-	_comparePositionZ(CO_LESS_THAN),
-	_positionXThresholdSet(false),
-	_positionYThresholdSet(false),
-	_positionZThresholdSet(false)
+    PUParticle3DObserver(),
+    _positionXThreshold(DEFAULT_POSITION_THRESHOLD.x),
+    _positionYThreshold(DEFAULT_POSITION_THRESHOLD.y),
+    _positionZThreshold(DEFAULT_POSITION_THRESHOLD.z),
+    _comparePositionX(CO_LESS_THAN),
+    _comparePositionY(CO_LESS_THAN),
+    _comparePositionZ(CO_LESS_THAN),
+    _positionXThresholdSet(false),
+    _positionYThresholdSet(false),
+    _positionZThresholdSet(false)
 {
 }
 //-----------------------------------------------------------------------
 bool PUParticle3DOnPositionObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return false;
+    if (!particle)
+        return false;
 
-	// Added scale in V1.3.1
-	if (_positionXThresholdSet && _comparePositionX == CO_LESS_THAN && particle->position.x < _positionXThreshold * _observerScale.x)
-		return true;
-	if (_positionXThresholdSet && _comparePositionX == CO_GREATER_THAN && particle->position.x > _positionXThreshold * _observerScale.x)
-		return true;
-	if (_positionXThresholdSet && _comparePositionX == CO_EQUALS && particle->position.x == _positionXThreshold * _observerScale.x)
-		return true;
+    // Added scale in V1.3.1
+    if (_positionXThresholdSet && _comparePositionX == CO_LESS_THAN && particle->position.x < _positionXThreshold * _observerScale.x)
+        return true;
+    if (_positionXThresholdSet && _comparePositionX == CO_GREATER_THAN && particle->position.x > _positionXThreshold * _observerScale.x)
+        return true;
+    if (_positionXThresholdSet && _comparePositionX == CO_EQUALS && particle->position.x == _positionXThreshold * _observerScale.x)
+        return true;
 
-	if (_positionYThresholdSet && _comparePositionY == CO_LESS_THAN && particle->position.y < _positionYThreshold * _observerScale.y)
-		return true;
-	if (_positionYThresholdSet && _comparePositionY == CO_GREATER_THAN && particle->position.y > _positionYThreshold * _observerScale.y)
-		return true;
-	if (_positionYThresholdSet && _comparePositionY == CO_EQUALS && particle->position.y == _positionYThreshold * _observerScale.y)
-		return true;
+    if (_positionYThresholdSet && _comparePositionY == CO_LESS_THAN && particle->position.y < _positionYThreshold * _observerScale.y)
+        return true;
+    if (_positionYThresholdSet && _comparePositionY == CO_GREATER_THAN && particle->position.y > _positionYThreshold * _observerScale.y)
+        return true;
+    if (_positionYThresholdSet && _comparePositionY == CO_EQUALS && particle->position.y == _positionYThreshold * _observerScale.y)
+        return true;
 
-	if (_positionZThresholdSet && _comparePositionZ == CO_LESS_THAN && particle->position.z < _positionZThreshold * _observerScale.z)
-		return true;
-	if (_positionZThresholdSet && _comparePositionZ == CO_GREATER_THAN && particle->position.z > _positionZThreshold * _observerScale.z)
-		return true;
-	if (_positionZThresholdSet && _comparePositionZ == CO_EQUALS && particle->position.z == _positionZThreshold * _observerScale.z)
-		return true;
+    if (_positionZThresholdSet && _comparePositionZ == CO_LESS_THAN && particle->position.z < _positionZThreshold * _observerScale.z)
+        return true;
+    if (_positionZThresholdSet && _comparePositionZ == CO_GREATER_THAN && particle->position.z > _positionZThreshold * _observerScale.z)
+        return true;
+    if (_positionZThresholdSet && _comparePositionZ == CO_EQUALS && particle->position.z == _positionZThreshold * _observerScale.z)
+        return true;
 
-	return false;
+    return false;
 }
 
 PUParticle3DOnPositionObserver* PUParticle3DOnPositionObserver::create()
 {
-	auto ppo = new PUParticle3DOnPositionObserver();
-	ppo->autorelease();
-	return ppo;
+    auto ppo = new PUParticle3DOnPositionObserver();
+    ppo->autorelease();
+    return ppo;
 }
 
 void PUParticle3DOnPositionObserver::copyAttributesTo( PUParticle3DObserver* observer )
 {
-	PUParticle3DObserver::copyAttributesTo(observer);
+    PUParticle3DObserver::copyAttributesTo(observer);
 
-	PUParticle3DOnPositionObserver* onPositionObserver = static_cast<PUParticle3DOnPositionObserver*>(observer);
-	onPositionObserver->_positionXThreshold = _positionXThreshold;
-	onPositionObserver->_positionYThreshold = _positionYThreshold;
-	onPositionObserver->_positionZThreshold = _positionZThreshold;
-	onPositionObserver->_comparePositionX = _comparePositionX;
-	onPositionObserver->_comparePositionY = _comparePositionY;
-	onPositionObserver->_comparePositionZ = _comparePositionZ;
-	onPositionObserver->_positionXThresholdSet = _positionXThresholdSet;
-	onPositionObserver->_positionYThresholdSet = _positionYThresholdSet;
-	onPositionObserver->_positionZThresholdSet = _positionZThresholdSet;
+    PUParticle3DOnPositionObserver* onPositionObserver = static_cast<PUParticle3DOnPositionObserver*>(observer);
+    onPositionObserver->_positionXThreshold = _positionXThreshold;
+    onPositionObserver->_positionYThreshold = _positionYThreshold;
+    onPositionObserver->_positionZThreshold = _positionZThreshold;
+    onPositionObserver->_comparePositionX = _comparePositionX;
+    onPositionObserver->_comparePositionY = _comparePositionY;
+    onPositionObserver->_comparePositionZ = _comparePositionZ;
+    onPositionObserver->_positionXThresholdSet = _positionXThresholdSet;
+    onPositionObserver->_positionYThresholdSet = _positionYThresholdSet;
+    onPositionObserver->_positionZThresholdSet = _positionZThresholdSet;
 }
 
 NS_CC_END

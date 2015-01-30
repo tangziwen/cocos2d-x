@@ -36,88 +36,88 @@ PUParticle3DEventHandlerTranslator::PUParticle3DEventHandlerTranslator()
 //-------------------------------------------------------------------------
 void PUParticle3DEventHandlerTranslator::translate(PUScriptCompiler* compiler, PUAbstractNode *node)
 {
-	PUObjectAbstractNode* obj = reinterpret_cast<PUObjectAbstractNode*>(node);
-	PUObjectAbstractNode* parent = obj->parent ? reinterpret_cast<PUObjectAbstractNode*>(obj->parent) : 0;
+    PUObjectAbstractNode* obj = reinterpret_cast<PUObjectAbstractNode*>(node);
+    PUObjectAbstractNode* parent = obj->parent ? reinterpret_cast<PUObjectAbstractNode*>(obj->parent) : 0;
 
-	// The name of the obj is the type of the ParticleEventHandler
-	// Remark: This can be solved by using a listener, so that obj->values is filled with type + name. Something for later
-	std::string type;
-	if(!obj->name.empty())
-	{
-		type = obj->name;
-	}
-	else
-	{
-		return;
-	}
+    // The name of the obj is the type of the ParticleEventHandler
+    // Remark: This can be solved by using a listener, so that obj->values is filled with type + name. Something for later
+    std::string type;
+    if(!obj->name.empty())
+    {
+        type = obj->name;
+    }
+    else
+    {
+        return;
+    }
 
-	PUScriptTranslator *particleEventHandlerTranlator = PUParticle3DEventHandlerManager::Instance()->getTranslator(type);
-	if (!particleEventHandlerTranlator) return;
+    PUScriptTranslator *particleEventHandlerTranlator = PUParticle3DEventHandlerManager::Instance()->getTranslator(type);
+    if (!particleEventHandlerTranlator) return;
 
-	// Create the ParticleEventHandler
-	//mParticleEventHandler = ParticleSystemManager::getSingletonPtr()->createEventHandler(type);
-	_handler = PUParticle3DEventHandlerManager::Instance()->createEventHandler(type);
-	if (!_handler)
-	{
-		return;
-	}
+    // Create the ParticleEventHandler
+    //mParticleEventHandler = ParticleSystemManager::getSingletonPtr()->createEventHandler(type);
+    _handler = PUParticle3DEventHandlerManager::Instance()->createEventHandler(type);
+    if (!_handler)
+    {
+        return;
+    }
 
-	_handler->setEventHandlerType(type);
-	if (parent && parent->context)
-	{
-		PUParticle3DObserver* observer = static_cast<PUParticle3DObserver *>(parent->context);
-		observer->addEventHandler(_handler);
-	}
-	else
-	{
-		//// It is an alias
-		//mParticleEventHandler->setAliasName(parent->name);
-		//ParticleSystemManager::getSingletonPtr()->addAlias(mParticleEventHandler);
-	}
+    _handler->setEventHandlerType(type);
+    if (parent && parent->context)
+    {
+        PUParticle3DObserver* observer = static_cast<PUParticle3DObserver *>(parent->context);
+        observer->addEventHandler(_handler);
+    }
+    else
+    {
+        //// It is an alias
+        //mParticleEventHandler->setAliasName(parent->name);
+        //ParticleSystemManager::getSingletonPtr()->addAlias(mParticleEventHandler);
+    }
 
-	// The first value is the (optional) name
-	std::string name;
-	if(!obj->values.empty())
-	{
-		getString(*obj->values.front(), &name);
-		_handler->setName(name);
-	}
+    // The first value is the (optional) name
+    std::string name;
+    if(!obj->values.empty())
+    {
+        getString(*obj->values.front(), &name);
+        _handler->setName(name);
+    }
 
-	// Set it in the context
-	obj->context = _handler;
+    // Set it in the context
+    obj->context = _handler;
 
-	// Run through properties
-	for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
-	{
-		// No properties of its own
-		if((*i)->type == ANT_PROPERTY)
-		{
-			PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>((*i));
-			if (particleEventHandlerTranlator->translateChildProperty(compiler, *i))
-			{
-				// Parsed the property by another translator; do nothing
-			}
-			else
-			{
-				errorUnexpectedProperty(compiler, prop);
-			}
-		}
-		else if((*i)->type == ANT_OBJECT)
-		{
-			if (particleEventHandlerTranlator->translateChildObject(compiler, *i))
-			{
-				// Parsed the object by another translator; do nothing
-			}
-			else
-			{
-				processNode(compiler, *i);
-			}
-		}
-		else
-		{
-			errorUnexpectedToken(compiler, *i);
-		}
-	}
+    // Run through properties
+    for(PUAbstractNodeList::iterator i = obj->children.begin(); i != obj->children.end(); ++i)
+    {
+        // No properties of its own
+        if((*i)->type == ANT_PROPERTY)
+        {
+            PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>((*i));
+            if (particleEventHandlerTranlator->translateChildProperty(compiler, *i))
+            {
+                // Parsed the property by another translator; do nothing
+            }
+            else
+            {
+                errorUnexpectedProperty(compiler, prop);
+            }
+        }
+        else if((*i)->type == ANT_OBJECT)
+        {
+            if (particleEventHandlerTranlator->translateChildObject(compiler, *i))
+            {
+                // Parsed the object by another translator; do nothing
+            }
+            else
+            {
+                processNode(compiler, *i);
+            }
+        }
+        else
+        {
+            errorUnexpectedToken(compiler, *i);
+        }
+    }
 }
 
 NS_CC_END

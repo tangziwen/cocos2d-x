@@ -79,7 +79,7 @@ void Particle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, Par
         _indexBuffer = IndexBuffer::create(IndexBuffer::IndexType::INDEX_TYPE_SHORT_16, 6 * particleSystem->getParticleQuota());
         _indexBuffer->retain();
     }
-    ParticlePool::PoolList activeParticleList = particlePool.getActiveParticleList();
+    ParticlePool::PoolList activeParticleList = particlePool.getActiveDataList();
     if (_posuvcolors.size() < activeParticleList.size() * 4)
     {
         _posuvcolors.resize(activeParticleList.size() * 4);
@@ -236,7 +236,7 @@ void Particle3DModelRender::render(Renderer* renderer, const Mat4 &transform, Pa
 
 
     const ParticlePool& particlePool = particleSystem->getParticlePool();
-    ParticlePool::PoolList activeParticleList = particlePool.getActiveParticleList();
+    ParticlePool::PoolList activeParticleList = particlePool.getActiveDataList();
     Mat4 mat;
     Mat4 rotMat;
     Mat4 sclMat;

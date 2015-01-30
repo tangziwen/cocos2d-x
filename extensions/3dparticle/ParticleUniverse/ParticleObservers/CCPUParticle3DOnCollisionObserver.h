@@ -37,16 +37,16 @@ struct PUParticle3D;
 class CC_DLL PUParticle3DOnCollisionObserver : public PUParticle3DObserver
 {
 public:
-	static PUParticle3DOnCollisionObserver* create();
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    static PUParticle3DOnCollisionObserver* create();
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnCollisionObserver(void) : PUParticle3DObserver()
-	{
-	};
-	virtual ~PUParticle3DOnCollisionObserver(void) {};
+    PUParticle3DOnCollisionObserver(void) : PUParticle3DObserver()
+    {
+    };
+    virtual ~PUParticle3DOnCollisionObserver(void) {};
 };
 
 NS_CC_END

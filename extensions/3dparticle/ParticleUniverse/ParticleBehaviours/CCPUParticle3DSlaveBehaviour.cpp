@@ -40,30 +40,30 @@ PUParticle3DSlaveBehaviour::~PUParticle3DSlaveBehaviour()
 
 void PUParticle3DSlaveBehaviour::updateBehaviour( PUParticle3D *particle, float deltaTime )
 {
-	if (masterParticle && !masterParticle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
-	{
-		particle->position = masterParticle->position;
-		particle->direction = masterParticle->direction;
-	}
+    if (masterParticle && !masterParticle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
+    {
+        particle->position = masterParticle->position;
+        particle->direction = masterParticle->direction;
+    }
 }
 
 PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::clone()
 {
-	auto pb = PUParticle3DSlaveBehaviour::create();
-	copyAttributesTo(pb);
-	return pb;
+    auto pb = PUParticle3DSlaveBehaviour::create();
+    copyAttributesTo(pb);
+    return pb;
 }
 
 PUParticle3DSlaveBehaviour* PUParticle3DSlaveBehaviour::create()
 {
-	auto pb = new PUParticle3DSlaveBehaviour();
-	pb->autorelease();
-	return pb;
+    auto pb = new PUParticle3DSlaveBehaviour();
+    pb->autorelease();
+    return pb;
 }
 
 void PUParticle3DSlaveBehaviour::copyAttributesTo( PUParticle3DBehaviour* behaviour )
 {
-	PUParticle3DBehaviour::copyAttributesTo(behaviour);
+    PUParticle3DBehaviour::copyAttributesTo(behaviour);
 }
 
 NS_CC_END

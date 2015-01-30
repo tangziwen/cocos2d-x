@@ -219,6 +219,32 @@ public:
 	virtual bool init() override;
 };
 
+class Particle3DCanOfWormsDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DCanOfWormsDemo);
+	Particle3DCanOfWormsDemo(){};
+	virtual ~Particle3DCanOfWormsDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
+class Particle3DRibbonTrailDemo : public Particle3DTestDemo
+{
+public:
+
+	CREATE_FUNC(Particle3DRibbonTrailDemo);
+	Particle3DRibbonTrailDemo(){};
+	virtual ~Particle3DRibbonTrailDemo(){};
+
+	virtual std::string subtitle() const override;
+
+	virtual bool init() override;
+};
+
 class Particle3DTestScene : public TestScene
 {
 public:

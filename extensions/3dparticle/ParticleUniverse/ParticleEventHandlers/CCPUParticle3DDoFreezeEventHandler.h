@@ -41,17 +41,17 @@ class CC_DLL PUParticle3DDoFreezeEventHandler : public PUParticle3DEventHandler
 {
 public:
 
-	static PUParticle3DDoFreezeEventHandler* create();
+    static PUParticle3DDoFreezeEventHandler* create();
 
-	/** 
-	*/
-	virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoFreezeEventHandler(void) : PUParticle3DEventHandler()
-	{
-	};
-	virtual ~PUParticle3DDoFreezeEventHandler(void) {};
+    PUParticle3DDoFreezeEventHandler(void) : PUParticle3DEventHandler()
+    {
+    };
+    virtual ~PUParticle3DDoFreezeEventHandler(void) {};
 };
 
 NS_CC_END

@@ -35,7 +35,7 @@ PUParticle3DOnEmissionObserverTranslator::PUParticle3DOnEmissionObserverTranslat
 //-------------------------------------------------------------------------
 bool PUParticle3DOnEmissionObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnEmissionObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

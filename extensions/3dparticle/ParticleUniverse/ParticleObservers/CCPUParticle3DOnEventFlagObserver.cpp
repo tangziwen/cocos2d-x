@@ -32,32 +32,32 @@ const unsigned int PUParticle3DOnEventFlagObserver::DEFAULT_EVENT_FLAG = 0;
 
 //-----------------------------------------------------------------------
 PUParticle3DOnEventFlagObserver::PUParticle3DOnEventFlagObserver(void) : 
-	PUParticle3DObserver(),
-	_eventFlag(DEFAULT_EVENT_FLAG)
+    PUParticle3DObserver(),
+    _eventFlag(DEFAULT_EVENT_FLAG)
 {
 }
 //-----------------------------------------------------------------------
 bool PUParticle3DOnEventFlagObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return false;
+    if (!particle)
+        return false;
 
-	return (particle->hasEventFlags(_eventFlag));
+    return (particle->hasEventFlags(_eventFlag));
 }
 
 PUParticle3DOnEventFlagObserver* PUParticle3DOnEventFlagObserver::create()
 {
-	auto peo = new PUParticle3DOnEventFlagObserver();
-	peo->autorelease();
-	return peo;
+    auto peo = new PUParticle3DOnEventFlagObserver();
+    peo->autorelease();
+    return peo;
 }
 
 void PUParticle3DOnEventFlagObserver::copyAttributesTo( PUParticle3DObserver* observer )
 {
-	PUParticle3DObserver::copyAttributesTo(observer);
+    PUParticle3DObserver::copyAttributesTo(observer);
 
-	PUParticle3DOnEventFlagObserver* onEventFlagObserver = static_cast<PUParticle3DOnEventFlagObserver*>(observer);
-	onEventFlagObserver->_eventFlag = _eventFlag;
+    PUParticle3DOnEventFlagObserver* onEventFlagObserver = static_cast<PUParticle3DOnEventFlagObserver*>(observer);
+    onEventFlagObserver->_eventFlag = _eventFlag;
 }
 
 NS_CC_END

@@ -35,46 +35,46 @@ PUParticle3DDoScaleEventHandlerTranslator::PUParticle3DDoScaleEventHandlerTransl
 //-------------------------------------------------------------------------
 bool PUParticle3DDoScaleEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
-	PUParticle3DDoScaleEventHandler* handler = static_cast<PUParticle3DDoScaleEventHandler*>(evt);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
+    PUParticle3DDoScaleEventHandler* handler = static_cast<PUParticle3DDoScaleEventHandler*>(evt);
 
-	if (prop->name == token[TOKEN_DOSCALE_FRACTION])
-	{
-		// Property: scale_fraction
-		if (passValidateProperty(compiler, prop, token[TOKEN_DOSCALE_FRACTION], VAL_REAL))
-		{
-			float val = 0.0f;
-			if(getFloat(*prop->values.front(), &val))
-			{
-				handler->setScaleFraction(val);
-				return true;
-			}
-		}
-	}
-	else if (prop->name == token[TOKEN_DOSCALE_TYPE])
-	{
-		// Property: scale_type
-		if (passValidateProperty(compiler, prop, token[TOKEN_DOSCALE_TYPE], VAL_STRING))
-		{
-			std::string val;
-			if(getString(*prop->values.front(), &val))
-			{
-				if (val == token[TOKEN_TIME_TO_LIVE] || val == token[TOKEN_DOSCALE_TIME_TO_LIVE])
-				{
-					handler->setScaleType(PUParticle3DDoScaleEventHandler::ST_TIME_TO_LIVE);
-					return true;
-				}
-				else if (val == token[TOKEN_VELOCITY] || val == token[TOKEN_DOSCALE_VELOCITY])
-				{
-					handler->setScaleType(PUParticle3DDoScaleEventHandler::ST_VELOCITY);
-					return true;
-				}
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_DOSCALE_FRACTION])
+    {
+        // Property: scale_fraction
+        if (passValidateProperty(compiler, prop, token[TOKEN_DOSCALE_FRACTION], VAL_REAL))
+        {
+            float val = 0.0f;
+            if(getFloat(*prop->values.front(), &val))
+            {
+                handler->setScaleFraction(val);
+                return true;
+            }
+        }
+    }
+    else if (prop->name == token[TOKEN_DOSCALE_TYPE])
+    {
+        // Property: scale_type
+        if (passValidateProperty(compiler, prop, token[TOKEN_DOSCALE_TYPE], VAL_STRING))
+        {
+            std::string val;
+            if(getString(*prop->values.front(), &val))
+            {
+                if (val == token[TOKEN_TIME_TO_LIVE] || val == token[TOKEN_DOSCALE_TIME_TO_LIVE])
+                {
+                    handler->setScaleType(PUParticle3DDoScaleEventHandler::ST_TIME_TO_LIVE);
+                    return true;
+                }
+                else if (val == token[TOKEN_VELOCITY] || val == token[TOKEN_DOSCALE_VELOCITY])
+                {
+                    handler->setScaleType(PUParticle3DDoScaleEventHandler::ST_VELOCITY);
+                    return true;
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoScaleEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

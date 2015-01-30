@@ -51,7 +51,7 @@ CC_CONSTRUCTOR_ACCESS:
 
 protected:
 
-	PUParticle3DSlaveBehaviourTranslator _slaveBehaviourTranslator;
+    PUParticle3DSlaveBehaviourTranslator _slaveBehaviourTranslator;
 };
 
 NS_CC_END

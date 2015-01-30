@@ -41,25 +41,25 @@ class CC_DLL PUParticle3DDoExpireEventHandler : public PUParticle3DEventHandler
 {
 public:
 
-	static PUParticle3DDoExpireEventHandler* create();
+    static PUParticle3DDoExpireEventHandler* create();
 
-	///** Get indication that all particles are expired
-	//*/
-	//bool getExpireAll(void);
+    ///** Get indication that all particles are expired
+    //*/
+    //bool getExpireAll(void);
 
-	///** Set indication that all particles are expired
-	//*/
-	//void setExpireAll(bool expireAll);
+    ///** Set indication that all particles are expired
+    //*/
+    //void setExpireAll(bool expireAll);
 
-	/** 
-	*/
-	virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual void handle (PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoExpireEventHandler(void) : PUParticle3DEventHandler()
-	{
-	};
-	virtual ~PUParticle3DDoExpireEventHandler(void) {};
+    PUParticle3DDoExpireEventHandler(void) : PUParticle3DEventHandler()
+    {
+    };
+    virtual ~PUParticle3DDoExpireEventHandler(void) {};
 };
 
 NS_CC_END

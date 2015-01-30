@@ -76,14 +76,14 @@ PUParticle3DPathFollower* PUParticle3DPathFollower::create()
 
 void PUParticle3DPathFollower::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
-	PUParticle3DPathFollower* pathFollower = static_cast<PUParticle3DPathFollower*>(affector);
-	unsigned short numPoints = _spline.getNumPoints();
-	pathFollower->_spline.clear();
-	for (unsigned short i = 0; i < numPoints; ++i)
-	{
-		pathFollower->_spline.addPoint(_spline.getPoint(i));
-	}
+    PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DPathFollower* pathFollower = static_cast<PUParticle3DPathFollower*>(affector);
+    unsigned short numPoints = _spline.getNumPoints();
+    pathFollower->_spline.clear();
+    for (unsigned short i = 0; i < numPoints; ++i)
+    {
+        pathFollower->_spline.addPoint(_spline.getPoint(i));
+    }
 }
 
 NS_CC_END

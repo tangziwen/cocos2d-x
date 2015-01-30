@@ -54,57 +54,57 @@ PUParticle3DObserverManager* PUParticle3DObserverManager::Instance()
 
 PUScriptTranslator* PUParticle3DObserverManager::getTranslator( const std::string &type )
 {
-	if (type == "OnClear"){
-		return &_onClearObserverTranslator;
-	}else if (type == "OnCollision"){
-		return &_onCollisionObserverTranslator;
-	}else if (type == "OnCount"){
-		return &_onCountObserverTranslator;
-	}else if (type == "OnEmission"){
-		return &_onEmissionObserverTranslator;
-	}else if (type == "OnEventFlag"){
-		return &_onEventFlagObserverTranslator;
-	}else if (type == "OnExpire"){
-		return &_onExpireObserverTranslator;
-	}else if (type == "OnPosition"){
-		return &_onPositionObserverTranslator;
-	}else if (type == "OnQuota"){
-		return &_onQuotaObserverTranslator;
-	}else if (type == "OnRandom"){
-		return &_onRandomObserverTranslator;
-	}else if (type == "OnTime"){
-		return &_onTimeObserverTranslator;
-	}else if (type == "OnVelocity"){
-		return &_onVelocityObserverTranslator;
-	}
-	return nullptr;
+    if (type == "OnClear"){
+        return &_onClearObserverTranslator;
+    }else if (type == "OnCollision"){
+        return &_onCollisionObserverTranslator;
+    }else if (type == "OnCount"){
+        return &_onCountObserverTranslator;
+    }else if (type == "OnEmission"){
+        return &_onEmissionObserverTranslator;
+    }else if (type == "OnEventFlag"){
+        return &_onEventFlagObserverTranslator;
+    }else if (type == "OnExpire"){
+        return &_onExpireObserverTranslator;
+    }else if (type == "OnPosition"){
+        return &_onPositionObserverTranslator;
+    }else if (type == "OnQuota"){
+        return &_onQuotaObserverTranslator;
+    }else if (type == "OnRandom"){
+        return &_onRandomObserverTranslator;
+    }else if (type == "OnTime"){
+        return &_onTimeObserverTranslator;
+    }else if (type == "OnVelocity"){
+        return &_onVelocityObserverTranslator;
+    }
+    return nullptr;
 }
 
 PUParticle3DObserver* PUParticle3DObserverManager::createObserver( const std::string &type )
 {
-	if (type == "OnClear"){
-		return PUParticle3DOnClearObserver::create();
-	}else if (type == "OnCollision"){
-		return PUParticle3DOnCollisionObserver::create();
-	}else if (type == "OnCount"){
-		return PUParticle3DOnCountObserver::create();
-	}else if (type == "OnEmission"){
-		return PUParticle3DOnEmissionObserver::create();
-	}else if (type == "OnEventFlag"){
-		return PUParticle3DOnEventFlagObserver::create();
-	}else if (type == "OnExpire"){
-		return PUParticle3DOnExpireObserver::create();
-	}else if (type == "OnPosition"){
-		return PUParticle3DOnPositionObserver::create();
-	}else if (type == "OnQuota"){
-		return PUParticle3DOnQuotaObserver::create();
-	}else if (type == "OnRandom"){
-		return PUParticle3DOnRandomObserver::create();
-	}else if (type == "OnTime"){
-		return PUParticle3DOnTimeObserver::create();
-	}else if (type == "OnVelocity"){
-		return PUParticle3DOnVelocityObserver::create();
-	}
+    if (type == "OnClear"){
+        return PUParticle3DOnClearObserver::create();
+    }else if (type == "OnCollision"){
+        return PUParticle3DOnCollisionObserver::create();
+    }else if (type == "OnCount"){
+        return PUParticle3DOnCountObserver::create();
+    }else if (type == "OnEmission"){
+        return PUParticle3DOnEmissionObserver::create();
+    }else if (type == "OnEventFlag"){
+        return PUParticle3DOnEventFlagObserver::create();
+    }else if (type == "OnExpire"){
+        return PUParticle3DOnExpireObserver::create();
+    }else if (type == "OnPosition"){
+        return PUParticle3DOnPositionObserver::create();
+    }else if (type == "OnQuota"){
+        return PUParticle3DOnQuotaObserver::create();
+    }else if (type == "OnRandom"){
+        return PUParticle3DOnRandomObserver::create();
+    }else if (type == "OnTime"){
+        return PUParticle3DOnTimeObserver::create();
+    }else if (type == "OnVelocity"){
+        return PUParticle3DOnVelocityObserver::create();
+    }
     return nullptr;
 }
 

@@ -190,9 +190,9 @@ public:
     void setEmitsName(const std::string& emitsName);
     inline PUParticle3D::ParticleType getEmitsType() const {return _emitsType;};
     void setEmitsType(PUParticle3D::ParticleType type) {_emitsType = type;};
-	Ref* getEmitsEntityPtr() const;
-	bool isMarkedForEmission() const {return _isMarkedForEmission;};
-	void setMarkedForEmission(bool isMarked) {_isMarkedForEmission = isMarked;};
+    Ref* getEmitsEntityPtr() const;
+    bool isMarkedForEmission() const {return _isMarkedForEmission;};
+    void setMarkedForEmission(bool isMarked) {_isMarkedForEmission = isMarked;};
 
         /** Returns the base direction of the particle that is going to be emitted.
     */
@@ -317,6 +317,9 @@ public:
     */
     bool makeParticleLocal(PUParticle3D* particle);
 
+    virtual PUParticle3DEmitter* clone() = 0;
+    virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
+
 protected:
 
     /** Todo
@@ -352,8 +355,6 @@ protected:
         /**  Internal method for generating the angle.
     */
     void generateAngle(float &angle);
-
-	virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
     
 protected:
 
@@ -566,10 +567,10 @@ protected:
     bool _originEnabled;
     bool _originEnabledSet;
 
-	PUParticle3D::ParticleType _emitsType;
-	Ref *_emitsEntity;
+    PUParticle3D::ParticleType _emitsType;
+    Ref *_emitsEntity;
 
-	bool _isMarkedForEmission;
+    bool _isMarkedForEmission;
 };
 
 NS_CC_END

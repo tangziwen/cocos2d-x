@@ -35,25 +35,25 @@ PUParticle3DOnEventFlagObserverTranslator::PUParticle3DOnEventFlagObserverTransl
 //-------------------------------------------------------------------------
 bool PUParticle3DOnEventFlagObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnEventFlagObserver* observer = static_cast<PUParticle3DOnEventFlagObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnEventFlagObserver* observer = static_cast<PUParticle3DOnEventFlagObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONEVENT_FLAG])
-	{
-		// Property: event_flag
-		if (passValidateProperty(compiler, prop, token[TOKEN_ONEVENT_FLAG], VAL_UINT))
-		{
-			unsigned int val = 0;
-			if(getUInt(*prop->values.front(), &val))
-			{
-				observer->setEventFlag(val);
-				return true;
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONEVENT_FLAG])
+    {
+        // Property: event_flag
+        if (passValidateProperty(compiler, prop, token[TOKEN_ONEVENT_FLAG], VAL_UINT))
+        {
+            unsigned int val = 0;
+            if(getUInt(*prop->values.front(), &val))
+            {
+                observer->setEventFlag(val);
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnEventFlagObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

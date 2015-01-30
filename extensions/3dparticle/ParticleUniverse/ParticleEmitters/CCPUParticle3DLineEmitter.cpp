@@ -235,14 +235,21 @@ PUParticle3DLineEmitter* PUParticle3DLineEmitter::create()
 
 void PUParticle3DLineEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
 {
-	PUParticle3DEmitter::copyAttributesTo(emitter);
+    PUParticle3DEmitter::copyAttributesTo(emitter);
 
-	PUParticle3DLineEmitter* lineEmitter = static_cast<PUParticle3DLineEmitter*>(emitter);
-	lineEmitter->setEnd(_end); // Force calculation of the length
-	lineEmitter->_length = _length;
-	lineEmitter->setMinIncrement(_minIncrement);
-	lineEmitter->setMaxIncrement(_maxIncrement);
-	lineEmitter->setMaxDeviation(_maxDeviation);
+    PUParticle3DLineEmitter* lineEmitter = static_cast<PUParticle3DLineEmitter*>(emitter);
+    lineEmitter->setEnd(_end); // Force calculation of the length
+    lineEmitter->_length = _length;
+    lineEmitter->setMinIncrement(_minIncrement);
+    lineEmitter->setMaxIncrement(_maxIncrement);
+    lineEmitter->setMaxDeviation(_maxDeviation);
+}
+
+PUParticle3DLineEmitter* PUParticle3DLineEmitter::clone()
+{
+    auto be = PUParticle3DLineEmitter::create();
+    copyAttributesTo(be);
+    return be;
 }
 
 NS_CC_END

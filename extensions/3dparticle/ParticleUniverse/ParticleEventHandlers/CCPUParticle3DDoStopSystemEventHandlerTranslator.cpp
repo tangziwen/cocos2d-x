@@ -35,7 +35,7 @@ PUParticle3DDoStopSystemEventHandlerTranslator::PUParticle3DDoStopSystemEventHan
 //-------------------------------------------------------------------------
 bool PUParticle3DDoStopSystemEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoStopSystemEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

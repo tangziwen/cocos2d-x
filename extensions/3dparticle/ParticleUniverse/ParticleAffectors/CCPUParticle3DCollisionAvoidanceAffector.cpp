@@ -103,9 +103,9 @@ PUParticle3DCollisionAvoidanceAffector* PUParticle3DCollisionAvoidanceAffector::
 
 void PUParticle3DCollisionAvoidanceAffector::copyAttributesTo( PUParticle3DAffector* affector )
 {
-	PUParticle3DAffector::copyAttributesTo(affector);
-	PUParticle3DCollisionAvoidanceAffector* collisionAvoidanceAffector = static_cast<PUParticle3DCollisionAvoidanceAffector*>(affector);
-	collisionAvoidanceAffector->_radius = _radius;
+    PUParticle3DAffector::copyAttributesTo(affector);
+    PUParticle3DCollisionAvoidanceAffector* collisionAvoidanceAffector = static_cast<PUParticle3DCollisionAvoidanceAffector*>(affector);
+    collisionAvoidanceAffector->_radius = _radius;
 }
 
 NS_CC_END

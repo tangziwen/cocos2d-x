@@ -38,46 +38,46 @@ class PUParticleSystem3D;
 class CC_DLL PUParticle3DOnTimeObserver : public PUParticle3DObserver
 {
 public:
-	// Constants
-	static const float DEFAULT_THRESHOLD;
-	static const bool DEFAULT_SINCE_START_SYSTEM;
+    // Constants
+    static const float DEFAULT_THRESHOLD;
+    static const bool DEFAULT_SINCE_START_SYSTEM;
 
-	static PUParticle3DOnTimeObserver* create();
+    static PUParticle3DOnTimeObserver* create();
 
-	/** In case there are no particles, but the observation returns true, the event handlers must still be
-		called.
-	*/
-	virtual void preUpdateObserver(float deltaTime) override;
+    /** In case there are no particles, but the observation returns true, the event handlers must still be
+        called.
+    */
+    virtual void preUpdateObserver(float deltaTime) override;
 
-	/** 
-	*/
-	virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual bool observe (PUParticle3D* particle, float timeElapsed) override;
 
-	/** 
-	*/
-	float getThreshold(void) const {return _threshold;};
-	void setThreshold(float threshold){_threshold = threshold;};
+    /** 
+    */
+    float getThreshold(void) const {return _threshold;};
+    void setThreshold(float threshold){_threshold = threshold;};
 
-	/** 
-	*/
-	const PUComparisionOperator getCompare(void) const {return _compare;};
-	void setCompare(PUComparisionOperator op){_compare = op;};
+    /** 
+    */
+    const PUComparisionOperator getCompare(void) const {return _compare;};
+    void setCompare(PUComparisionOperator op){_compare = op;};
 
-	/** 
-	*/
-	bool isSinceStartSystem(void) const {return _sinceStartSystem;};
-	void setSinceStartSystem(bool sinceStartSystem){_sinceStartSystem = sinceStartSystem;};
+    /** 
+    */
+    bool isSinceStartSystem(void) const {return _sinceStartSystem;};
+    void setSinceStartSystem(bool sinceStartSystem){_sinceStartSystem = sinceStartSystem;};
 
-	virtual void copyAttributesTo (PUParticle3DObserver* observer);
+    virtual void copyAttributesTo (PUParticle3DObserver* observer);
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DOnTimeObserver(void);
-	virtual ~PUParticle3DOnTimeObserver(void) {};
+    PUParticle3DOnTimeObserver(void);
+    virtual ~PUParticle3DOnTimeObserver(void) {};
 
 protected:
-	float _threshold;
-	PUComparisionOperator _compare;
-	bool _sinceStartSystem;
+    float _threshold;
+    PUComparisionOperator _compare;
+    bool _sinceStartSystem;
 };
 
 NS_CC_END

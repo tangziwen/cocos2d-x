@@ -35,38 +35,38 @@ PUParticle3DDoAffectorEventHandlerTranslator::PUParticle3DDoAffectorEventHandler
 //-------------------------------------------------------------------------
 bool PUParticle3DDoAffectorEventHandlerTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
-	PUParticle3DDoAffectorEventHandler* handler = static_cast<PUParticle3DDoAffectorEventHandler*>(evt);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DEventHandler* evt = static_cast<PUParticle3DEventHandler *>(prop->parent->context);
+    PUParticle3DDoAffectorEventHandler* handler = static_cast<PUParticle3DDoAffectorEventHandler*>(evt);
 
-	if (prop->name == token[TOKEN_FORCE_AFFECTOR])
-	{
-		// Property: force_affector
-		if (passValidateProperty(compiler, prop, token[TOKEN_FORCE_AFFECTOR], VAL_STRING))
-		{
-			std::string val;
-			if(getString(*prop->values.front(), &val))
-			{
-				handler->setAffectorName(val);
-				return true;
-			}
-		}
-	}
-	else if (prop->name == token[TOKEN_FORCE_AFFECTOR_PRE_POST])
-	{
-		// Property: pre_post
-		if (passValidateProperty(compiler, prop, token[TOKEN_FORCE_AFFECTOR_PRE_POST], VAL_BOOL))
-		{
-			bool val;
-			if(getBoolean(*prop->values.front(), &val))
-			{
-				handler->setPrePost(val);
-				return true;
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_FORCE_AFFECTOR])
+    {
+        // Property: force_affector
+        if (passValidateProperty(compiler, prop, token[TOKEN_FORCE_AFFECTOR], VAL_STRING))
+        {
+            std::string val;
+            if(getString(*prop->values.front(), &val))
+            {
+                handler->setAffectorName(val);
+                return true;
+            }
+        }
+    }
+    else if (prop->name == token[TOKEN_FORCE_AFFECTOR_PRE_POST])
+    {
+        // Property: pre_post
+        if (passValidateProperty(compiler, prop, token[TOKEN_FORCE_AFFECTOR_PRE_POST], VAL_BOOL))
+        {
+            bool val;
+            if(getBoolean(*prop->values.front(), &val))
+            {
+                handler->setPrePost(val);
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DDoAffectorEventHandlerTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

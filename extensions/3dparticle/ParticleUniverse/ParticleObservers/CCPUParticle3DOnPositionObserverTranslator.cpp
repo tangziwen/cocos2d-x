@@ -35,105 +35,105 @@ PUParticle3DOnPositionObserverTranslator::PUParticle3DOnPositionObserverTranslat
 //-------------------------------------------------------------------------
 bool PUParticle3DOnPositionObserverTranslator::translateChildProperty( PUScriptCompiler* compiler, PUAbstractNode *node )
 {
-	PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
-	PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
-	PUParticle3DOnPositionObserver* observer = static_cast<PUParticle3DOnPositionObserver*>(ob);
+    PUPropertyAbstractNode* prop = reinterpret_cast<PUPropertyAbstractNode*>(node);
+    PUParticle3DObserver* ob = static_cast<PUParticle3DObserver*>(prop->parent->context);
+    PUParticle3DOnPositionObserver* observer = static_cast<PUParticle3DOnPositionObserver*>(ob);
 
-	if (prop->name == token[TOKEN_ONPOSITION_X])
-	{
-		// Property: position_x
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_X], 2))
-		{
-			std::string compareType;
-			float val = 0;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setComparePositionX(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setComparePositionX(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setComparePositionX(CO_EQUALS);
-				}
-				++i;
-				if(getFloat(**i, &val))
-				{
-					observer->setPositionXThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
-	else if (prop->name == token[TOKEN_ONPOSITION_Y])
-	{
-		// Property: position_y
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_Y], 2))
-		{
-			std::string compareType;
-			float val = 0;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setComparePositionY(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setComparePositionY(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setComparePositionY(CO_EQUALS);
-				}
-				++i;
-				if(getFloat(**i, &val))
-				{
-					observer->setPositionYThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
-	else if (prop->name == token[TOKEN_ONPOSITION_Z])
-	{
-		// Property: position_z
-		if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_Z], 2))
-		{
-			std::string compareType;
-			float val = 0;
-			PUAbstractNodeList::const_iterator i = prop->values.begin();
-			if(getString(**i, &compareType))
-			{
-				if (compareType == token[TOKEN_LESS_THAN])
-				{
-					observer->setComparePositionZ(CO_LESS_THAN);
-				}
-				else if (compareType == token[TOKEN_GREATER_THAN])
-				{
-					observer->setComparePositionZ(CO_GREATER_THAN);
-				}
-				else if (compareType == token[TOKEN_EQUALS])
-				{
-					observer->setComparePositionZ(CO_EQUALS);
-				}
-				++i;
-				if(getFloat(**i, &val))
-				{
-					observer->setPositionZThreshold(val);
-					return true;
-				}
-			}
-		}
-	}
+    if (prop->name == token[TOKEN_ONPOSITION_X])
+    {
+        // Property: position_x
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_X], 2))
+        {
+            std::string compareType;
+            float val = 0;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setComparePositionX(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setComparePositionX(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setComparePositionX(CO_EQUALS);
+                }
+                ++i;
+                if(getFloat(**i, &val))
+                {
+                    observer->setPositionXThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
+    else if (prop->name == token[TOKEN_ONPOSITION_Y])
+    {
+        // Property: position_y
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_Y], 2))
+        {
+            std::string compareType;
+            float val = 0;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setComparePositionY(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setComparePositionY(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setComparePositionY(CO_EQUALS);
+                }
+                ++i;
+                if(getFloat(**i, &val))
+                {
+                    observer->setPositionYThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
+    else if (prop->name == token[TOKEN_ONPOSITION_Z])
+    {
+        // Property: position_z
+        if (passValidatePropertyNumberOfValues(compiler, prop, token[TOKEN_ONPOSITION_Z], 2))
+        {
+            std::string compareType;
+            float val = 0;
+            PUAbstractNodeList::const_iterator i = prop->values.begin();
+            if(getString(**i, &compareType))
+            {
+                if (compareType == token[TOKEN_LESS_THAN])
+                {
+                    observer->setComparePositionZ(CO_LESS_THAN);
+                }
+                else if (compareType == token[TOKEN_GREATER_THAN])
+                {
+                    observer->setComparePositionZ(CO_GREATER_THAN);
+                }
+                else if (compareType == token[TOKEN_EQUALS])
+                {
+                    observer->setComparePositionZ(CO_EQUALS);
+                }
+                ++i;
+                if(getFloat(**i, &val))
+                {
+                    observer->setPositionZThreshold(val);
+                    return true;
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PUParticle3DOnPositionObserverTranslator::translateChildObject( PUScriptCompiler* compiler, PUAbstractNode *node )

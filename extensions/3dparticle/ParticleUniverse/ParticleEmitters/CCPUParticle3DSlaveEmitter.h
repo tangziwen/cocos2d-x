@@ -81,7 +81,8 @@ public:
     */
     void setMasterEmitterName(const std::string& masterEmitterName);
 
-	virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
+    virtual PUParticle3DSlaveEmitter* clone();
+    virtual void copyAttributesTo (PUParticle3DEmitter* emitter);
 
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DSlaveEmitter(void);

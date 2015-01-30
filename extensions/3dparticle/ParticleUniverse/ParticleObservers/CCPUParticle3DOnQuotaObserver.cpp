@@ -30,59 +30,61 @@ NS_CC_BEGIN
 //-----------------------------------------------------------------------
 bool PUParticle3DOnQuotaObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	return _result;
+    return _result;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DOnQuotaObserver::postUpdateObserver(float deltaTime)
 {
-	_result = false;
-	unsigned int quota = 0;
-	if (_particleTypeToObserveSet)
-	{
-		// Type to observe is set, so validate only that one
-		switch (_particleTypeToObserve)
-		{
-		case PUParticle3D::PT_VISUAL:
-			quota = _particleSystem->getParticleQuota();
-			break;
-		//case PUParticle3D::PT_EMITTER:
-		//	quota = particleTechnique->getEmittedEmitterQuota();
-		//	break;
-		//case PUParticle3D::PT_AFFECTOR:
-		//	quota = particleTechnique->getEmittedAffectorQuota();
-		//	break;
-		//case PUParticle3D::PT_TECHNIQUE:
-		//	quota = particleTechnique->getEmittedTechniqueQuota();
-		//	break;
-		//case PUParticle3D::PT_SYSTEM:
-		//	quota = particleTechnique->getEmittedAffectorQuota();
-		//	break;
-		default:
-			break;
-		}
+    _result = false;
+    unsigned int quota = 0;
+    if (_particleTypeToObserveSet)
+    {
+        // Type to observe is set, so validate only that one
+        switch (_particleTypeToObserve)
+        {
+        case PUParticle3D::PT_VISUAL:
+            quota = _particleSystem->getParticleQuota();
+            break;
+        case PUParticle3D::PT_EMITTER:
+            quota = static_cast<PUParticleSystem3D *>(_particleSystem)->getEmittedEmitterQuota();
+            break;
+        //case PUParticle3D::PT_AFFECTOR:
+        //	quota = particleTechnique->getEmittedAffectorQuota();
+        //	break;
+        case PUParticle3D::PT_TECHNIQUE:
+            quota = static_cast<PUParticleSystem3D *>(_particleSystem)->getEmittedSystemQuota();
+            break;
+        //case PUParticle3D::PT_SYSTEM:
+        //	quota = particleTechnique->getEmittedAffectorQuota();
+        //	break;
+        default:
+            break;
+        }
 
-		//_result = particleTechnique->getNumberOfEmittedParticles(_particleTypeToObserve) >= quota;
-		_result = _particleSystem->getParticlePool().getActiveParticleList().size() >= quota;
-	}
-	else
-	{
-		// Type to observe is not set, so check them all
-		//quota = particleTechnique->getVisualParticleQuota() + 
-		//	particleTechnique->getEmittedEmitterQuota() + 
-		//	particleTechnique->getEmittedTechniqueQuota() + 
-		//	particleTechnique->getEmittedAffectorQuota() +
-		//	particleTechnique->getEmittedSystemQuota();
-		quota = _particleSystem->getParticleQuota();
-		//_result = particleTechnique->getNumberOfEmittedParticles() >= quota;
-		_result = _particleSystem->getParticlePool().getActiveParticleList().size() >= quota;
-	}
+        //_result = particleTechnique->getNumberOfEmittedParticles(_particleTypeToObserve) >= quota;
+        _result = static_cast<PUParticleSystem3D *>(_particleSystem)->getActiveParticleSize() >= quota;
+    }
+    else
+    {
+        // Type to observe is not set, so check them all
+        //quota = particleTechnique->getVisualParticleQuota() + 
+        //	particleTechnique->getEmittedEmitterQuota() + 
+        //	particleTechnique->getEmittedTechniqueQuota() + 
+        //	particleTechnique->getEmittedAffectorQuota() +
+        //	particleTechnique->getEmittedSystemQuota();
+        quota = _particleSystem->getParticleQuota()
+            + static_cast<PUParticleSystem3D *>(_particleSystem)->getEmittedEmitterQuota()
+            + static_cast<PUParticleSystem3D *>(_particleSystem)->getEmittedSystemQuota();
+        //_result = particleTechnique->getNumberOfEmittedParticles() >= quota;
+        _result = static_cast<PUParticleSystem3D *>(_particleSystem)->getActiveParticleSize() >= quota;
+    }
 }
 
 PUParticle3DOnQuotaObserver* PUParticle3DOnQuotaObserver::create()
 {
-	auto pqo = new PUParticle3DOnQuotaObserver();
-	pqo->autorelease();
-	return pqo;
+    auto pqo = new PUParticle3DOnQuotaObserver();
+    pqo->autorelease();
+    return pqo;
 }
 
 NS_CC_END

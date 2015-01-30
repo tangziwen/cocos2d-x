@@ -43,17 +43,17 @@ protected:
 
 public:
 
-	static PUParticle3DDoStopSystemEventHandler* create();
+    static PUParticle3DDoStopSystemEventHandler* create();
 
-	/** 
-	*/
-	virtual void handle(PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
+    /** 
+    */
+    virtual void handle(PUParticleSystem3D* particleSystem, PUParticle3D* particle, float timeElapsed) override;
 
 CC_CONSTRUCTOR_ACCESS:
-	PUParticle3DDoStopSystemEventHandler(void) : PUParticle3DEventHandler()
-	{
-	};
-	virtual ~PUParticle3DDoStopSystemEventHandler(void) {};
+    PUParticle3DDoStopSystemEventHandler(void) : PUParticle3DEventHandler()
+    {
+    };
+    virtual ~PUParticle3DDoStopSystemEventHandler(void) {};
 };
 
 NS_CC_END

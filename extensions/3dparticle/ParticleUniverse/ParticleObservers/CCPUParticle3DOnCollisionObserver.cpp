@@ -30,14 +30,14 @@ NS_CC_BEGIN
 
 bool PUParticle3DOnCollisionObserver::observe( PUParticle3D* particle, float timeElapsed )
 {
-	return particle->hasEventFlags(PUParticle3D::PEF_COLLIDED);
+    return particle->hasEventFlags(PUParticle3D::PEF_COLLIDED);
 }
 
 PUParticle3DOnCollisionObserver* PUParticle3DOnCollisionObserver::create()
 {
-	auto pco = new PUParticle3DOnCollisionObserver();
-	pco->autorelease();
-	return pco;
+    auto pco = new PUParticle3DOnCollisionObserver();
+    pco->autorelease();
+    return pco;
 }
 
 NS_CC_END

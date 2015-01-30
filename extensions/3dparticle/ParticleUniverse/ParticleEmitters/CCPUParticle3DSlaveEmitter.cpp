@@ -63,22 +63,22 @@ void PUParticle3DSlaveEmitter::setMasterEmitterName(const std::string& masterEmi
 //-----------------------------------------------------------------------
 void PUParticle3DSlaveEmitter::particleEmitted(PUParticleSystem3D* particleSystem, PUParticle3D* particle)
 {
-	if (_masterEmitterNameSet && _masterEmitterName != particle->parentEmitter->getName())
-	{
-		// Ignore particle
-		return;
-	}
+    if (_masterEmitterNameSet && _masterEmitterName != particle->parentEmitter->getName())
+    {
+        // Ignore particle
+        return;
+    }
 
-	/** Keep the data of the emitted particle from the master technique/emitter.
-		Emission if a particle in this emitter may NOT be done in the main _update() method of the ParticleSystem,
-		but only from here ( a slave afterall). That is why the emitter is enabled and disabled again.
-	*/
-	_masterPosition = particle->position;
-	_masterDirection = particle->direction;
-	_masterParticle = particle;
-	_isEnabled = true;
-	static_cast<PUParticleSystem3D *>(_particleSystem)->forceEmission(this, 1); // Just emit one, to be in sync with the master.
-	_isEnabled = false;
+    /** Keep the data of the emitted particle from the master technique/emitter.
+        Emission if a particle in this emitter may NOT be done in the main _update() method of the ParticleSystem,
+        but only from here ( a slave afterall). That is why the emitter is enabled and disabled again.
+    */
+    _masterPosition = particle->position;
+    _masterDirection = particle->direction;
+    _masterParticle = particle;
+    _isEnabled = true;
+    static_cast<PUParticleSystem3D *>(_particleSystem)->forceEmission(this, 1); // Just emit one, to be in sync with the master.
+    _isEnabled = false;
 }
 //-----------------------------------------------------------------------
 void PUParticle3DSlaveEmitter::initParticlePosition(PUParticle3D* particle)
@@ -96,43 +96,47 @@ void PUParticle3DSlaveEmitter::initParticleDirection(PUParticle3D* particle)
 
     // Make use of the opportunity to set the master particle in the behaviour object (if available)
 
-	for (auto iter : particle->behaviours) {
-		if (iter->getBehaviourType() == "Slave"){
-			static_cast<PUParticle3DSlaveBehaviour *>(iter)->masterParticle = _masterParticle;
-		}
-	}
+    for (auto iter : particle->behaviours) {
+        if (iter->getBehaviourType() == "Slave"){
+            static_cast<PUParticle3DSlaveBehaviour *>(iter)->masterParticle = _masterParticle;
+        }
+    }
 }
 //-----------------------------------------------------------------------
 void PUParticle3DSlaveEmitter::prepare()
 {
-	PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(_particleSystem->getParent());
-	if (system)
-	{
-		auto children = system->getChildren();
-		for (auto it : children){
-			if (it->getName() == _masterTechniqueName){
-				static_cast<PUParticleSystem3D *>(it)->addListener(this);
-				break;
-			}
-		}
+    PUParticle3DEmitter::prepare();
+    PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(_particleSystem)->getParentParticleSystem();
+    if (system)
+    {
+        auto children = system->getChildren();
+        for (auto it : children){
+            if (it->getName() == _masterTechniqueName){
+                static_cast<PUParticleSystem3D *>(it)->addListener(this);
+                break;
+            }
+        }
 
-		_isEnabled = false;
-	}
+        _isEnabled = false;
+    }
 }
 //-----------------------------------------------------------------------
 void PUParticle3DSlaveEmitter::unPrepare()
 {
-	PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(_particleSystem->getParent());
-	if (system)
-	{
-		auto children = system->getChildren();
-		for (auto it : children){
-			if (it->getName() == _masterTechniqueName){
-				static_cast<PUParticleSystem3D *>(it)->removeListener(this);
-				break;
-			}
-		}
-	}
+    PUParticle3DEmitter::unPrepare();
+    PUParticleSystem3D* system = dynamic_cast<PUParticleSystem3D *>(_particleSystem)->getParentParticleSystem();
+    if (system)
+    {
+        auto children = system->getChildren();
+        for (auto it : children){
+            if (it->getName() == _masterTechniqueName){
+                static_cast<PUParticleSystem3D *>(it)->removeListener(this);
+                break;
+            }
+        }
+    }
+
+    PUParticle3DEmitter::unPrepare();
 }
 //-----------------------------------------------------------------------
 void PUParticle3DSlaveEmitter::notifyStart (void)
@@ -150,12 +154,19 @@ PUParticle3DSlaveEmitter* PUParticle3DSlaveEmitter::create()
 
 void PUParticle3DSlaveEmitter::copyAttributesTo( PUParticle3DEmitter* emitter )
 {
-	PUParticle3DEmitter::copyAttributesTo(emitter);
+    PUParticle3DEmitter::copyAttributesTo(emitter);
 
-	PUParticle3DSlaveEmitter* slaveEmitter = static_cast<PUParticle3DSlaveEmitter*>(emitter);
-	slaveEmitter->_masterTechniqueName = _masterTechniqueName;
-	slaveEmitter->_masterEmitterName = _masterEmitterName;
-	slaveEmitter->_masterEmitterNameSet = _masterEmitterNameSet;
+    PUParticle3DSlaveEmitter* slaveEmitter = static_cast<PUParticle3DSlaveEmitter*>(emitter);
+    slaveEmitter->_masterTechniqueName = _masterTechniqueName;
+    slaveEmitter->_masterEmitterName = _masterEmitterName;
+    slaveEmitter->_masterEmitterNameSet = _masterEmitterNameSet;
+}
+
+PUParticle3DSlaveEmitter* PUParticle3DSlaveEmitter::clone()
+{
+    auto be = PUParticle3DSlaveEmitter::create();
+    copyAttributesTo(be);
+    return be;
 }
 
 NS_CC_END

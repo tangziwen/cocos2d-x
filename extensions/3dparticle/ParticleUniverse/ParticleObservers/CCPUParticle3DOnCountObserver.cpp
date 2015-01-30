@@ -33,84 +33,84 @@ const PUComparisionOperator PUParticle3DOnCountObserver::DEFAULT_COMPARE = CO_LE
 
 //-----------------------------------------------------------------------
 PUParticle3DOnCountObserver::PUParticle3DOnCountObserver(void) : PUParticle3DObserver(),
-	_count(1),
-	_threshold(DEFAULT_THRESHOLD),
-	_compare(DEFAULT_COMPARE)
+    _count(1),
+    _threshold(DEFAULT_THRESHOLD),
+    _compare(DEFAULT_COMPARE)
 {
 }
 //-----------------------------------------------------------------------
 void PUParticle3DOnCountObserver::notifyStart (void)
 {
-	PUParticle3DObserver::notifyStart();
+    PUParticle3DObserver::notifyStart();
 
-	// At a restart the counter must be reset again.
-	_count = 1;
+    // At a restart the counter must be reset again.
+    _count = 1;
 }
 //-----------------------------------------------------------------------
 bool PUParticle3DOnCountObserver::observe (PUParticle3D* particle, float timeElapsed)
 {
-	if (!particle)
-		return false;
+    if (!particle)
+        return false;
 
-	if (!particle->hasEventFlags(PUParticle3D::PEF_EMITTED))
-		return false;
+    if (!particle->hasEventFlags(PUParticle3D::PEF_EMITTED))
+        return false;
 
-	if (_compare == CO_GREATER_THAN)
-	{
-		if (_count > _threshold)
-		{
-			return true;
-		}
-		else
-		{
-			_count++;
-			return false;
-		}
-	}
-	else if (_compare == CO_LESS_THAN)
-	{
-		if (_count < _threshold)
-		{
-			_count++;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		if (_count == _threshold)
-		{
-			_count++;
-			return true;
-		}
-		else
-		{
-			_count++;
-			return false;
-		}
-	}
+    if (_compare == CO_GREATER_THAN)
+    {
+        if (_count > _threshold)
+        {
+            return true;
+        }
+        else
+        {
+            _count++;
+            return false;
+        }
+    }
+    else if (_compare == CO_LESS_THAN)
+    {
+        if (_count < _threshold)
+        {
+            _count++;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if (_count == _threshold)
+        {
+            _count++;
+            return true;
+        }
+        else
+        {
+            _count++;
+            return false;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 PUParticle3DOnCountObserver* PUParticle3DOnCountObserver::create()
 {
-	auto pco = new PUParticle3DOnCountObserver();
-	pco->autorelease();
-	return pco;
+    auto pco = new PUParticle3DOnCountObserver();
+    pco->autorelease();
+    return pco;
 }
 
 void PUParticle3DOnCountObserver::copyAttributesTo( PUParticle3DObserver* observer )
 {
-	PUParticle3DObserver::copyAttributesTo(observer);
+    PUParticle3DObserver::copyAttributesTo(observer);
 
-	PUParticle3DOnCountObserver* onCountObserver = static_cast<PUParticle3DOnCountObserver*>(observer);
-	onCountObserver->_count = _count;
-	onCountObserver->_threshold = _threshold;
-	onCountObserver->_compare = _compare;
+    PUParticle3DOnCountObserver* onCountObserver = static_cast<PUParticle3DOnCountObserver*>(observer);
+    onCountObserver->_count = _count;
+    onCountObserver->_threshold = _threshold;
+    onCountObserver->_compare = _compare;
 }
 
 NS_CC_END
