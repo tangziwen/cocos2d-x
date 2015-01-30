@@ -76,8 +76,8 @@ static std::function<Layer*()> createFunctions[] =
     CL(Particle3DExplosionBlueDemo),
     CL(Particle3DFlareShieldDemo),
     CL(Particle3DLightningBoltDemo),
-	CL(Particle3DCanOfWormsDemo),
-	CL(Particle3DRibbonTrailDemo),
+    CL(Particle3DCanOfWormsDemo),
+    CL(Particle3DRibbonTrailDemo),
 };
 
 #define MAX_LAYER    (sizeof(createFunctions) / sizeof(createFunctions[0]))
@@ -357,14 +357,14 @@ Particle3DTestDemo::~Particle3DTestDemo( void )
 
 void Particle3DTestDemo::onEnter()
 {
-	BaseTest::onEnter();
-	Director::getInstance()->setClearColor(Color4F(0.5f, 0.5f, 0.5f, 1.0f));
+    BaseTest::onEnter();
+    Director::getInstance()->setClearColor(Color4F(0.5f, 0.5f, 0.5f, 1.0f));
 }
 
 void Particle3DTestDemo::onExit()
 {
-	BaseTest::onExit();
-	Director::getInstance()->setClearColor(Color4F(0.0f, 0.0f, 0.0f, 1.0f));
+    BaseTest::onExit();
+    Director::getInstance()->setClearColor(Color4F(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 std::string Particle3DAdvancedLodSystemDemo::subtitle() const 
@@ -566,100 +566,100 @@ bool Particle3DExplosionBlueDemo::init()
 
 std::string Particle3DFlareShieldDemo::subtitle() const 
 {
-	return "flareShield";
+    return "flareShield";
 }
 
 bool Particle3DFlareShieldDemo::init()
 {
-	if (!Particle3DTestDemo::init()) 
-		return false;
+    if (!Particle3DTestDemo::init()) 
+        return false;
 
 
-	auto rootps = PUParticleSystem3D::create("flareShield.pu");
-	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
-	//rootps->setScale(0.25f);
-	rootps->startParticle();
-	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+    auto rootps = PUParticleSystem3D::create("flareShield.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    //rootps->setScale(0.25f);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
-	return true;
+    return true;
 }
 
 std::string Particle3DLightningBoltDemo::subtitle() const 
 {
-	return "LightningBolt";
+    return "LightningBolt";
 }
 
 bool Particle3DLightningBoltDemo::init()
 {
-	if (!Particle3DTestDemo::init()) 
-		return false;
+    if (!Particle3DTestDemo::init()) 
+        return false;
 
 
-	auto rootps = PUParticleSystem3D::create("lightningBolt.pu");
-	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
-	//rootps->setScale(0.25f);
-	rootps->startParticle();
-	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+    auto rootps = PUParticleSystem3D::create("lightningBolt.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    //rootps->setScale(0.25f);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
-	return true;
+    return true;
 }
 
 std::string Particle3DExplosionSystemDemo::subtitle() const 
 {
-	return "ExplosionSystem";
+    return "ExplosionSystem";
 }
 
 bool Particle3DExplosionSystemDemo::init()
 {
-	if (!Particle3DTestDemo::init()) 
-		return false;
+    if (!Particle3DTestDemo::init()) 
+        return false;
 
 
-	auto rootps = PUParticleSystem3D::create("explosionSystem.pu");
-	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
-	//rootps->setScale(5.0f);
-	//rootps->setPosition(-25.0f, 0.0f);
-	//auto moveby = MoveBy::create(2.0f, Vec2(50.0f, 0.0f));
-	//auto moveby1 = MoveBy::create(2.0f, Vec2(-50.0f, 0.0f));
-	//rootps->runAction(RepeatForever::create(Sequence::create(moveby, moveby1, nullptr)));
-	rootps->startParticle();
-	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+    auto rootps = PUParticleSystem3D::create("explosionSystem.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    //rootps->setScale(5.0f);
+    //rootps->setPosition(-25.0f, 0.0f);
+    //auto moveby = MoveBy::create(2.0f, Vec2(50.0f, 0.0f));
+    //auto moveby1 = MoveBy::create(2.0f, Vec2(-50.0f, 0.0f));
+    //rootps->runAction(RepeatForever::create(Sequence::create(moveby, moveby1, nullptr)));
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
-	return true;
+    return true;
 }
 
 std::string Particle3DCanOfWormsDemo::subtitle() const 
 {
-	return "CanOfWorms";
+    return "CanOfWorms";
 }
 
 bool Particle3DCanOfWormsDemo::init()
 {
-	if (!Particle3DTestDemo::init()) 
-		return false;
+    if (!Particle3DTestDemo::init()) 
+        return false;
 
-	auto rootps = PUParticleSystem3D::create("canOfWorms.pu");
-	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
-	rootps->startParticle();
-	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+    auto rootps = PUParticleSystem3D::create("canOfWorms.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
-	return true;
+    return true;
 }
 
 std::string Particle3DRibbonTrailDemo::subtitle() const 
 {
-	return "RibbonTrailTest";
+    return "RibbonTrailTest";
 }
 
 bool Particle3DRibbonTrailDemo::init()
 {
-	if (!Particle3DTestDemo::init()) 
-		return false;
+    if (!Particle3DTestDemo::init()) 
+        return false;
 
-	auto rootps = PUParticleSystem3D::create("ribbonTrailTest.pu");
-	rootps->setCameraMask((unsigned short)CameraFlag::USER1);
-	rootps->startParticle();
-	this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
+    auto rootps = PUParticleSystem3D::create("ribbonTrailTest.pu");
+    rootps->setCameraMask((unsigned short)CameraFlag::USER1);
+    rootps->startParticle();
+    this->addChild(rootps, 0, PARTICLE_SYSTEM_TAG);
 
-	return true;
+    return true;
 }
