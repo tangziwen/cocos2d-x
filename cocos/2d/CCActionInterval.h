@@ -604,6 +604,12 @@ CC_CONSTRUCTOR_ACCESS:
     JumpTo() {}
     virtual ~JumpTo() {}
 
+    /** initializes the action */
+    bool initWithDuration(float duration, const Vec2& position, float height, int jumps);
+
+protected:
+    Vec2 _endPosition;
+
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(JumpTo);
 };
@@ -902,6 +908,7 @@ class CC_DLL TintTo : public ActionInterval
 public:
     /** creates an action with duration and color */
     static TintTo* create(float duration, GLubyte red, GLubyte green, GLubyte blue);
+    static TintTo* create(float duration, const Color3B& color);
 
     //
     // Overrides
