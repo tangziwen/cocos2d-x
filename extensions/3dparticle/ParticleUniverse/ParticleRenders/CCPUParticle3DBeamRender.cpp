@@ -70,7 +70,7 @@ void PUParticle3DBeamRender::render( Renderer* renderer, const Mat4 &transform, 
         auto particle = static_cast<PUParticle3D *>(iter);
         auto visualData = static_cast<PUParticle3DBeamVisualData*>(particle->visualData);
         if (visualData){
-            Vec3 end = particle->positionInWorld - basePosition;
+            Vec3 end = particle->position - basePosition;
             PUSimpleSpline spline;
 
             // Add points
@@ -119,7 +119,7 @@ PUParticle3DBeamRender::PUParticle3DBeamRender() :
     _jump(false),
     _texCoordDirection(DEFAULT_TEXTURE_DIRECTION)
 {
-
+    autoRotate = true;
 }
 
 PUParticle3DBeamRender::~PUParticle3DBeamRender()
@@ -294,7 +294,7 @@ void PUParticle3DBeamRender::updateRender( PUParticle3D *particle, float deltaTi
     if (beamRendererVisualData->timeSinceLastUpdate < 0)
     {
 
-        Vec3 end = particle->positionInWorld - static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedPosition();
+        Vec3 end = particle->position - static_cast<PUParticleSystem3D *>(_particleSystem)->getDerivedPosition();
         Vec3 perpendicular;
         float divide = (float)_numberOfSegments + 1.0f;
         for (size_t numDev = 0; numDev < _numberOfSegments; ++numDev)

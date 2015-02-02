@@ -143,15 +143,15 @@ void PUParticle3DQuadRender::render(Renderer* renderer, const Mat4 &transform, P
             up.normalize();
             backward = direction;
         }else if (_type == ORIENTED_SHAPE){
-            up = Vec3(particle->orientationInWorld.x, particle->orientationInWorld.y, particle->orientationInWorld.z);
+            up = Vec3(particle->orientation.x, particle->orientation.y, particle->orientation.z);
             up.normalize();
             Vec3::cross(up, backward, &right);
             right.normalize();
         }
-        Vec3 halfwidth = particle->widthInWorld * 0.5f * right;
-        Vec3 halfheight = particle->heightInWorld * 0.5f * up;
+        Vec3 halfwidth = particle->width * 0.5f * right;
+        Vec3 halfheight = particle->height * 0.5f * up;
         //transform.transformPoint(particle->position, &position);
-        position = particle->positionInWorld;
+        position = particle->position;
 
         if (_rotateType == TEXTURE_COORDS){
             float costheta = cosf(-particle->zRotation);
@@ -244,7 +244,7 @@ PUParticle3DQuadRender::PUParticle3DQuadRender()
     , _textureCoordsRowStep(1.0f)
     , _textureCoordsColStep(1.0f)
 {
-
+    autoRotate = false;
 }
 
 PUParticle3DQuadRender::~PUParticle3DQuadRender()
@@ -448,13 +448,13 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
         auto particle = static_cast<PUParticle3D *>(iter);
         q *= particle->orientation;
         Mat4::createRotation(q, &rotMat);
-        sclMat.m[0] = particle->widthInWorld / _spriteSize.x;
-        sclMat.m[5]  = particle->heightInWorld / _spriteSize.y; 
-        sclMat.m[10] = particle->depthInWorld / _spriteSize.z;
+        sclMat.m[0] = particle->width / _spriteSize.x;
+        sclMat.m[5]  = particle->height / _spriteSize.y; 
+        sclMat.m[10] = particle->depth / _spriteSize.z;
         mat = rotMat * sclMat;
-        mat.m[12] = particle->positionInWorld.x;
-        mat.m[13] = particle->positionInWorld.y;
-        mat.m[14] = particle->positionInWorld.z;
+        mat.m[12] = particle->position.x;
+        mat.m[13] = particle->position.y;
+        mat.m[14] = particle->position.z;
         _spriteList[index]->setColor(Color3B(particle->color.x * 255, particle->color.y * 255, particle->color.z * 255));
         _spriteList[index]->setOpacity(particle->color.w * 255);
         _spriteList[index]->draw(renderer, mat, 0);
@@ -464,7 +464,7 @@ void PUParticle3DModelRender::render( Renderer* renderer, const Mat4 &transform,
 
 PUParticle3DModelRender::PUParticle3DModelRender()
 {
-
+    autoRotate = true;
 }
 
 PUParticle3DModelRender::~PUParticle3DModelRender()
@@ -555,7 +555,7 @@ void PUParticle3DEntityRender::copyAttributesTo( PUParticle3DRender *render )
 
 PUParticle3DBoxRender::PUParticle3DBoxRender()
 {
-
+    autoRotate = false;
 }
 
 PUParticle3DBoxRender::~PUParticle3DBoxRender()
@@ -601,41 +601,41 @@ void PUParticle3DBoxRender::render( Renderer* renderer, const Mat4 &transform, P
     for (auto iter : particlePool.getActiveDataList())
     {
         auto particle = static_cast<PUParticle3D *>(iter);
-        float halfHeight = particle->heightInWorld * 0.5f;
-        float halfWidth = particle->widthInWorld * 0.5f;
-        float halfDepth = particle->depthInWorld * 0.5f;
+        float halfHeight = particle->height * 0.5f;
+        float halfWidth = particle->width * 0.5f;
+        float halfDepth = particle->depth * 0.5f;
         Mat4::createRotation(backward, particle->zRotation, &texRot);
         val = texRot * Vec3(0.0f, 0.75f, 0.0);
-        _vertices[vertexindex + 0].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, halfDepth);
+        _vertices[vertexindex + 0].position = particle->position + Vec3(-halfWidth, -halfHeight, halfDepth);
         _vertices[vertexindex + 0].color = particle->color;
         _vertices[vertexindex + 0].uv.x = val.x; _vertices[vertexindex + 0].uv.y = val.y; 
         val = texRot * Vec3(0.0f, 0.25f, 0.0);
-        _vertices[vertexindex + 1].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, halfDepth);
+        _vertices[vertexindex + 1].position = particle->position + Vec3(halfWidth, -halfHeight, halfDepth);
         _vertices[vertexindex + 1].color = particle->color;
         _vertices[vertexindex + 1].uv.x = val.x; _vertices[vertexindex + 1].uv.y = val.y;
         val = texRot * Vec3(0.5f, 0.25f, 0.0);
-        _vertices[vertexindex + 2].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, halfDepth);
+        _vertices[vertexindex + 2].position = particle->position + Vec3(halfWidth, halfHeight, halfDepth);
         _vertices[vertexindex + 2].color = particle->color;
         _vertices[vertexindex + 2].uv.x = val.x; _vertices[vertexindex + 2].uv.y = val.y;
         val = texRot * Vec3(0.5f, 0.75f, 0.0);
-        _vertices[vertexindex + 3].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, halfDepth);
+        _vertices[vertexindex + 3].position = particle->position + Vec3(-halfWidth, halfHeight, halfDepth);
         _vertices[vertexindex + 3].color = particle->color;
         _vertices[vertexindex + 3].uv.x = val.x; _vertices[vertexindex + 3].uv.y = val.y;
 
         val = texRot * Vec3(0.0f, 0.0f, 0.0);
-        _vertices[vertexindex + 4].position = particle->positionInWorld + Vec3(halfWidth, -halfHeight, -halfDepth);
+        _vertices[vertexindex + 4].position = particle->position + Vec3(halfWidth, -halfHeight, -halfDepth);
         _vertices[vertexindex + 4].color = particle->color;
         _vertices[vertexindex + 4].uv.x = val.x; _vertices[vertexindex + 4].uv.y = val.y;
         val = texRot * Vec3(0.0f, 1.0f, 0.0);
-        _vertices[vertexindex + 5].position = particle->positionInWorld + Vec3(-halfWidth, -halfHeight, -halfDepth);
+        _vertices[vertexindex + 5].position = particle->position + Vec3(-halfWidth, -halfHeight, -halfDepth);
         _vertices[vertexindex + 5].color = particle->color;
         _vertices[vertexindex + 5].uv.x = val.x; _vertices[vertexindex + 5].uv.y = val.y;
         val = texRot * Vec3(0.5f, 1.0f, 0.0);
-        _vertices[vertexindex + 6].position = particle->positionInWorld + Vec3(-halfWidth, halfHeight, -halfDepth);
+        _vertices[vertexindex + 6].position = particle->position + Vec3(-halfWidth, halfHeight, -halfDepth);
         _vertices[vertexindex + 6].color = particle->color;
         _vertices[vertexindex + 6].uv.x = val.x; _vertices[vertexindex + 6].uv.y = val.y;
         val = texRot * Vec3(0.5f, 0.0f, 0.0);
-        _vertices[vertexindex + 7].position = particle->positionInWorld + Vec3(halfWidth, halfHeight, -halfDepth);
+        _vertices[vertexindex + 7].position = particle->position + Vec3(halfWidth, halfHeight, -halfDepth);
         _vertices[vertexindex + 7].color = particle->color;
         _vertices[vertexindex + 7].uv.x = val.x; _vertices[vertexindex + 7].uv.y = val.y;
 
@@ -759,14 +759,14 @@ void PUParticle3DSphereRender::render( Renderer* renderer, const Mat4 &transform
     for (auto iter : particlePool.getActiveDataList())
     {
         auto particle = static_cast<PUParticle3D *>(iter);
-        float radius = particle->widthInWorld * 0.5f;
+        float radius = particle->width * 0.5f;
         Mat4::createRotation(particle->orientation, &rotMat);
         Mat4::createScale(radius, radius, radius, &sclMat);
         Mat4::createRotation(backward, particle->zRotation, &texRot);
         mat = rotMat * sclMat;
-        mat.m[12] = particle->positionInWorld.x;
-        mat.m[13] = particle->positionInWorld.y;
-        mat.m[14] = particle->positionInWorld.z;
+        mat.m[12] = particle->position.x;
+        mat.m[13] = particle->position.y;
+        mat.m[14] = particle->position.z;
 
         for (unsigned int i = 0; i < vertexCount; ++i){
             val = texRot * Vec3(_vertexTemplate[vertexindex + i].uv.x, _vertexTemplate[vertexindex + i].uv.y, 0.0f);
@@ -840,7 +840,7 @@ PUParticle3DSphereRender::PUParticle3DSphereRender()
     : _numberOfRings(16)
     , _numberOfSegments(16)
 {
-
+    autoRotate = false;
 }
 
 PUParticle3DSphereRender::~PUParticle3DSphereRender()

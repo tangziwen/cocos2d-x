@@ -49,6 +49,10 @@ public:
     virtual PUParticle3DRender* clone() = 0;
     virtual void copyAttributesTo (PUParticle3DRender *render);
 
+public:
+
+    bool autoRotate; // Means that the objects to render automatically rotate if the node to which the particle system is attached, rotates.
+
 protected:
 
     std::string _renderType;

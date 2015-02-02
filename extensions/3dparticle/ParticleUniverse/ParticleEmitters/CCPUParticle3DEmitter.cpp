@@ -402,7 +402,9 @@ void PUParticle3DEmitter::preUpdateEmitter( float deltaTime )
 
 void PUParticle3DEmitter::postUpdateEmitter( float deltaTime )
 {
-
+    Vec3 currentPos = getDerivedPosition();
+    _latestPositionDiff = currentPos - _latestPosition;
+    _latestPosition = currentPos;
 }
 
 //-----------------------------------------------------------------------
@@ -424,8 +426,7 @@ bool PUParticle3DEmitter::makeParticleLocal(PUParticle3D* particle)
     if (!_keepLocal/* || hasEventFlags(PUParticle3D::PEF_EXPIRED)*/)
         return false;
 
-    Vec3 diff = getDerivedPosition() - _latestPosition;
-    particle->position += diff;
+    particle->position += _latestPositionDiff;
     return true;
 }
 

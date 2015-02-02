@@ -106,6 +106,7 @@ PUParticle3DRibbonTrailRender::PUParticle3DRibbonTrailRender() :
     std::stringstream ss; 
     ss << this;
     _ribbonTrailName = "RibbonTrail" + ss.str();
+    autoRotate = false;
 }
 
 PUParticle3DRibbonTrailRender::~PUParticle3DRibbonTrailRender()
@@ -394,14 +395,14 @@ void PUParticle3DRibbonTrailRender::updateParticles( const ParticlePool &pool )
         if (visualData)
         {
             Node* node = visualData->node;
-            node->setPosition3D(particle->positionInWorld);
+            node->setPosition3D(particle->position);
 
             // Set the width of the trail if required
             if (particle->particleType == PUParticle3D::PT_VISUAL)
             {
                 if (particle->ownDimensions)
                 {
-                    _trail->setInitialWidth(visualData->index, particle->widthInWorld);
+                    _trail->setInitialWidth(visualData->index, particle->width);
                 }
             }
             visualData->setVisible(true);

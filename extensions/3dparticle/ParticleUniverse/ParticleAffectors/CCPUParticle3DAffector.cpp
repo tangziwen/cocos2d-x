@@ -56,9 +56,10 @@ const Vec3& PUParticle3DAffector::getDerivedPosition()
         //_particleSystem->getNodeToWorldTransform().transformPoint(_position, &_derivedPosition);
     }
     else
-        _derivedPosition = Vec3::ZERO;
+        _derivedPosition = _position;
 
     return _derivedPosition;
+
     //if (mMarkedForEmission)
     //{
     //	// Use the affector position, because it is emitted
@@ -72,10 +73,6 @@ const Vec3& PUParticle3DAffector::getDerivedPosition()
     //		mParentTechnique->getParentSystem()->getDerivedOrientation() * (_mAffectorScale * position);
     //}
     //return _derivedPosition;
-    
-
-    ////incorrect result (FIXME)
-    //return _position;
 }
 
 float PUParticle3DAffector::calculateAffectSpecialisationFactor( const PUParticle3D* particle )

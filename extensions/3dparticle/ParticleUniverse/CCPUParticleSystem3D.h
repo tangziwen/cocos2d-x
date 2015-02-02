@@ -90,7 +90,7 @@ struct CC_DLL PUParticle3D : public Particle3D
 
     ParticleType particleType;
     // Values that are assigned as soon as the particle is emitted (non-transformed)
-    Vec3 positionInWorld;
+    //Vec3 positionInWorld;
     Vec3 originalPosition;
     Vec3 latestPosition;
     // Direction (and speed)
@@ -111,7 +111,7 @@ struct CC_DLL PUParticle3D : public Particle3D
         in 2D. */
     float zRotationSpeed; //radian
 
-    Quaternion orientationInWorld;
+    //Quaternion orientationInWorld;
     /*@remarks
         The orientation of the particle is only visible if the Particle Renderer - such as the Box renderer - 
         supports orientation.
@@ -204,9 +204,9 @@ struct CC_DLL PUParticle3D : public Particle3D
 
     float depthInView;//depth in camera view
     float zRotation; //zRotation is used to rotate the particle in 2D (around the Z-axis)   (radian)
-    float widthInWorld;
-    float heightInWorld;
-    float depthInWorld;
+    //float widthInWorld;
+    //float heightInWorld;
+    //float depthInWorld;
     
 };
 
@@ -342,6 +342,9 @@ public:
     const ParticlePoolMap& getEmittedEmitterParticlePool() const { return _emittedEmitterParticlePool; };
     const ParticlePoolMap& getEmittedSystemParticlePool() const { return _emittedSystemParticlePool; };
 
+    bool makeParticleLocal(PUParticle3D* particle);
+	void calulateRotationOffset(void);
+
     virtual PUParticleSystem3D* clone();
     virtual void copyAttributesTo (PUParticleSystem3D* system);
 
@@ -360,6 +363,7 @@ protected:
     void executeEmitParticles(PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime);
     void emitParticles(ParticlePool &pool, PUParticle3DEmitter* emitter, unsigned requested, float elapsedTime);
     void processParticle(ParticlePool &pool, bool &firstActiveParticle, bool &firstParticle, float elapsedTime);
+    void processMotion(PUParticle3D* particle, float timeElapsed, bool firstParticle);
     void notifyRescaled();
     void initParticleForEmission(PUParticle3D* particle);
     void initParticleForExpiration(PUParticle3D* particle, float timeElapsed);
@@ -419,6 +423,12 @@ protected:
     std::string _matName;
 
     bool _isMarkedForEmission;
+
+	// Keep latest position
+	Vec3 _latestPositionDiff;
+	Vec3 _latestPosition;
+
+	Quaternion _latestOrientation;
 
     PUParticleSystem3D *_parentParticleSystem;
 };

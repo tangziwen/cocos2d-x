@@ -361,6 +361,7 @@ protected:
     Vec3 _position;
 
     Vec3 _latestPosition;
+    Vec3 _latestPositionDiff;
 
     Vec3 _derivedPosition;
     /** Although the scale is on a Particle System level, the emitter can also be scaled.
