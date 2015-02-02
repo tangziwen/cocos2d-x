@@ -46,6 +46,9 @@ public:
     virtual std::string subtitle() const override;
     virtual void update(float delta) override;
 
+    virtual void onEnter() override;
+    virtual void onExit() override;
+
     cocos2d::ParticleSystem3D* createParticleSystem();
     
     void onTouchesBegan(const std::vector<Touch*>& touches, cocos2d::Event  *event);
@@ -171,6 +174,71 @@ public:
     CREATE_FUNC(Particle3DExplosionBlueDemo);
     Particle3DExplosionBlueDemo(){};
     virtual ~Particle3DExplosionBlueDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DFlareShieldDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DFlareShieldDemo);
+    Particle3DFlareShieldDemo(){};
+    virtual ~Particle3DFlareShieldDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DLightningBoltDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DLightningBoltDemo);
+    Particle3DLightningBoltDemo(){};
+    virtual ~Particle3DLightningBoltDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DExplosionSystemDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DExplosionSystemDemo);
+    Particle3DExplosionSystemDemo(){};
+    virtual ~Particle3DExplosionSystemDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DCanOfWormsDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DCanOfWormsDemo);
+    Particle3DCanOfWormsDemo(){};
+    virtual ~Particle3DCanOfWormsDemo(){};
+
+    virtual std::string subtitle() const override;
+
+    virtual bool init() override;
+};
+
+class Particle3DRibbonTrailDemo : public Particle3DTestDemo
+{
+public:
+
+    CREATE_FUNC(Particle3DRibbonTrailDemo);
+    Particle3DRibbonTrailDemo(){};
+    virtual ~Particle3DRibbonTrailDemo(){};
 
     virtual std::string subtitle() const override;
 

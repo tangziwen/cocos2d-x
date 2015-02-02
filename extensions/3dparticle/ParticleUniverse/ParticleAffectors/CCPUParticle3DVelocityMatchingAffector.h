@@ -48,6 +48,8 @@ public:
     */
     void setRadius(float radius);
 
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
     /** @copydoc ParticleAffector::_prepare */
     //virtual void _prepare(ParticleTechnique* particleTechnique);
 

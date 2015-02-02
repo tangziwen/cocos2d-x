@@ -59,6 +59,8 @@ public:
     */
     void setRotationSpeed(PUDynamicAttribute* dynRotationSpeed);
 
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
 CC_CONSTRUCTOR_ACCESS:	      
     PUParticle3DVortexAffector(void);
     virtual ~PUParticle3DVortexAffector(void);

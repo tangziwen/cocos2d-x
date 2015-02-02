@@ -53,6 +53,8 @@ public:
     float getMinDistance(void) const;
     void setMinDistance(float minDistance);
 
+    virtual void copyAttributesTo (PUParticle3DAffector* affector);
+
 CC_CONSTRUCTOR_ACCESS:
     PUParticle3DParticleFollower(void);
     virtual ~PUParticle3DParticleFollower(void);

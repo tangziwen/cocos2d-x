@@ -102,7 +102,7 @@ void PUParticle3DRandomiser::setRandomDirection(bool randomDirection)
 //-----------------------------------------------------------------------
 void PUParticle3DRandomiser::preUpdateAffector(float deltaTime)
 {
-    if (/*technique->getNumberOfEmittedParticles()*/_particleSystem->getParticlePool().getActiveParticleList().size() > 0)
+    if (/*technique->getNumberOfEmittedParticles()*/static_cast<PUParticleSystem3D *>(_particleSystem)->getActiveParticleSize() > 0)
     {
         _timeSinceLastUpdate += deltaTime;
         if (_timeSinceLastUpdate > _timeStep)
@@ -153,6 +153,18 @@ PUParticle3DRandomiser* PUParticle3DRandomiser::create()
     auto pr = new PUParticle3DRandomiser();
     pr->autorelease();
     return pr;
+}
+
+void PUParticle3DRandomiser::copyAttributesTo( PUParticle3DAffector* affector )
+{
+    PUParticle3DAffector::copyAttributesTo(affector);
+
+    PUParticle3DRandomiser* randomiser = static_cast<PUParticle3DRandomiser*>(affector);
+    randomiser->_maxDeviationX = _maxDeviationX;
+    randomiser->_maxDeviationY = _maxDeviationY;
+    randomiser->_maxDeviationZ = _maxDeviationZ;
+    randomiser->setTimeStep(_timeStep); // Also sets time since last update to appropriate value
+    randomiser->_randomDirection = _randomDirection;
 }
 
 NS_CC_END
