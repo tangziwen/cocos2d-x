@@ -30,11 +30,24 @@ NS_CC_BEGIN
 
 Camera* Camera::_visitingCamera = nullptr;
 
-Camera* Camera::create()
+
+Camera* Camera::getDefaultCamera()
+{
+    auto scene = Director::getInstance()->getRunningScene();
+    if(scene)
+    {
+        return scene->getDefaultCamera();
+    }
+
+    return nullptr;
+}
+
+    Camera* Camera::create()
 {
     Camera* camera = new (std::nothrow) Camera();
     camera->initDefault();
     camera->autorelease();
+    camera->setDepth(0.f);
     
     return camera;
 }
@@ -70,9 +83,9 @@ Camera::Camera()
 , _viewProjectionDirty(true)
 , _cameraFlag(1)
 , _frustumDirty(true)
-, _enableFrustumCulling(true)
+, _depth(-1)
 {
-    
+    _frustum.setClipZ(true);
 }
 
 Camera::~Camera()
@@ -253,24 +266,35 @@ void Camera::unproject(const Size& viewport, Vec3* src, Vec3* dst) const
     dst->set(screen.x, screen.y, screen.z);
 }
 
-void Camera::enableFrustumCulling(bool enalbe, bool clipZ)
-{
-    _enableFrustumCulling = enalbe;
-    _frustum.setClipZ(clipZ);
-}
-
 bool Camera::isVisibleInFrustum(const AABB* aabb) const
 {
-    if (_enableFrustumCulling)
+    if (_frustumDirty)
     {
-        if (_frustumDirty)
-        {
-            _frustum.initFrustum(this);
-            _frustumDirty = false;
-        }
-        return !_frustum.isOutOfFrustum(*aabb);
+        _frustum.initFrustum(this);
+        _frustumDirty = false;
     }
-    return true;
+    return !_frustum.isOutOfFrustum(*aabb);
+}
+
+float Camera::getDepthInView(const Mat4& transform) const
+{
+    Mat4 camWorldMat = getNodeToWorldTransform();
+    const Mat4 &viewMat = camWorldMat.getInversed();
+    float depth = -(viewMat.m[2] * transform.m[12] + viewMat.m[6] * transform.m[13] + viewMat.m[10] * transform.m[14] + viewMat.m[14]);
+    return depth;
+}
+
+void Camera::setDepth(int depth)
+{
+    if (_depth != depth)
+    {
+        _depth = depth;
+        if (_scene)
+        {
+            //notify scene that the camera order is dirty
+            _scene->setCameraOrderDirty();
+        }
+    }
 }
 
 void Camera::onEnter()
@@ -279,7 +303,9 @@ void Camera::onEnter()
     {
         auto scene = getScene();
         if (scene)
+        {
             setScene(scene);
+        }
     }
     Node::onEnter();
 }
@@ -311,7 +337,11 @@ void Camera::setScene(Scene* scene)
             auto& cameras = _scene->_cameras;
             auto it = std::find(cameras.begin(), cameras.end(), this);
             if (it == cameras.end())
+            {
                 _scene->_cameras.push_back(this);
+                //notify scene that the camera order is dirty
+                _scene->setCameraOrderDirty();
+            }
         }
     }
 }
