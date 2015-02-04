@@ -64,6 +64,9 @@ NS_CC_BEGIN
 {
     Terrain * terrain = new (std::nothrow)Terrain();
     terrain->_terrainData = parameter;
+    terrain->_isNeedToUpdateLOD = true;
+    terrain->_isCameraViewChanged = true;
+    terrain->_isTerrainModelMatrixChanged = true;
     //chunksize
     terrain->_chunkSize = parameter.chunkSize;
     //heightmap
@@ -176,13 +179,47 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
         auto alpha_map_location = glGetUniformLocation(glProgram->getProgram(),"u_alphaMap");
         glUniform1i(alpha_map_location,4);
     }
-    //set lod
-    setChunksLOD(Camera::getVisitingCamera()->getPosition3D());
-    //camera frustum culling
+
     auto camera = Camera::getVisitingCamera();
-    quad->cullByCamera(camera,getNodeToWorldTransform());
+    if(camera->getPosition3D() != _camPos)
+    {
+        _isNeedToUpdateLOD = true;
+    }
+    if(_isNeedToUpdateLOD)
+    {
+        _camPos = camera->getPosition3D();
+        //set lod
+        setChunksLOD(_camPos);
+        _isNeedToUpdateLOD = false;
+    }
+    if(memcmp(&_CameraMatrix,&camera->getViewMatrix(),sizeof(Mat4))!=0)
+    {
+        _isCameraViewChanged = true;
+        _CameraMatrix = camera->getViewMatrix();
+    }
+
+    auto terrainWorldTransform = getNodeToWorldTransform();
+    if(memcmp(&_oldTerrrainModelMatrix,&terrainWorldTransform,sizeof(Mat4))!=0)
+    {
+        _isTerrainModelMatrixChanged = true;
+        _oldTerrrainModelMatrix = terrainWorldTransform;
+    }
+    quad->updateAABB(_oldTerrrainModelMatrix);
+    if(_isCameraViewChanged || _isTerrainModelMatrixChanged)
+    {
+        quad->resetNeedDraw(true);//reset it 
+        //camera frustum culling
+        quad->cullByCamera(camera,_oldTerrrainModelMatrix);
+    }
     quad->draw();
-    quad->resetNeedDraw(true);//reset it 
+    if(_isCameraViewChanged)
+    {
+        _isCameraViewChanged = false;
+    }
+    if(_isTerrainModelMatrixChanged)
+    {
+        _isTerrainModelMatrixChanged = false;
+    }
     glActiveTexture(GL_TEXTURE0);
     if(depthTestCheck)
     {
@@ -191,10 +228,10 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
     {
         glDisable(GL_DEPTH_TEST);
     }
-if(blendCheck)
-{
-    glEnable(GL_BLEND);
-}
+    if(blendCheck)
+    {
+        glEnable(GL_BLEND);
+    }
 }
 
 void Terrain::initHeightMap(const char * heightMap)
@@ -519,8 +556,11 @@ void Terrain::Chunk::bindAndDraw()
 #endif
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    updateVerticesForLOD();
-    updateIndices();
+    if(_terrain->_isCameraViewChanged)
+    {
+        updateVerticesForLOD();
+        updateIndices();
+    }
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo[1]);
     GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POSITION | GL::VERTEX_ATTRIB_FLAG_TEX_COORD| GL::VERTEX_ATTRIB_FLAG_NORMAL);
     unsigned int offset = 0;
@@ -566,10 +606,17 @@ Terrain::Chunk::Chunk()
     right = nullptr;
     back = nullptr;
     front = nullptr;
+    _oldLod = -1;
+    for(int i =0;i<4;i++)
+    {
+        _neighborOldLOD[i] == -1;
+    }
 }
 
 void Terrain::Chunk::updateIndices()
 {
+    //if(_oldLod == _currentLod){ return;} // no need update
+    _oldLod = _currentLod;
     int gridY = _size.height;
     int gridX = _size.width;
 
@@ -820,6 +867,7 @@ Terrain::Chunk::~Chunk()
 
 Terrain::QuadTree::QuadTree(int x,int y,int width,int height,Terrain * terrain)
 {
+    _terrain = terrain;
     _needDraw = true;
     parent = nullptr;
     tl =nullptr;
@@ -854,6 +902,8 @@ Terrain::QuadTree::QuadTree(int x,int y,int width,int height,Terrain * terrain)
         _isTerminal = true;
         _aabb = _chunk->_aabb;
     }
+    _worldSpaceAABB = _aabb;
+    _worldSpaceAABB.transform(_terrain->getNodeToWorldTransform());
 }
 
 void Terrain::QuadTree::draw()
@@ -884,9 +934,12 @@ void Terrain::QuadTree::resetNeedDraw(bool value)
 
 void Terrain::QuadTree::cullByCamera(const Camera * camera,const Mat4 & worldTransform)
 {
-    auto aabb = _aabb;
-    aabb.transform(worldTransform);
-    if(!camera->isVisibleInFrustum(&aabb))
+    if(_terrain->_isTerrainModelMatrixChanged)
+    {
+        _worldSpaceAABB = _aabb;
+        _worldSpaceAABB.transform(worldTransform);
+    }
+    if(!camera->isVisibleInFrustum(&_worldSpaceAABB))
     {
         this->resetNeedDraw(false);
     }else
@@ -897,6 +950,21 @@ void Terrain::QuadTree::cullByCamera(const Camera * camera,const Mat4 & worldTra
             bl->cullByCamera(camera,worldTransform);
             br->cullByCamera(camera,worldTransform);
         }
+    }
+}
+
+void Terrain::QuadTree::updateAABB(const Mat4 & worldTransform)
+{
+    if(_terrain->_isTerrainModelMatrixChanged)
+    {
+        _worldSpaceAABB = _aabb;
+        _worldSpaceAABB.transform(worldTransform);
+    }
+    if(!_isTerminal){
+        tl->updateAABB(worldTransform);
+        tr->updateAABB(worldTransform);
+        bl->updateAABB(worldTransform);
+        br->updateAABB(worldTransform);
     }
 }
 
