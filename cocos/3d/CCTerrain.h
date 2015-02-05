@@ -139,6 +139,7 @@ private:
         cocos2d::Vec3 normal;
     };
 
+    struct QuadTree;
     /*
     *the terminal node of quad, use to subdivision terrain mesh and LOD
     **/
@@ -183,6 +184,8 @@ private:
         Chunk * right;
         Chunk * front;
         Chunk * back;
+
+        QuadTree * _parent;
 
         //the position
         int pos_x;
@@ -286,6 +289,7 @@ protected:
     Mat4 _oldCameraModelMatrix;
     Mat4 _oldTerrrainModelMatrix;
     bool _isTerrainModelMatrixChanged;
+    GLuint _normalLocation;
 };
 NS_CC_END
 #endif

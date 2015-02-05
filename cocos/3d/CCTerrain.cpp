@@ -110,6 +110,7 @@ bool Terrain::init()
     auto state = GLProgramState::create(shader);
     
     setGLProgramState(state);
+    _normalLocation = glGetAttribLocation(this->getGLProgram()->getProgram(),"a_normal");
     setDrawWire(false);
     setIsEnableFrustumCull(true);
     return true;
@@ -181,17 +182,12 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
     }
 
     auto camera = Camera::getVisitingCamera();
+
     if(camera->getPosition3D() != _camPos)
     {
         _isNeedToUpdateLOD = true;
     }
-    if(_isNeedToUpdateLOD)
-    {
-        _camPos = camera->getPosition3D();
-        //set lod
-        setChunksLOD(_camPos);
-        _isNeedToUpdateLOD = false;
-    }
+
     if(memcmp(&_CameraMatrix,&camera->getViewMatrix(),sizeof(Mat4))!=0)
     {
         _isCameraViewChanged = true;
@@ -204,7 +200,18 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
         _isTerrainModelMatrixChanged = true;
         _oldTerrrainModelMatrix = terrainWorldTransform;
     }
+
     quad->updateAABB(_oldTerrrainModelMatrix);
+
+    if(_isNeedToUpdateLOD || _isTerrainModelMatrixChanged)
+    {
+        _camPos = camera->getPosition3D();
+        //set lod
+        setChunksLOD(_camPos);
+        _isNeedToUpdateLOD = false;
+    }
+
+    
     if(_isCameraViewChanged || _isTerrainModelMatrixChanged)
     {
         quad->resetNeedDraw(true);//reset it 
@@ -288,8 +295,7 @@ void Terrain::setChunksLOD(Vec3 cameraPos)
     for(int m=0;m<chunk_amount_y;m++)
         for(int n =0;n<chunk_amount_x;n++)
         {
-            AABB aabb = _chunkesArray[m][n]->_aabb;
-            aabb.transform(this->getNodeToWorldTransform());
+            AABB aabb = _chunkesArray[m][n]->_parent->_worldSpaceAABB;
             auto center = aabb.getCenter();
             float dist = Vec3(center.x,0,center.z).distance(Vec3(cameraPos.x,0,cameraPos.z));
             _chunkesArray[m][n]->_currentLod = 3;
@@ -570,8 +576,7 @@ void Terrain::Chunk::bindAndDraw()
     //texcoord
     glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD,2,GL_FLOAT,GL_FALSE,sizeof(TerrainVertexData),(GLvoid *)offset);
     offset +=sizeof(Tex2F);
-    auto normal_location = glGetAttribLocation(_terrain->getGLProgram()->getProgram(),"a_normal");
-    glEnableVertexAttribArray(normal_location);
+    glEnableVertexAttribArray(_terrain->_normalLocation);
     //normal
     glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_NORMAL,3,GL_FLOAT,GL_FALSE,sizeof(TerrainVertexData),(GLvoid *)offset);
     glDrawElements(GL_TRIANGLES, _lod[_currentLod].indices.size(), GL_UNSIGNED_SHORT, 0);
@@ -609,13 +614,35 @@ Terrain::Chunk::Chunk()
     _oldLod = -1;
     for(int i =0;i<4;i++)
     {
-        _neighborOldLOD[i] == -1;
+        _neighborOldLOD[i] = -1;
     }
 }
 
 void Terrain::Chunk::updateIndices()
 {
-    //if(_oldLod == _currentLod){ return;} // no need update
+    int currentNeighborLOD[4];
+    if(left)
+    {
+        currentNeighborLOD[0] = left->_currentLod;
+    }else{currentNeighborLOD[0] = -1;}
+    if(right)
+    {
+        currentNeighborLOD[1] = right->_currentLod;
+    }else{currentNeighborLOD[1] = -1;}
+    if(back)
+    {
+        currentNeighborLOD[2] = back->_currentLod;
+    }else{currentNeighborLOD[2] = -1;}
+    if(front)
+    {
+        currentNeighborLOD[3] = front->_currentLod;
+    }else{currentNeighborLOD[3] = -1;}
+
+    if(_oldLod == _currentLod &&(memcmp(currentNeighborLOD,_neighborOldLOD,sizeof(currentNeighborLOD))==0) )
+    {
+        return;// no need to update
+    }
+    memcpy(_neighborOldLOD,currentNeighborLOD,sizeof(currentNeighborLOD)); 
     _oldLod = _currentLod;
     int gridY = _size.height;
     int gridX = _size.width;
@@ -710,7 +737,6 @@ FINISH_INNER_INDICES_SET:
                 _lod[_currentLod].indices.push_back((i+step)*(gridX+1)+gridX);
             }
         }
-
         if(front&&front->_currentLod > _currentLod)//front
         {
             for(int i =0;i<gridX;i+=next_step)
@@ -830,6 +856,7 @@ void Terrain::Chunk::calculateSlope()
 
 void Terrain::Chunk::updateVerticesForLOD()
 {
+    if(_oldLod == _currentLod){ return;} // no need to update vertices
     vertices_tmp = vertices;
     int gridY = _size.height;
     int gridX = _size.width;
@@ -901,6 +928,7 @@ Terrain::QuadTree::QuadTree(int x,int y,int width,int height,Terrain * terrain)
         _chunk = terrain->_chunkesArray[m][n];
         _isTerminal = true;
         _aabb = _chunk->_aabb;
+        _chunk->_parent = this;
     }
     _worldSpaceAABB = _aabb;
     _worldSpaceAABB.transform(_terrain->getNodeToWorldTransform());
