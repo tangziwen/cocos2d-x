@@ -37,7 +37,6 @@ NS_CC_BEGIN
     **/
 #define MAX_CHUNKES 256
 
-
     /*
     * Terrain
     * Defines a Terrain that is capable of rendering large landscapes from 2D heightmap images.
@@ -263,8 +262,6 @@ protected:
     //calculate Normal Line for each Vertex
     void calculateNormal();
 protected:
-    Vec3 _camPos;
-    bool _isNeedToUpdateLOD;
     Mat4 _CameraMatrix;
     bool _isCameraViewChanged;
     TerrainData _terrainData;

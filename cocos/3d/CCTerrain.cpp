@@ -60,11 +60,10 @@ static const char * fragment_shader_RGB_4_DETAIL ="\n#ifdef GL_ES\n\
                                                   }\
                                                   }";
 NS_CC_BEGIN
-    Terrain * Terrain::create(TerrainData &parameter)
+Terrain * Terrain::create(TerrainData &parameter)
 {
     Terrain * terrain = new (std::nothrow)Terrain();
     terrain->_terrainData = parameter;
-    terrain->_isNeedToUpdateLOD = true;
     terrain->_isCameraViewChanged = true;
     terrain->_isTerrainModelMatrixChanged = true;
     //chunksize
@@ -118,9 +117,9 @@ bool Terrain::init()
 
 void Terrain::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags)
 {
-    _customCommand.init(getGlobalZOrder());
+    _customCommand.init(-500);
     _customCommand.func = CC_CALLBACK_0(Terrain::onDraw, this, transform, flags);
-    _customCommand.setTransparent(true);
+    //_customCommand.setTransparent(true);
     renderer->addCommand(&_customCommand);
 }
 
@@ -183,11 +182,6 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
 
     auto camera = Camera::getVisitingCamera();
 
-    if(camera->getPosition3D() != _camPos)
-    {
-        _isNeedToUpdateLOD = true;
-    }
-
     if(memcmp(&_CameraMatrix,&camera->getViewMatrix(),sizeof(Mat4))!=0)
     {
         _isCameraViewChanged = true;
@@ -203,12 +197,11 @@ void Terrain::onDraw(const Mat4 &transform, uint32_t flags)
 
     quad->updateAABB(_oldTerrrainModelMatrix);
 
-    if(_isNeedToUpdateLOD || _isTerrainModelMatrixChanged)
+    if(_isCameraViewChanged || _isTerrainModelMatrixChanged)
     {
-        _camPos = camera->getPosition3D();
+        auto camPos = camera->getPosition3D();
         //set lod
-        setChunksLOD(_camPos);
-        _isNeedToUpdateLOD = false;
+        setChunksLOD(camPos);
     }
 
     
