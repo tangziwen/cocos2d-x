@@ -117,9 +117,7 @@ bool Terrain::init()
 
 void Terrain::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags)
 {
-    _customCommand.init(-500);
     _customCommand.func = CC_CALLBACK_0(Terrain::onDraw, this, transform, flags);
-    //_customCommand.setTransparent(true);
     renderer->addCommand(&_customCommand);
 }
 
@@ -659,8 +657,6 @@ void Terrain::Chunk::updateIndices()
                 _lod[_currentLod].indices.push_back (nLocIndex + step);
                 _lod[_currentLod].indices.push_back (nLocIndex + step * (gridX+1));
                 _lod[_currentLod].indices.push_back (nLocIndex + step * (gridX+1) + step);
-FINISH_INNER_INDICES_SET:
-                ;
             }
         }
         //fix T-crack
