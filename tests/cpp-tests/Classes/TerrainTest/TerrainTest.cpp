@@ -259,19 +259,19 @@ TerrainWalkThru::TerrainWalkThru()
     _camera->setPosition3D(_player->getPosition3D()+camera_offset);
     _camera->setRotation3D(Vec3(-45,0,0));
 
-    forward = Label::create("forward","arial",22);
+    forward = Label::createWithSystemFont("forward","arial",22);
     forward->setPosition(0,200);
     forward->setAnchorPoint(Vec2(0,0));
 
-    backward = Label::create("backward","arial",22);
+    backward = Label::createWithSystemFont("backward","arial",22);
     backward->setPosition(0,250);
     backward->setAnchorPoint(Vec2(0,0));
 
-    left = Label::create("turn Left","arial",22);
+    left = Label::createWithSystemFont("turn Left","arial",22);
     left->setPosition(0,100);
     left->setAnchorPoint(Vec2(0,0));
 
-    right = Label::create("turn right","arial",22);
+    right = Label::createWithSystemFont("turn right","arial",22);
     right->setPosition(0,150);
     right->setAnchorPoint(Vec2(0,0));
     addChild(_player);
@@ -406,7 +406,6 @@ void Player::update(float dt)
     }
     Vec3 Normal;
     float player_h = _terrain->getHeight(player->getPositionX(),player->getPositionZ(),&Normal);
-    float dot_product = Normal.dot(Vec3(0,1,0));
 
     player->setPositionY(player_h+PLAYER_HEIGHT);
     Quaternion q2;
