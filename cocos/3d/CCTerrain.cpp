@@ -990,8 +990,8 @@ Terrain::TerrainData::TerrainData(const char * heightMapsrc ,const char * textur
     this->detailMaps[0].detailMapSrc = textureSrc;
     this->alphaMapSrc = nullptr;
     this->chunkSize = chunksize;
-    this->mapHeight = mapHeight;
-    this->mapScale = mapScale; 
+    this->mapHeight = height;
+    this->mapScale = scale; 
 }
 
 Terrain::TerrainData::TerrainData(const char * heightMapsrc ,const char * alphamap,const DetailMap& detail1,const DetailMap& detail2,const DetailMap& detail3,const DetailMap& detail4,const Size & chunksize,float height,float scale)
