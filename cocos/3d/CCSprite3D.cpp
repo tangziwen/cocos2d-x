@@ -186,11 +186,17 @@ bool Sprite3D::loadFromCache(const std::string& path)
         _skeleton = Skeleton3D::create(spritedata->nodedatas->skeleton);
         CC_SAFE_RETAIN(_skeleton);
         
+        int isolationTreeCount = 0;
+        for (const auto&it : spritedata->nodedatas->nodes)
+        {
+            if (!it->modelNodeDatas.empty()) isolationTreeCount++;
+        }
+
         for(const auto& it : spritedata->nodedatas->nodes)
         {
             if(it)
             {
-                createNode(it, this, *(spritedata->materialdatas), spritedata->nodedatas->nodes.size() == 1);
+                createNode(it, this, *(spritedata->materialdatas), (spritedata->nodedatas->nodes.size() == 1 && isolationTreeCount == 1));
             }
         }
         
@@ -324,11 +330,17 @@ bool Sprite3D::initFrom(const NodeDatas& nodeDatas, const MeshDatas& meshdatas, 
     _skeleton = Skeleton3D::create(nodeDatas.skeleton);
     CC_SAFE_RETAIN(_skeleton);
     
+    int isolationTreeCount = 0;
+    for (const auto&it : nodeDatas.nodes)
+    {
+        if (!it->modelNodeDatas.empty()) isolationTreeCount++;
+    }
+
     for(const auto& it : nodeDatas.nodes)
     {
         if(it)
         {
-            createNode(it, this, materialdatas, nodeDatas.nodes.size() == 1);
+            createNode(it, this, materialdatas, (nodeDatas.nodes.size() == 1 && isolationTreeCount == 1));
         }
     }
     for(const auto& it : nodeDatas.skeleton)
@@ -572,9 +584,15 @@ void Sprite3D::createNode(NodeData* nodedata, Node* root, const MaterialDatas& m
             } 
         }
     }
+
+    if (!node)
+    {
+        node = this;
+    }
+
     for(const auto& it : nodedata->children)
     {
-        createNode(it,node, materialdatas, nodedata->children.size() == 1);
+        createNode(it,node, materialdatas, false);
     }
 }
 
